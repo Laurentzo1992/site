@@ -20,6 +20,8 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'django_adminlte',
+    'django_adminlte_theme',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -140,4 +142,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "website/static/media")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+LOGIN_URL = 'login_user'
 
+LOGIN_REDIRECT_URL = 'home'

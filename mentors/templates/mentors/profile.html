@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load static %}
+{% block main %}
+<div class="container mb-3">
+    <div class="row gutters">
+        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="account-settings text-center">
+                        <div class="user-profile">
+                          {% if user_profile.photo %}
+                            <div class="user-avatar">
+                              <img class="w-25 mx-auto d-block" src="{{user_profile.photo.url}}" alt="{{user_profile.user.username}}">
+                            </div>
+                          {% else %}
+                            <div class="user-avatar">
+                                <img class="w-25 mx-auto d-block" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="{{user_profile.user.username}}">
+                            </div>
+                            {% endif %}
+                            <h6 class="user-email">{{user_profile.user.email}}</h6>
+                        </div>
+                        <div class="about">
+                            <a href="{% url 'editprofile' user_profile.id %}" class="btn btn-primary">Completer mon profile</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="row gutters">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <h6 class="mb-2 text-primary">Tableau de bord personnel</h6>
+                        </div>
+                        <div class="row">
+                          {% if mentor %}
+                            <div class="col-sm-6">
+                              <div class="card">
+                                <div class="card-body">
+                                    <div class="card mb-3" style="max-width: 540px;">
+                                        <div class="row no-gutters">
+                                          {% if mentor.user.photo %}
+                                          <div class="col-md-4">
+                                            <img class="w-25 mx-auto d-block" src="{{mentor.user.photo.url}}" alt="{{user_act.username}}">
+                                          </div>
+                                          {% else %}
+                                          <div class="col-md-4">
+                                            <img class="w-25 mx-auto d-block" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="{{user_act.username}}">
+                                          </div>
+                                          {% endif %}
+                                          <div class="col-md-8">
+                                            <div class="card-body">
+                                              <h5 class="card-title">Mentor : {{mentor.user.username}} </h5>
+                                              <p class="card-text">{{mentor.description}}</p>
+                                              <p class="card-text"><small class="text-muted">En ligne depuis : {{mentor.user.last_login}} </small></p>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+
+                            {% if mentors_group %}
+                            <div class="col-sm-6">
+                              <div class="card">
+                                <div class="card-body">
+                                  <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
+                                    <div class="card-header">Nbr de commentaires</div>
+                                    <div class="card-body">
+                                      <h5 class="card-title">Info card title</h5>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+
+                            <div class="col-sm-6">
+                              <div class="card">
+                                <div class="card-body">
+                                  <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
+                                    <div class="card-header">Nbr de commentaires</div>
+                                    <div class="card-body">
+                                      <h5 class="card-title">Info card title</h5>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+
+                            <div class="col-sm-6">
+                              <div class="card">
+                                <div class="card-body">
+                                  <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
+                                    <div class="card-header">Nbr de commentaires</div>
+                                    <div class="card-body">
+                                      <h5 class="card-title">Info card title</h5>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                              <div class="card">
+                                <div class="card-body">
+                                  <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
+                                    <div class="card-header">Nbr de commentaires</div>
+                                    <div class="card-body">
+                                      <h5 class="card-title">Info card title</h5>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% for message in messages %}
+  <script src="{% static 'js/sweetalert.min.js' %}"></script>
+  {% if message.tags == 'error' %}
+    <script>
+      var m = "{{ message }}";
+      swal("Réfusé!", m, "error");
+    </script>
+  {% elif message.tags == 'success' %}
+    <script>
+      var m = "{{ message }}";
+      swal("Bienvenue!", m, "success");
+    </script>
+  {% elif message.tags == 'warning' %}
+    <script>
+      var m = "{{ message }}";
+      swal(" Attention!", m, "warning");
+    </script>
+  {% endif %}
+{% endfor %}
+
+
+
+{% endblock main %}

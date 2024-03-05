@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<!-- My Approach-->
+<section class="section section-lg bg-default">
+    <div class="container">
+        <div class="row row-50 justify-content-center justify-content-xl-between flex-lg-row-reverse">
+            <div class="col-md-11 col-lg-6 col-xl-5">
+                <div class="box-1">
+                    <h5>PRÉSENTATION DE L’ASSOCIATION</h5>
+                    <h5>1- Cible</h5>
+                    <p>
+                        L’association s'adresse aux élèves et étudiants en recherche d'orientation scolaire ou
+                        professionnelle, aux adultes en reconversion , aux personnes sans emploi, ainsi qu'à toute
+                        personne désireuse d'améliorer ses perspectives professionnelles.</p><button class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">Lire plus</button>
+                </div>
+                {% include "mentors/about1.html" %}
+            </div>
+            <div class="col-md-11 col-lg-6">
+                <!-- Thumbnail Media-->
+                <div class="thumbnail-media" style="background-image: url(media/images/mentorat.svg);">
+                    <a class="icon thumbnail-media-icon mdi mdi-play-circle-outline" href="//www.youtube.com/watch?v=I5FlP07kdvM" data-lightgallery="item"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Services-->
+<section class="section section-lg bg-gray-100 text-center">
+    <div class="container">
+        <h2 class="wow fadeIn">DOMAINES DE FORMATIONS</h2>
+        {% for data in categories %}
+        <details class="plus-type outer-line" data-details-toggle="group-toggle">
+            <summary class="display-block" id="summary_2_{{data.id}}">
+                <button class="btn btn-secondary">{{ data.libelle }}</button>
+            </summary>
+            {% for domaine in data.domaine_set.all %}
+            <div aria-describedby="summary_2_{{data.id}}" class="padding-top-half-gutter flex flex-top half-gutter no-fit no-margin-bottom justify-content-stretch" data-nosnippet>
+                <div class="xs-hide s-4 l-3">
+                    <div class="ratio-100">
+                      <div class="row text-capitalize text-end"> <i class="fa fa-heart text-success"> &nbsp; &nbsp;{{ domaine.libelle }}</i></div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </details>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock main %}

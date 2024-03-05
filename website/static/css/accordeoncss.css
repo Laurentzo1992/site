@@ -1,0 +1,130 @@
+/*
+ * Copyright © 2006 2024. Kortic (URL : https://www.kortic.com/accordeons-html-accessibles-avec-balises-details-et-summary.html)
+ * licence Creative Commons CC BY-NC-SA 4.0
+ * https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr
+ */
+ 
+ details {
+    --svg-chevron: url('data:image/svg+xml,\
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 16">\
+      <path d="m.31.71C.8.09,1.6.09,2.1.59l11.99,12.02L25.87.38c.52-.54,1.32-.5,1.8.09.47.59.44,1.5-.08,2.04l-12.54,13.11c-.48.5-1.21.5-1.71.02L.56,2.75C-.11,2.23-.16,1.31.31.71Z"/>\
+    </svg>');
+    --svg-marker-less-thin: url('data:image/svg+xml,\
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">\
+    <path d="m31.51,15.53v.95c0,.43-.35.78-.78.78H1.28c-.43,0-.78-.35-.78-.78v-.95c0-.43.35-.78.78-.78h29.45c.43,0,.78.35.78.78Z"/>\
+    </svg>');
+    --svg-marker-more-thin: url('data:image/svg+xml,\
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">\
+    <path d="m31.53,15.46v1.11c0,.39-.31.7-.7.7h-13.56v13.56c0,.39-.31.7-.7.7h-1.11c-.39,0-.7-.31-.7-.7v-13.56H1.2c-.39,0-.7-.31-.7-.7v-1.11c0-.39.31-.7.7-.7h13.53V1.2c0-.39.31-.7.7-.7h1.11c.39,0,.7.31.7.7v13.55l13.69.02c.34.05.6.34.6.69Z"/>\
+    </svg>');
+    --svg-marker-cross: url('data:image/svg+xml,\
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">\
+    <path d="m30.8,5l-10.55,10.55c-.25.25-.25.65,0,.9l10.55,10.55c.25.25.25.65,0,.9l-2.92,2.92c-.25.25-.65.25-.9,0l-10.55-10.55c-.25-.25-.65-.25-.9,0l-10.54,10.54c-.25.25-.65.25-.9,0l-2.92-2.92c-.25-.25-.25-.65,0-.9l10.55-10.55c.25-.25.25-.65,0-.9L1.2,5c-.25-.25-.25-.65,0-.9l2.92-2.92c.25-.25.65-.25.9,0l10.55,10.55c.25.25.65.25.9,0L27,1.19c.25-.25.65-.25.9,0l2.92,2.92c.25.25.25.65,0,.9h-.02Z"/>\
+    </svg>');
+  }
+  details + details {
+    margin-top: var(--small-gutter, 1.25rem);
+    position: relative;
+  }
+  details > summary {
+    position: relative;
+    list-style: none;
+    display: inline-block;
+    padding-right: 2em;
+    max-width: 100%;
+  }
+  details > summary.rounded-marker {
+    padding-right: 2.5em;
+  }
+  details[open] > summary, details > summary:focus-visible {
+    color: var(--link-color, blue);
+  }
+  @media (any-pointer: fine) {
+    details > summary {
+      cursor: pointer;
+    }
+    details > summary:hover {
+      color: var(--link-color, blue);
+    }
+  }
+  details > summary::-webkit-details-marker {
+    display: none;
+  }
+  details > summary::marker {
+    display: none;
+  }
+  /*
+  NOTE : l'unité utilisée pour l'affichage de la flêche haut/bas
+  est proportionnelle au font-size du summary
+  ce qui permet de ne pas avoir à gérer des tailles et positionnements multiples
+   */
+  details:not(.plus-type) > summary.rounded-marker:before {
+    content: "";
+    height: 1.5em;
+    width: 1.5em;
+    pointer-events: none;
+    position: absolute;
+    right: 0.25em;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius, 0.25em);
+  }
+  @media (prefers-color-scheme: dark) {
+    details:not(.plus-type) > summary.rounded-marker:before {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+  }
+  :root[class*='contrast'] details:not(.plus-type) > summary.rounded-marker:before {
+    box-shadow: 0 0 0 1px currentColor inset;
+  }
+  details:not(.plus-type) > summary:after {
+    content: "";
+    height: 0.875em;
+    width: 1em;
+    pointer-events: none;
+    position: absolute;
+    right: 0.5em;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 0.875em;
+    -webkit-mask-image: var(--svg-chevron);
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: 0.875em;
+    mask-image: var(--svg-chevron);
+    background-color: currentColor;
+  }
+  details:not(.plus-type)[open] > summary:after {
+    background-color: currentColor;
+    transform: scaleY(-1) translateY(40%);
+  }
+  details.plus-type > summary:after {
+    content: "\20";
+    pointer-events: none;
+    position: absolute;
+    display: inline-block;
+    background-color: currentColor;
+    right: 0.4688em;
+    top: 0.3125em;
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    -webkit-mask-image: var(--svg-marker-more-thin);
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    mask-image: var(--svg-marker-more-thin);
+    height: 1em;
+    width: 1em;
+  }
+  details.plus-type[open] > summary:after {
+    -webkit-mask-image: var(--svg-marker-less-thin);
+    mask-image: var(--svg-marker-less-thin);
+  }
+  details.plus-type.cross-closer[open] > summary:after {
+    -webkit-mask-image: var(--svg-marker-cross);
+    mask-image: var(--svg-marker-cross);
+  }
