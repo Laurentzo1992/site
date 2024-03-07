@@ -17,4 +17,10 @@ urlpatterns = [
     path('abonnement/<int:id>', views.abonnement, name='abonnement'),
     path('desabonnement/', views.desabonnement, name='desabonnement'),
     path('orientation', views.tableau_orientations, name='orientation'),
+    path('get_all_even', views.get_all_even, name='get_all_even'),
+    path('get_all_ressource', views.get_all_ressource, name='get_all_ressource'),
+    path('add_even', views.add_even, name='add_even'),
+    path('add_ressource', views.add_ressource, name='add_ressource'),
+    path('get_all_forum', views.get_all_forum, name='get_all_forum'),
+    path('add_forum', views.add_forum, name='add_forum'),
 ]

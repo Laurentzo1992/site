@@ -42,18 +42,9 @@
                                 <div class="card-body">
                                     <div class="card mb-3" style="max-width: 540px;">
                                         <div class="row no-gutters">
-                                          {% if mentor.user.photo %}
-                                          <div class="col-md-4">
-                                            <img class="w-25 mx-auto d-block" src="{{mentor.user.photo.url}}" alt="{{user_act.username}}">
-                                          </div>
-                                          {% else %}
-                                          <div class="col-md-4">
-                                            <img class="w-25 mx-auto d-block" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="{{user_act.username}}">
-                                          </div>
-                                          {% endif %}
                                           <div class="col-md-8">
                                             <div class="card-body">
-                                              <h5 class="card-title">Mentor : {{mentor.user.username}} </h5>
+                                              <h5 class="card-title">Mentor : {{mentor.user.first_name}} &nbsp; {{mentor.user.last_name}}</h5>
                                               <p class="card-text">{{mentor.description}}</p>
                                               <p class="card-text"><small class="text-muted">En ligne depuis : {{mentor.user.last_login}} </small></p>
                                             </div>
@@ -65,6 +56,33 @@
                             </div>
                             {% endif %}
 
+                            <div class="col-sm-6">
+                              <div class="card">
+                                <div class="card-body">
+                                    <div class="card mb-3" style="max-width: 540px;">
+                                        <div class="row no-gutters">
+                                            <div class="card-body">
+                                              <div class="about mb-2">
+                                                <a href="{% url 'add_ressource' %}" class="btn btn-success"><i class="fa fa-plus-circle"></i></a>
+                                                <a href="{% url 'get_all_ressource' %}" class="btn btn-primary">Ressources</a>
+                                              </div>
+                                              <div class="about mb-2">
+                                                <a href="{% url 'add_even' %}" class="btn btn-success"><i class="fa fa-plus-circle"></i></a>
+                                                <a href="{% url 'get_all_even' %}" class="btn btn-primary">Evenements</a>
+                                              </div>
+                                              <div class="about mb-2">
+                                                <a href="{% url 'add_forum' %}" class="btn btn-success"><i class="fa fa-plus-circle"></i></a>
+                                                <a href="{% url 'get_all_forum' %}" class="btn btn-primary">Forum</a>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                </div>
+                              </div>
+                            </div>
+
+                         
                             {% if mentors_group %}
                             <div class="col-sm-6">
                               <div class="card">

@@ -7,56 +7,27 @@
       {% block Carousel %}
       <section>
         <!-- Swiper-->
+      
         <div class="swiper-container swiper-slider swiper-slider-1" data-loop="false" data-autoplay="5000" data-simulate-touch="false">
           <div class="swiper-wrapper">
-            <div class="swiper-slide" data-slide-bg="{% static 'media/images/swiper-slide-1.jpg' %}">
+            {% for slide in slides %}
+            <div class="swiper-slide" data-slide-bg="{{slide.image.url}}">
               <div class="swiper-slide-caption context-dark">
                 <div class="container">
                   <div class="row">
                     <div class="col-md-10 col-lg-7">
                       <div class="box-animation">
-                        <h6 data-caption-animate="slideInLeft" data-caption-delay="150">Quality Higher Education</h6>
-                        <h2 data-caption-animate="slideInLeft" data-caption-delay="300">Any Successful Career Starts  <span class="text-italic font-weight-bold">With Good Education</span>
+                        <h6 data-caption-animate="slideInLeft" data-caption-delay="150">{{slide.titre1}}</h6>
+                        <h2 data-caption-animate="slideInLeft" data-caption-delay="300">{{slide.titre2}} <span class="text-italic font-weight-bold">{{slide.titre3}}</span>
                         </h2>
-                        <div class="button-block" data-caption-animate="fadeInUp" data-caption-delay="450"><a class="button button-primary-gradient" href="#"><span>Connexion</span></a></div>
+                        <div class="button-block" data-caption-animate="fadeInUp" data-caption-delay="450"><a class="button button-primary-gradient" href="{% url 'createuser' %}"><span>Connexion</span></a></div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="swiper-slide" data-slide-bg="{% static 'media/images/swiper-slide-2.jpg' %}">
-              <div class="swiper-slide-caption context-dark">
-                <div class="container">
-                  <div class="row">
-                    <div class="col-md-10 col-lg-7">
-                      <div class="box-animation">
-                        <h6 data-caption-animate="slideInLeft" data-caption-delay="150">A vAriety of programs</h6>
-                        <h2 data-caption-animate="slideInLeft" data-caption-delay="300">Providing Students with  <span class="text-italic font-weight-bold">Professional Education</span>
-                        </h2>
-                        <div class="button-block" data-caption-animate="fadeInUp" data-caption-delay="450"><a class="button button-primary-gradient" href="#"><span>sign up for excursion</span></a></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="swiper-slide" data-slide-bg="{% static 'media/images/swiper-slide-3.jpg' %}">
-              <div class="swiper-slide-caption context-dark">
-                <div class="container">
-                  <div class="row">
-                    <div class="col-md-10 col-lg-7">
-                      <div class="box-animation">
-                        <h6 data-caption-animate="slideInLeft" data-caption-delay="150">Campus Community</h6>
-                        <h2 data-caption-animate="slideInLeft" data-caption-delay="300">Become a Part of Our Campus and <span class="text-italic font-weight-bold">Make Friends</span>
-                        </h2>
-                        <div class="button-block" data-caption-animate="fadeInUp" data-caption-delay="450"><a class="button button-primary-gradient" href="#"><span>sign up for excursion</span></a></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {% endfor %}
           </div>
           <div class="swiper-pagination"></div>
         </div>
@@ -134,7 +105,7 @@
           <div class="row row-30 row-md-50 row-xl-70">
             <div class="col-sm-6 col-lg-4 wow fadeIn">
               <!-- Post Minimal-->
-              {% for data in evenements %}
+              {% for data in upcoming_events %}
               <div class="post-minimal">
                 <figure class="post-minimal-media"><a href="#"><img class="post-minimal-image" src="{{data.image.url}}" alt="" width="370" height="260"/></a></figure>
                 <div class="post-minimal-meta">
@@ -147,84 +118,50 @@
               </div>
             </div>
             {% endfor %}
+            <a class="button button-lg button-primary-gradient wow fadeIn" href="{% url 'get_all_even' %}" data-wow-delay=".2s"><span>Toutes les évèments</span></a>
         </div>
       </section>
 
 
-      <!-- Latest Blog Posts-->
+      <!-- Dernière resource -->
       <section class="section section-lg bg-default text-center">
         <div class="container">
-          <h2 class="wow fadeIn">Dernière ressources publiées</h2>
-          <div class="row row-30 justify-content-center">
-            <div class="col-sm-10 col-md-6 wow fadeIn">
-              <!-- Post Light--><a class="post-light context-dark" href="#" style="background-image: url(media/images/grid-blog-1-570x350.jpg);">
-                <div class="post-light-inner">
-                  <div class="badge">News</div>
-                  <div class="post-light-main">
-                    <time class="post-light-time" datetime="2019">July 5, 2019, at 12:07 pm</time>
-                    <h4 class="post-light-title">Campus Opening Convocation</h4>
-                  </div>
-                </div></a>
+            <h2 class="wow fadeIn">Dernière ressources publiées</h2>
+            <div class="row justify-content-center">
+                {% for ressource in ressources %}
+                <div class="col-sm-10 col-md-6 col-lg-6 wow fadeIn">
+                    <!-- Post Light-->
+                    {% if ressource.get_mime_type %}
+                        {% if 'video' in ressource.get_mime_type %}
+                            <video controls style="width: 100%;">
+                                <source src="{{ ressource.ressource.url }}" type="{{ ressource.get_mime_type }}">
+                                Your browser does not support the video tag.
+                            </video>
+                            <time class="post-light-time">{{ ressource.created|date:"D d M Y" }}</time>
+                            <h4 class="post-light-title"> {{ ressource.titre }} <div class="badge">Nouveau</div></h4>
+                        {% else %}
+                            <a class="post-light context-dark" href="{{ressource.ressource.url}}" style="background-image: url(media/images/background.jpeg);">
+                                <div class="post-light-inner">
+                                    <div class="badge">Nouveau</div>
+                                    <div class="post-light-main">
+                                        <time class="post-light-time">{{ ressource.created|date:"D d M Y" }}</time>
+                                        <h4 class="post-light-title"> {{ ressource.titre }} </h4>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                {% if forloop.counter|divisibleby:4 and not forloop.last %}
+            </div><div class="row justify-content-center">
+                {% endif %}
+                {% endfor %}
             </div>
-            <div class="col-sm-10 col-md-6 wow fadeIn" data-wow-delay=".2s">
-              <!-- Post Light--><a class="post-light context-dark" href="#" style="background-image: url(media/images/grid-blog-2-570x350.jpg);">
-                <div class="post-light-inner">
-                  <div class="badge">News</div>
-                  <div class="post-light-main">
-                    <time class="post-light-time" datetime="2019">July 5, 2019, at 12:07 pm</time>
-                    <h4 class="post-light-title">Freshman Matriculation Ceremony at Bradston College</h4>
-                  </div>
-                </div></a>
-            </div>
-            <div class="col-sm-10 col-md-6 wow fadeIn">
-              <!-- Post Light--><a class="post-light context-dark" href="#" style="background-image: url(media/images/grid-blog-3-570x350.jpg);">
-                <div class="post-light-inner">
-                  <div class="badge">News</div>
-                  <div class="post-light-main">
-                    <time class="post-light-time" datetime="2019">July 5, 2019, at 12:07 pm</time>
-                    <h4 class="post-light-title">Bradston College Leadership Academy</h4>
-                  </div>
-                </div></a>
-            </div>
-            <div class="col-sm-10 col-md-6 wow fadeIn" data-wow-delay=".2s">
-              <!-- Post Light--><a class="post-light context-dark" href="#" style="background-image: url(media/images/grid-blog-4-570x350.jpg);">
-                <div class="post-light-inner">
-                  <div class="badge">News</div>
-                  <div class="post-light-main">
-                    <time class="post-light-time" datetime="2019">July 5, 2019, at 12:07 pm</time>
-                    <h4 class="post-light-title">Incoming Freshmen Gather for Blueprints: Photo Gallery</h4>
-                  </div>
-                </div></a>
-            </div>
-          </div><a class="button button-lg button-primary-gradient wow fadeIn" href="#" data-wow-delay=".2s"><span>Voir tout</span></a>
+            <a class="button button-lg button-primary-gradient wow fadeIn" href="{% url 'get_all_ressource' %}" data-wow-delay=".2s"><span>Toutes les ressources</span></a>
         </div>
-      </section>
+    </section>
+    
       {% endblock content %}
-
-     {% comment %}  <!-- Gallery-->
-      <section class="section oh text-center">
-        <div class="owl-carousel owl-carousel-dots-space wow fadeIn" data-items="2" data-sm-items="3" data-md-items="4" data-lg-items="5" data-xl-items="6" data-dots="true" data-nav="false" data-stage-padding="0" data-loop="false" data-margin="0" data-mouse-drag="false" data-lightgallery="group">
-          <!-- Thumbnail Thin--><a class="thumbnail-thin" href="{% static 'media/images/personal-page-gallery-1-original.jpg' %}" data-lightgallery="item">
-            <div class="thumbnail-thin-inner"><img class="thumbnail-thin-image" src="{% static 'media/images/personal-page-gallery-1-320x320.jpg' %}" alt="" width="320" height="320"/>
-            </div></a>
-          <!-- Thumbnail Thin--><a class="thumbnail-thin" href="{% static 'media/images/personal-page-gallery-2-original.jpg' %}" data-lightgallery="item">
-            <div class="thumbnail-thin-inner"><img class="thumbnail-thin-image" src="{% static 'media/images/personal-page-gallery-2-320x320.jpg' %}" alt="" width="320" height="320"/>
-            </div></a>
-          <!-- Thumbnail Thin--><a class="thumbnail-thin" href="{% static 'media/images/personal-page-gallery-3-original.jpg' %}" data-lightgallery="item">
-            <div class="thumbnail-thin-inner"><img class="thumbnail-thin-image" src="{% static 'media/images/personal-page-gallery-3-320x320.jpg' %}" alt="" width="320" height="320"/>
-            </div></a>
-          <!-- Thumbnail Thin--><a class="thumbnail-thin" href="{% static 'media/images/personal-page-gallery-4-original.jpg' %}" data-lightgallery="item">
-            <div class="thumbnail-thin-inner"><img class="thumbnail-thin-image" src="{% static 'media/images/personal-page-gallery-4-320x320.jpg' %}" alt="" width="320" height="320"/>
-            </div></a>
-          <!-- Thumbnail Thin--><a class="thumbnail-thin" href="{% static 'media/images/personal-page-gallery-5-original.jpg' %}" data-lightgallery="item">
-            <div class="thumbnail-thin-inner"><img class="thumbnail-thin-image" src="{% static 'media/images/personal-page-gallery-5-320x320.jpg' %}" alt="" width="320" height="320"/>
-            </div></a>
-          <!-- Thumbnail Thin--><a class="thumbnail-thin" href="{% static 'media/images/personal-page-gallery-6-original.jpg' %}" data-lightgallery="item">
-            <div class="thumbnail-thin-inner"><img class="thumbnail-thin-image" src="{% static 'media/images/personal-page-gallery-6-320x320.jpg' %}" alt="" width="320" height="320"/>
-            </div></a>
-        </div>
-      </section> {% endcomment %}
-
 
             
       {% for message in messages %}
@@ -247,7 +184,6 @@
       {% endif %}
 
       {% endfor%}
-
 
       {% endblock main %}
      

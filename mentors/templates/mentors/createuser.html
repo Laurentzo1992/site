@@ -12,7 +12,16 @@
             <form class="form-horizontal m-t-20" action="{% url 'createuser' %}" method="post">
                 {% csrf_token %}
                 <div class="row p-b-30">
-                    <div class="col-12">
+                    <div class="col-md-6">
+                        <!-- Champs sur la première colonne -->
+                         <!-- prenom -->
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-success text-white" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
+                            </div>
+                            <input type="text" class="form-control form-control-lg" name="first_name" placeholder="Prenom" aria-label="first_name" aria-describedby="basic-addon1" required>
+                        </div>
+                         <!-- username -->
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text bg-success text-white" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
@@ -26,6 +35,17 @@
                             </div>
                             <input type="email" class="form-control form-control-lg" name="email" placeholder="Email Addresse" aria-label="Username" aria-describedby="basic-addon1" required>
                         </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- Champs sur la deuxième colonne -->
+                         <!-- nom -->
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-success text-white" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
+                            </div>
+                            <input type="text" class="form-control form-control-lg" name="last_name" placeholder="Nom" aria-label="last_name" aria-describedby="basic-addon1" required>
+                        </div>
+                         <!-- password -->
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text bg-warning text-white" id="basic-addon2"><i class="fa fa-key text-primary"></i></span>
@@ -53,6 +73,7 @@
         </div>
     </div>
 </div>
+
 
 
 

@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from PIL import Image
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+import mimetypes
 
 
 class Regions(models.Model):
@@ -71,56 +71,26 @@ class Etablissement(models.Model):
 
 
 
-class Profiles(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    telephone = models.CharField(max_length=20, blank=True, null=True)
-    Etablissement = models.ForeignKey(Etablissement, blank=True, null=True, on_delete=models.CASCADE)
-    profile_scolaire = models.CharField(max_length=200, blank=True, null=True)
-    mentor = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True, related_name='mentored_profiles')
-    photo = models.FileField(upload_to='profile/', null=True, blank=True)
-    created = models.DateField(auto_now_add=True)
-    modified = models.DateField(auto_now=True)
-
-    def __str__(self):
-        return self.user.username
-    
-    def unsubscribe(self):
-        self.mentor = None
-        self.save()
-    
-    IMAGE_MAX_SIZE = (50, 50)
-    
-    def resize_image(self):
-        image = Image.open(self.image)
-        image.thumbnail(self.IMAGE_MAX_SIZE)
-        # sauvegarde de l’image redimensionnée dans le système de fichiers
-        # ce n’est pas la méthode save() du modèle !
-        image.save(self.image.path)
-
-# Créer ou mettre à jour automatiquement le profil lorsqu'un utilisateur est enregistré ou mis à jour
-@receiver(post_save, sender=User)
-def create_or_update_profile(sender, instance, created, **kwargs):
-    if created or not hasattr(instance, 'profiles'):
-        Profiles.objects.create(user=instance)
-    else:
-        instance.profiles.save()
-
-
-
-
 class Ressources(models.Model):
     titre = models.CharField(max_length=50, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
-    video = models.FileField(upload_to='video/', null=True, blank=True)
-    fichier_pdf = models.FileField(upload_to='Fichiers/', null=True, blank=True)
+    ressource = models.FileField(upload_to='Fichiers/', null=True, blank=True)
     owner = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
     modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
 
-
+    
     def __str__(self):
         return self.titre
-
+    
+    
+    def get_mime_type(self):
+        if self.ressource:
+            return mimetypes.guess_type(self.ressource.path)[0]
+        else:
+            return None
+        
+        
 class Forum(models.Model):
     titre = models.CharField(max_length=50, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
@@ -208,7 +178,9 @@ class Domaine(models.Model):
 class Evenement(models.Model):
     libelle = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
+    lien = models.CharField(max_length=1000, blank=True, null=True)
     image = models.FileField(upload_to='images/', null=True, blank=True)
+    date_even = models.DateField(blank=True, null=True)
     initiateur = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
     modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
@@ -260,3 +232,70 @@ class Debouche(models.Model):
     
     def __str__(self):
         return self.libelle
+    
+    
+class Typementorat(models.Model):
+    libelle = models.CharField(max_length=200, blank=True, null=True)
+    created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    
+    def __str__(self):
+        return self.libelle
+    
+class Niveau_formation(models.Model):
+    libelle = models.CharField(max_length=200, blank=True, null=True)
+    created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    
+    def __str__(self):
+        return self.libelle
+  
+    
+class Profiles(models.Model):
+    user = models.OneToOneField(User, blank=True, null=True, on_delete=models.CASCADE)
+    telephone = models.CharField(max_length=20, blank=True, null=True)
+    niveau = models.ForeignKey(Niveau_formation, blank=True, null=True, on_delete=models.CASCADE)
+    commune = models.ForeignKey(Communes, blank=True, null=True, on_delete=models.CASCADE)
+    domaine = models.ForeignKey(CategorieFormation, blank=True, null=True, on_delete=models.CASCADE)
+    etablissement = models.ForeignKey(Etablissement, blank=True, null=True, on_delete=models.CASCADE)
+    profile = models.TextField(blank=True, null=True)
+    ojectif = models.CharField(max_length=200, blank=True, null=True)
+    type_mentorat = models.ForeignKey(Typementorat, blank=True, null=True, on_delete=models.CASCADE)
+    mentor = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True, related_name='mentored_profiles')
+    photo = models.FileField(upload_to='profile/', null=True, blank=True)
+    created = models.DateField(auto_now_add=True)
+    modified = models.DateField(auto_now=True)
+
+    def __str__(self):
+        return self.user.username
+    
+    def unsubscribe(self):
+        self.mentor = None
+        self.save()
+    
+    IMAGE_MAX_SIZE = (50, 50)
+    
+    def resize_image(self):
+        image = Image.open(self.image)
+        image.thumbnail(self.IMAGE_MAX_SIZE)
+        # sauvegarde de l’image redimensionnée dans le système de fichiers
+        # ce n’est pas la méthode save() du modèle !
+        image.save(self.image.path)
+
+# Créer ou mettre à jour automatiquement le profil lorsqu'un utilisateur est enregistré ou mis à jour
+@receiver(post_save, sender=User)
+def create_or_update_profile(sender, instance, created, **kwargs):
+    if created or not hasattr(instance, 'profiles'):
+        Profiles.objects.create(user=instance)
+    else:
+        instance.profiles.save()
+        
+        
+class Slideimage(models.Model):
+    image = models.FileField(upload_to='images/', null=True, blank=True)
+    titre1 = models.CharField(max_length=200, blank=True, null=True)
+    titre2 = models.CharField(max_length=200, blank=True, null=True)
+    titre3 = models.CharField(max_length=200, blank=True, null=True)
+    
+    def __str__(self):
+        return self.titre1

@@ -30,12 +30,12 @@
   <div class="container mb-3">
     <div class="py-6">
       <div class="row">
-        {% for mentor in mentors %}
+        {% for mentor in mentors_profiles %}
           <div class="col-lg-3 col-12">
             <!-- avatar -->
             <div class="avatar avatar-xl mt-n7 ms-4">
-              {% if mentor.profile_picture %}
-                <img src="{{ mentor.profile_picture.url }}" alt="Image" class="w-25 rounded-circle border-4 border-white-color-40">
+              {% if mentor.photo %}
+                <img src="{{ mentor.photo.url }}" alt="Image" class="w-25 rounded-circle border-4 border-white-color-40">
               {% else %}
                 <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Image" class="w-25 rounded-circle border-4 border-white-color-40">
               {% endif %}
@@ -43,8 +43,7 @@
             <!-- card body -->
             <div class="card-body">
               <!-- Title -->
-              <h4 class="mb-1">{{ mentor.username }}</h4>
-              <p>{{ mentor.email }}</p>
+              <h6 class="mb-1">{{mentor.user.first_name}} &nbsp; {{mentor.user.last_name}}</h6>
               <div>
                 <!-- Dropdown -->
                 <div class="d-flex justify-content-between align-items-center">

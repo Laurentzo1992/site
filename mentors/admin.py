@@ -18,5 +18,7 @@ admin.site.register(Evenement)
 admin.site.register(Type_oriention)
 admin.site.register(Filiere_Serie)
 admin.site.register(Debouche)
-admin.site.register(Profiles)
+admin.site.register(Typementorat)
+admin.site.register(Niveau_formation)
+admin.site.register(Slideimage)
 # Register your models here.

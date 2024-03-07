@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.contrib.auth import login, authenticate, logout, get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -8,14 +8,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from mentors.models import *
 from django.contrib.auth.models import Group
-
-
-
-
+from datetime import datetime, timedelta
+from datetime import date
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def createuser(request):
     if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -29,7 +29,7 @@ def createuser(request):
                 messages.error(request, 'Cet email est déjà utilisé.')
             else:
                 # Créer l'utilisateur
-                user = User.objects.create_user(username=username, email=email, password=password)
+                user = User.objects.create_user(username=username, email=email, password=password, first_name=first_name, last_name=last_name)
                 # Connexion automatique de l'utilisateur
                 login(request, user)
                 # Redirection vers la page de connexion
@@ -90,19 +90,118 @@ def user_profile(request):
     return render(request, 'mentors/profile.html', context)
 
 
+
 @login_required
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def editprofile(request, id):
     user_act = Profiles.objects.get(user=request.user)
-    context = {"user_act":user_act}
+
+    if request.method == "POST":
+        user_act.telephone = request.POST.get('telephone')
+        user_act.profile = request.POST.get('profile')
+        user_act.ojectif = request.POST.get('ojectif')
+        user_act.photo = request.FILES.get('photo')
+
+        # Récupérer les IDs des clés étrangères
+        niveau_id = int(request.POST.get('niveau'))
+        commune_id = int(request.POST.get('commune'))
+        domaine_id = int(request.POST.get('domaine'))
+        etablissement_id = int(request.POST.get('etablissement'))
+        type_mentorat_id = int(request.POST.get('type_mentorat'))
+
+        # Vérifier si les clés étrangères existent dans la base de données
+        try:
+            commune = Communes.objects.get(id=commune_id)
+            domaine = CategorieFormation.objects.get(id=domaine_id)
+            etablissement = Etablissement.objects.get(id=etablissement_id)
+            type_mentorat = Typementorat.objects.get(id=type_mentorat_id)
+            niveau = Niveau_formation.objects.get(id=niveau_id)
+        except (Communes.DoesNotExist, CategorieFormation.DoesNotExist, Etablissement.DoesNotExist, Typementorat.DoesNotExist, Niveau_formation.DoesNotExist):
+            # Gérer le cas où une des clés étrangères n'existe pas
+            return HttpResponseBadRequest("Une ou plusieurs clés étrangères sont invalides")
+
+        # Associer les objets aux clés étrangères
+        user_act.commune = commune
+        user_act.domaine = domaine
+        user_act.etablissement = etablissement
+        user_act.type_mentorat = type_mentorat
+        user_act.niveau = niveau
+        
+        # Sauvegarder le profil
+        user_act.save()
+
+        return redirect('user_profile')
+
+    communes = Communes.objects.all()
+    domaines = CategorieFormation.objects.all()
+    etablissements = Etablissement.objects.all()
+    types = Typementorat.objects.all()
+    niveaux = Niveau_formation.objects.all()
+
+    context = {
+        "niveaux": niveaux,
+        "types": types,
+        "user_act": user_act,
+        "communes": communes,
+        "domaines": domaines,
+        "etablissements": etablissements
+    }
+
     return render(request, 'mentors/editprofile.html', context)
+
+
+
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def home(request):
-    evenements = Evenement.objects.all().order_by('-created')
-    context = {"evenements":evenements}
+    slides = Slideimage.objects.all()
+    thirty_days_ago = datetime.now() - timedelta(days=30)
+    ressources = Ressources.objects.filter(created__gte=thirty_days_ago)
+    #Récupérer les événements dont la date est postérieure à aujourd'hui
+    upcoming_events = Evenement.objects.filter(date_even__gte=date.today()).order_by('date_even')
+    context = {"upcoming_events":upcoming_events, "slides":slides, "ressources":ressources}
     return render(request, 'mentors/home.html', context)
+
+
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def get_all_ressource(request):
+    ressources = Ressources.objects.all()
+    context = {"ressources":ressources}
+    return render(request, 'mentors/get_all_ressource.html', context)
+
+
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def get_all_even(request):
+    evenements = Evenement.objects.all()
+    context = {"evenements":evenements}
+    return render(request, 'mentors/get_all_even.html', context)
+
+
+
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def add_ressource(request):
+    return render(request, 'mentors/add_ressource.html')
+
+
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def add_even(request):
+    return render(request, 'mentors/add_even.html')
+
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def add_forum(request):
+    return render(request, 'mentors/add_forum.html')
+
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def get_all_forum(request):
+    return render(request, 'mentors/get_all_forum.html')
+
 
 
 @login_required
@@ -111,6 +210,10 @@ def about(request):
     categories = CategorieFormation.objects.all().order_by('-created')
     context = {"categories":categories}
     return render(request, 'mentors/about.html', context)
+
+
+
+
 
 
 @login_required
@@ -135,13 +238,17 @@ def Mentors(request):
         else:
             return render(request, 'mentors/Mentors.html', {'error_message': 'Le choix n\'est pas valide'})
     else:
-        # Récupérer la liste des mentors
-        mentors = User.objects.filter(groups__name='mentors')
+        # Récupérer le groupe "mentors"
+        mentors_group = Group.objects.get(name='mentors')
+        # Récupérer les utilisateurs qui sont dans le groupe "mentors"
+        mentors_users = mentors_group.user_set.all()
+        # Maintenant, vous pouvez récupérer les profils associés à ces utilisateurs
+        mentors_profiles = Profiles.objects.filter(user__in=mentors_users)
         # Vérifier si l'utilisateur appartient au groupe 'mentors'
         mentors_group = request.user.groups.filter(name='mentors').exists()
         # Vérifier si l'utilisateur appartient au groupe 'utilisateurs'
         user_group = request.user.groups.filter(name='utilisateurs').exists()
-        context = {'mentors': mentors, 'mentors_group': mentors_group, "user_group": user_group}
+        context = {'mentors_profiles': mentors_profiles, 'mentors_group': mentors_group, "user_group": user_group}
         return render(request, 'mentors/Mentors.html', context)
 
   
