@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block main %}
 
 <!-- My Approach-->
@@ -8,45 +8,87 @@
         <div class="row row-50 justify-content-center justify-content-xl-between flex-lg-row-reverse">
             <div class="col-md-11 col-lg-6 col-xl-5">
                 <div class="box-1">
-                    <h5>PRÉSENTATION DE L’ASSOCIATION</h5>
-                    <h5>1- Cible</h5>
-                    <p>
-                        L’association s'adresse aux élèves et étudiants en recherche d'orientation scolaire ou
-                        professionnelle, aux adultes en reconversion , aux personnes sans emploi, ainsi qu'à toute
-                        personne désireuse d'améliorer ses perspectives professionnelles.</p><button class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">Lire plus</button>
+                    <h5 class="text-center text-italic text-bold" style="color:#0080ff;">PRÉSENTATION DE L’ASSOCIATION</h5>
+                    <h5 style="color:#0080ff;">1- Qui sommes-nous? </h5>
+                    <p class="text-bold">
+                        {{presents.about}}
+                    </p>
                 </div>
-                {% include "mentors/about1.html" %}
             </div>
             <div class="col-md-11 col-lg-6">
                 <!-- Thumbnail Media-->
                 <div class="thumbnail-media" style="background-image: url(media/images/mentorat.svg);">
-                    <a class="icon thumbnail-media-icon mdi mdi-play-circle-outline" href="//www.youtube.com/watch?v=I5FlP07kdvM" data-lightgallery="item"></a>
+                    <a class="icon thumbnail-media-icon mdi mdi-play-circle-outline" href="https://www.youtube.com/watch?v=jd3tyoKvCHw" data-lightgallery="item"></a>
+                </div>
+
+                <div class="mt-2">
+                    <h5 style="color:#0080ff;">2- Notre mission </h5>
+                    <p>
+                        {{presents.mission}}
+                    </p>
+                </div>
+                <div class="mt-2">
+                    <h5 style="color:#0080ff;">3- Notre vision </h5>
+                    <p>
+                        {{presents.vision}}
+                    </p>
+                </div>
+
+                <div class="mt-2">
+                    <h5 style="color:#0080ff;">4- Nos valeurs </h5>
+                    <ol type="i">
+                        {% for data in valeurs %}
+                        <div class="card">
+                            <div class="card-body show-on-extra-large">
+                            <span style="color:#0080ff;">{{forloop.counter}}</span> - {{data.valeur}}
+                            </div>
+                          </div>
+                        {% endfor %}
+                    </ol>
                 </div>
             </div>
         </div>
     </div>
 </section>
-<!-- Services-->
-<section class="section section-lg bg-gray-100 text-center">
+
+
+<section class="section section-lg bg-default">
     <div class="container">
-        <h2 class="wow fadeIn">DOMAINES DE FORMATIONS</h2>
-        {% for data in categories %}
-        <details class="plus-type outer-line" data-details-toggle="group-toggle">
-            <summary class="display-block" id="summary_2_{{data.id}}">
-                <button class="btn btn-secondary">{{ data.libelle }}</button>
-            </summary>
-            {% for domaine in data.domaine_set.all %}
-            <div aria-describedby="summary_2_{{data.id}}" class="padding-top-half-gutter flex flex-top half-gutter no-fit no-margin-bottom justify-content-stretch" data-nosnippet>
-                <div class="xs-hide s-4 l-3">
-                    <div class="ratio-100">
-                      <div class="row text-capitalize text-end"> <i class="fa fa-heart text-success"> &nbsp; &nbsp;{{ domaine.libelle }}</i></div>
+        <div class="row row-50 justify-content-center justify-content-xl-between flex-lg-row-reverse">
+            <div class="col-md-11 col-lg-12">
+                <div class="col-xl-12 wow fadeIn" data-wow-delay=".4s"><img class="img-rounded" src="{% static 'media/images/groupedetravail.svg' %}" alt=""></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services-->
+<section class="section section-lg bg-default">
+    <div class="container">
+        <h6 class="wow fadeIn text-center" style="background-color:#F2CF05; color:#0080ff">DOMAINES DE FORMATIONS</h6>
+        <div class="row row-50 justify-content-center justify-content-xl-between flex-lg-row-reverse">
+            <div class="col-md-11 col-lg-12">
+                <div class="accordion accordion-flush" id="accordionFlushExample">
+                    {% for data in categories %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-heading{{data.id}}">
+                            <button class="accordion-button collapsed text-white" style="background-color:#0080ff;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{data.id}}" aria-expanded="false" aria-controls="flush-collapse{{data.id}}">
+                                {{ data.libelle }}
+                            </button>
+                        </h2>
+                        {% for domaine in data.domaine_set.all %}
+                        <div id="flush-collapse{{data.id}}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{data.id}}" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">{{ domaine.libelle }}</div>
+                        </div>
+                        {% endfor %}
                     </div>
+                    {% endfor %}
                 </div>
             </div>
-            {% endfor %}
-        </details>
-        {% endfor %}
+        </div>
     </div>
 </section>
 
 {% endblock main %}
+
+

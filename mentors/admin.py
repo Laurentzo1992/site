@@ -21,4 +21,10 @@ admin.site.register(Debouche)
 admin.site.register(Typementorat)
 admin.site.register(Niveau_formation)
 admin.site.register(Slideimage)
-# Register your models here.
+admin.site.register(Profiles)
+admin.site.register(Presentation)
+admin.site.register(Valeur)
+admin.site.register(ForumComment)
+admin.site.register(Projets)
+
+

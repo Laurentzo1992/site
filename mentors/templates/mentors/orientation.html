@@ -3,6 +3,7 @@
 {% block main %}
 <div class="container">
     <h4 class="text-center mb-3">Tableau des orientations</h4>
+
     <table id="example" class="table table-striped">
         <thead class="table-success">
             <tr>
@@ -13,11 +14,10 @@
         </thead>
         <tbody>
             {% for item in data %}
-                <tr>
-                    <td rowspan="{{ item.filieres|length }}"><i class="fa fa-check text-success"></i>&nbsp; {{ item.type }}</td>
-                    {% for filiere in item.filieres %}
-                        {% if forloop.counter > 1 %}
-                            <tr>
+                {% for filiere in item.filieres %}
+                    <tr>
+                        {% if forloop.first %}
+                            <td rowspan="{{ item.filieres|length }}"><i class="fa fa-check text-success"></i>&nbsp; {{ item.type }}</td>
                         {% endif %}
                         <td>{{ filiere.filiere }}</td>
                         <td>
@@ -27,14 +27,24 @@
                                 {% endfor %}
                             </ul>
                         </td>
-                        {% if forloop.last %}
-                            </tr>
-                        {% endif %}
-                    {% endfor %}
-                </tr>
+                    </tr>
+                {% endfor %}
             {% endfor %}
         </tbody>
     </table>
 </div>
 
+
 {% endblock main %}
+
+{% block jsscript %}
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable(
+            {
+                "info": false,
+            }
+        );
+    });
+</script>
+{% endblock jsscript %}

@@ -2,14 +2,13 @@
 
 {% load static %}
 {% block main %}
-  
- <a class="banner" href=""><img class="h-25" src="{% static 'media/images/dispositifs.png' %}" alt="" height="0"></a>
- <div class="row mx-3 mb-3">
+
+<div class="row mx-3 mb-3">
   {% if not mentors_group %}
     <div class="col-sm-6 text-center">
       <div class="card">
         <div class="card-body">
-          <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Je veux être mentor</a>
+          <a href="#" class="btn btn-primary" style="background-color:#0080ff;" data-bs-toggle="modal" data-bs-target="#exampleModal">Je veux être mentor</a>
         </div>
       </div>
     </div>
@@ -19,14 +18,30 @@
     <div class="col-sm-6 text-center">
       <div class="card">
         <div class="card-body">
-          <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">Je trouve un mentor</a>
+          <a href="#" class="btn btn-primary" style="background-color:#0080ff;" data-bs-toggle="modal" data-bs-target="#exampleModal1">Je trouve un mentor</a>
         </div>
       </div>
     </div>
   {% endif %}
 </div>
+
+
+<section class="section">
+  <div class="container">
+      <div class="row row-50 justify-content-center justify-content-xl-between flex-lg-row-reverse">
+          <div class="col-md-11 col-lg-6">
+              <div class="col-xl-12 wow fadeIn" data-wow-delay=".4s"><img class="img-rounded w-50" src="{% static 'media/images/echange.svg' %}" alt=""></div>
+          </div>
+          <div class="col-md-11 col-lg-6">
+            <div class="col-xl-12 wow fadeIn" data-wow-delay=".4s"><img class="img-rounded w-50" src="{% static 'media/images/conversation.svg' %}" alt=""></div>
+        </div>
+      </div>
+  </div>
+</section>
+
+
  
-{% if mentors_group or user_group %}
+{% if user_group %}
   <div class="container mb-3">
     <div class="py-6">
       <div class="row">
@@ -43,11 +58,11 @@
             <!-- card body -->
             <div class="card-body">
               <!-- Title -->
-              <h6 class="mb-1">{{mentor.user.first_name}} &nbsp; {{mentor.user.last_name}}</h6>
+              <h6 class="mb-1" style="color:#0080ff;">{{mentor.user.first_name}} &nbsp; {{mentor.user.last_name}}</h6>
               <div>
                 <!-- Dropdown -->
                 <div class="d-flex justify-content-between align-items-center">
-                  <a href="{% url 'abonnement' mentor.id %}" class="btn btn-primary">S'abonner</a>
+                  <a href="{% url 'abonnement' mentor.id %}" style="background-color:#0080ff;" class="btn btn-primary">S'abonner</a>
                   <div class="dropdown dropstart">
                     <a href="#!" class="btn btn-ghost btn-icon btn-sm rounded-circle" id="dropdownMenuOne" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical icon-xs"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>

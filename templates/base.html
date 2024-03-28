@@ -8,16 +8,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="icon" href="{% static 'media/images/favicon.ico' %}" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Work+Sans:300,400,500,700%7CZilla+Slab:300,400,500,700,700i%7CGloria+Hallelujah">
-    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> 
+   
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css" />
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
     <link rel="stylesheet" href="{% static 'css/accordeoncss.css' %}">
     <style>.ie-panel{display: none;background: #212121;padding: 10px 0;box-shadow: 3px 3px 5px 0 rgba(0,0,0,.3);clear: both;text-align:center;position: relative;z-index: 1;} html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {display: block;}</style>
   </head>
-  <body><a class="banner banner-top" href="{% url 'home' %}" target="_blank"><img src="{% static 'media/images/monstroid-2.png' %}" alt="" height="0"></a>
+  <body><img src="{% static 'media/images/monstroid-2.png' %}" alt="" height="0">
     <div class="ie-panel"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img src="{% static 'media/images/ie8-panel/warning_bar_0000_us.jpg' %}" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a></div>
     <div class="preloader">
       <div class="preloader-logo"><a class="brand" href="{% url 'home' %}"><img class="brand-logo-dark" src="{% static 'media/images/logo-default-245x50.png' %}" alt="" width="245" height="50"/><img class="brand-logo-light" src="{% static 'media/images/logo-inverse-245x50.png' %}" alt="" width="245" height="50"/></a>
@@ -48,22 +52,24 @@
                     <!-- RD Navbar Nav		-->
                     {% if user.is_authenticated %}
                     <ul class="rd-navbar-nav">
-                      <li class="rd-nav-item"><a class="" href="{% url 'about' %}">A Propos</a>
+                      <li class="rd-nav-item"><a class="" style="color:#0080ff;" href="{% url 'about' %}">A Propos</a>
                       </li>
-                      <li class="rd-nav-item"><a class="" href="{% url 'Mentors' %}">Mentorat</a>
+                      <li class="rd-nav-item"><a class="" style="color:#0080ff;" href="{% url 'projet' %}">Nos  projets</a>
                       </li>
-                      <li class="rd-nav-item"><a class="" href="{% url 'orientation' %}">Orientation</a>
+                      <li class="rd-nav-item"><a class="" style="color:#0080ff;" href="{% url 'Mentors' %}">Mentorat</a>
+                      </li>
+                      <li class="rd-nav-item"><a class="" style="color:#0080ff;" href="{% url 'orientation' %}">Orientation</a>
                       </li>
                     </li>
                     {% endif %}
                     {% if not user.is_authenticated %}
-                    <li class="rd-nav-item"><a class="" href="{% url 'login' %}">Connexion</a>
+                    <li class="rd-nav-item"><a class="" style="color:#0080ff;" href="{% url 'login' %}">Connexion</a>
                     </li>
                     {% endif %}
                     {% if user.is_authenticated %}
-                    <li class="rd-nav-item" id="users"><a class="text-success text-bold" href="{% url 'logout_user' %}">{{request.user}}<i class="fa fa-check"></i></a>
+                    <li class="rd-nav-item" id="users"><a class="text-bold" style="color:#0080ff;" href="{% url 'logout_user' %}">{{request.user}}<i class="fa fa-check"></i></a>
                     </li>
-                    <li class="rd-nav-item" id="users"><a class="text-success" href="{% url 'user_profile' %}"><i class="fa fa-users"></i></a>
+                    <li class="rd-nav-item" id="users"><a style="color:#0080ff;" href="{% url 'user_profile' %}"><i class="fa fa-users"></i></a>
                     </li>
                     {% endif %}
                     </ul>
@@ -84,21 +90,20 @@
   
      <!-- Page Footer-->
      <a class="banner" href="{% url 'home' %}"><img src="{% static 'media/images/monstroid-big-2.png' %}" alt="" height="0"></a>
-     <footer class="section footer-classic bg-gray-950">
+     <footer class="section footer-classic">
        <div class="footer-classic-main">
          <div class="container"> 
            
-           <a class="btn btn-primary"><i class="fa fa-facebook"></i></a>
-           <a class="btn btn-primary"><i class="fa fa-youtube"></i></a>
-           <a class="btn btn-primary"><i class="fa fa-whatsapp"></i></a>
-           <a class="btn btn-primary"><i class="fa fa-twittter"></i></a>
-           <a class="btn btn-primary"><i class="fa fa-google"></i></a>
+           <a class="btn" style="background-color:#0080ff" href=""><i class="fa fa-facebook text-white"></i></a>
+           <a class="btn" style="background-color:#0080ff" href=""><i class="fa fa-youtube text-white"></i></a>
+           <a class="btn" style="background-color:#0080ff" href=""><i class="fa fa-whatsapp text-white"></i></a>
+           <a class="btn" style="background-color:#0080ff" href=""><i class="fa fa-google text-white"></i></a>
          </div>
        </div>
        <div class="footer-classic-aside">
          <div class="container">
            <!-- Rights-->
-           <p class="rights"><span>&copy;&nbsp;</span><span class="copyright-year"></span><span>&nbsp;</span><span>Vuneem Tech.</span><span>&nbsp;</span><br class="d-sm-none"/><a href="#"></a><span></span><span>&nbsp;</span></p>
+           <p class="rights" style="color:#0080ff;"><span>&copy;&nbsp;</span><span class="copyright-year"></span><span>&nbsp;</span><span>Vuneem Tech.</span><span>&nbsp;</span><br class="d-sm-none"/><a href="#"></a><span></span><span>&nbsp;</span></p>
          </div>
        </div>
      </footer>
@@ -112,11 +117,11 @@
     <script src="{% static 'js/core.min.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>
     <script src="{% static 'js/accordeonjs.js' %}"></script>
+    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
     
-    <!--    -->
 
-
-  
- 
+{% block jsscript %}
+   
+{% endblock jsscript %}
   </body>
 </html>

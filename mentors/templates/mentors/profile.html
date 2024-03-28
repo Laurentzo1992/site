@@ -20,7 +20,7 @@
                             <h6 class="user-email">{{user_profile.user.email}}</h6>
                         </div>
                         <div class="about">
-                            <a href="{% url 'editprofile' user_profile.id %}" class="btn btn-primary">Completer mon profile</a>
+                            <a href="{% url 'editprofile' user_profile.id %}" class="btn btn-primary" style="background-color:#0080ff; color:white">Profile</a>
                         </div>
                     </div>
                 </div>
@@ -33,7 +33,7 @@
                 <div class="card-body">
                     <div class="row gutters">
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                            <h6 class="mb-2 text-primary">Tableau de bord personnel</h6>
+                            <h6 class="mb-2" style="color:#0080ff;">Tableau de bord personnel</h6>
                         </div>
                         <div class="row">
                           {% if mentor %}
@@ -63,16 +63,36 @@
                                         <div class="row no-gutters">
                                             <div class="card-body">
                                               <div class="about mb-2">
-                                                <a href="{% url 'add_ressource' %}" class="btn btn-success"><i class="fa fa-plus-circle"></i></a>
-                                                <a href="{% url 'get_all_ressource' %}" class="btn btn-primary">Ressources</a>
+                                                {% if mentors_group %}<a href="{% url 'add_ressource' %}" class="btn btn-success"><i class="fa fa-plus-circle"></i></a> {% endif %}
+                                                <a href="{% url 'get_all_ressource' %}" class="btn btn-primary" style="background-color:#0080ff; color:white">Ressources</a>
                                               </div>
                                               <div class="about mb-2">
-                                                <a href="{% url 'add_even' %}" class="btn btn-success"><i class="fa fa-plus-circle"></i></a>
-                                                <a href="{% url 'get_all_even' %}" class="btn btn-primary">Evenements</a>
+                                                {% if mentors_group %}<a href="{% url 'add_even' %}" class="btn btn-success"><i class="fa fa-plus-circle"></i></a> {% endif %}
+                                                <a href="{% url 'get_all_even' %}" class="btn btn-primary" style="background-color:#0080ff; color:white">Evenements</a>
                                               </div>
                                               <div class="about mb-2">
-                                                <a href="{% url 'add_forum' %}" class="btn btn-success"><i class="fa fa-plus-circle"></i></a>
-                                                <a href="{% url 'get_all_forum' %}" class="btn btn-primary">Forum</a>
+                                                {% if mentors_group %}<a href="{% url 'add_forum' %}" class="btn btn-success" style="background-color:#0080ff; color:white"><i class="fa fa-plus-circle"></i></a> {% endif %}
+                                                <a href="{% url 'get_all_forum' %}" class="btn btn-primary" style="background-color:#0080ff; color:white">Forum</a>
+                                              </div>
+                                              <div class="about mb-2">
+                                                {% if mentors_group %}
+                                                <a href="{% url 'send_message_to_users' %}" class="btn btn-success"><i class="fa fa-plus-circle"></i></a>
+                                                <a href="{% url 'mentor_messages' %}" class="btn btn-primary position-relative" style="background-color:#0080ff; color:white">Message
+                                                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                    {{inbox}}
+                                                    <span class="visually-hidden">unread messages</span>
+                                                  </span>
+                                                </a>
+                                                {% else %}
+                                                <a href="{% url 'send_message' %}" class="btn btn-success"><i class="fa fa-plus-circle"></i></a>
+                                                <a href="{% url 'message_thread' %}" class="btn btn-primary position-relative" style="background-color:#0080ff; color:white">Message
+                                                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                    {{inbox}}
+                                                    <span class="visually-hidden">unread messages</span>
+                                                  </span>
+                                                </a>
+                                                {% endif %}
+                                               
                                               </div>
                                             </div>
                                           </div>
@@ -87,10 +107,10 @@
                             <div class="col-sm-6">
                               <div class="card">
                                 <div class="card-body">
-                                  <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
-                                    <div class="card-header">Nbr de commentaires</div>
+                                  <div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
+                                    <div class="card-header text-center">Mes Ressources</div>
                                     <div class="card-body">
-                                      <h5 class="card-title">Info card title</h5>
+                                      <h1 class="card-title text-center text-bold">{{nbr_res}}</h1>
                                     </div>
                                   </div>
                                 </div>
@@ -101,10 +121,10 @@
                             <div class="col-sm-6">
                               <div class="card">
                                 <div class="card-body">
-                                  <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
-                                    <div class="card-header">Nbr de commentaires</div>
+                                  <div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
+                                    <div class="card-header text-center">Mes Evenements</div>
                                     <div class="card-body">
-                                      <h5 class="card-title">Info card title</h5>
+                                      <h1 class="card-title text-center text-bold">{{nrb_even}}</h1>
                                     </div>
                                   </div>
                                 </div>
@@ -115,10 +135,10 @@
                             <div class="col-sm-6">
                               <div class="card">
                                 <div class="card-body">
-                                  <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
-                                    <div class="card-header">Nbr de commentaires</div>
+                                  <div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
+                                    <div class="card-header text-center">Mes Mentorés</div>
                                     <div class="card-body">
-                                      <h5 class="card-title">Info card title</h5>
+                                      <h1 class="card-title text-center text-bold">{{nbr}}</h1>
                                     </div>
                                   </div>
                                 </div>
@@ -128,10 +148,10 @@
                             <div class="col-sm-6">
                               <div class="card">
                                 <div class="card-body">
-                                  <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
-                                    <div class="card-header">Nbr de commentaires</div>
+                                  <div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
+                                    <div class="card-header text-center">Mes Forums</div>
                                     <div class="card-body">
-                                      <h5 class="card-title">Info card title</h5>
+                                      <h1 class="card-title text-center text-bold">{{nrb_forum}}</h1>
                                     </div>
                                   </div>
                                 </div>
@@ -144,6 +164,8 @@
                 </div>
             </div>
         </div>
+
+        
     </div>
 </div>
 

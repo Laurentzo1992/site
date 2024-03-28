@@ -13,7 +13,7 @@
             <div class="row justify-content-center">
               <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
 
-                <p class="text-center h6 fw-bold mb-5 mx-1 mx-md-4 mt-4">Connetez vous ou créez un compte <a href="{% url 'createuser' %}">ICI</a></p>
+                <p class="text-center h6 fw-bold mb-5 mx-1 mx-md-4 mt-4" style="color:#0080ff;">Connetez vous ou créez un compte <a href="{% url 'createuser' %}">ICI</a></p>
               <form method="post" action="{% url 'login_user' %}">
                 {% csrf_token %}
                   <div class="form-floating mb-3">
@@ -25,7 +25,7 @@
                     <label for="floatingPassword">Mot de passe</label>
                   </div>
                   <div class="p-t-20 mt-3">
-                    <button class="btn btn-block btn-primary" type="submit">Inscrire</button>
+                    <button class="btn btn-block btn-primary" style="background-color:#0080ff;" type="submit">Connexion</button>
                   </div>
               </form>
 

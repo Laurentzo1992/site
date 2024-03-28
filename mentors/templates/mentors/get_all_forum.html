@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block main %}
+
+<section class="section section-lg bg-default text-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            {% for data in forums %}
+            <div class="card text-center">
+                <div class="card-header">
+                  <h4 class="card-title">{{data.titre}}</h4>
+                  {% if data.fichier %}
+                  <img src="{{data.fichier.url}}" class="thumbnail">
+                  {% else %}
+                  <img src="{% static 'media/images/1.pnp' %}" class="thumbnail">
+                  {% endif %}
+                 
+                </div>
+                <div class="card-body">
+                  <p class="card-text">{{data.description}}</p>
+                </div>
+                <div class="card-footer text-muted">
+                    Publié le : {{data.created|date:"D d M Y"}} par {{data.initiateur.last_name}} {{data.initiateur.first_name}} &nbsp; <a href="{% url 'add_comment' data.id %}" class="btn btn-primary">Mon avis</a>
+                </div>
+              </div>
+              {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock main %}

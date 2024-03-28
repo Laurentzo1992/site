@@ -1,5 +1,37 @@
 {% extends "base.html" %}
 
 {% block main %}
-
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Titre</label>
+                    <input type="text" class="form-control" name="libelle" id="exampleFormControlInput1" placeholder="Titre">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label">Desciption</label>
+                    <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="3" placeholder="Desciption"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Titre</label>
+                    <input type="text" class="form-control" name="lien" id="exampleFormControlInput1" placeholder="Titre">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Titre</label>
+                    <input type="date" class="form-control" name="date_even" id="exampleFormControlInput1" placeholder="Titre">
+                </div>
+                <div class="mb-3">
+                    <label for="formFileLg" class="form-label"></label>
+                    <input class="form-control form-control-lg" name="image" id="formFileLg" type="file">
+                </div>
+                <div class="mb-3">
+                    <button class="bg-info" type="submit">Ajouter</button>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock main %}

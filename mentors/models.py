@@ -95,17 +95,18 @@ class Forum(models.Model):
     titre = models.CharField(max_length=50, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
     fichier = models.FileField(upload_to='forum_img/', null=True, blank=True)
+    initiateur = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
     modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
     
     IMAGE_MAX_SIZE = (370, 260)
     
     def resize_image(self):
-        image = Image.open(self.image)
+        image = Image.open(self.fichier)
         image.thumbnail(self.IMAGE_MAX_SIZE)
         # sauvegarde de l’image redimensionnée dans le système de fichiers
         # ce n’est pas la méthode save() du modèle !
-        image.save(self.image.path)
+        image.save(self.fichier.path)
     
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -117,7 +118,7 @@ class Forum(models.Model):
         
         
 class ForumComment(models.Model):
-    comment = models.TextField(blank=True, null=True)
+    comment = models.TextField(blank=True, null=True, verbose_name="Commentaire")
     forum = models.ForeignKey(Forum, blank=True, null=True, on_delete=models.CASCADE)
     user_comment = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
@@ -290,12 +291,67 @@ def create_or_update_profile(sender, instance, created, **kwargs):
     else:
         instance.profiles.save()
         
-        
+
+
+
 class Slideimage(models.Model):
     image = models.FileField(upload_to='images/', null=True, blank=True)
     titre1 = models.CharField(max_length=200, blank=True, null=True)
     titre2 = models.CharField(max_length=200, blank=True, null=True)
     titre3 = models.CharField(max_length=200, blank=True, null=True)
+    created = models.DateField(auto_now_add=True, null=True)
+    modified = models.DateField(auto_now=True, null=True)
+    
     
     def __str__(self):
         return self.titre1
+    
+class Presentation(models.Model):
+    about = models.TextField(blank=True, null=True, verbose_name="Qui nous sommes")
+    mission = models.TextField(blank=True, null=True, verbose_name="Notre mission")
+    vision = models.TextField(blank=True, null=True, verbose_name="Notre vision")
+    presentation_video = models.FileField(upload_to='video/', null=True, blank=True)
+    nom_site = models.CharField(max_length=200, blank=True, null=True, default="OSER")
+    created = models.DateField(auto_now_add=True, null=True)
+    modified = models.DateField(auto_now=True, null=True)
+    
+    
+    def __str__(self):
+        return self.nom_site
+    
+    
+    
+class Projets(models.Model):
+    titre = models.CharField(max_length=200, blank=True, null=True)
+    contenu = models.TextField(blank=True, null=True)
+    Visuel = models.FileField(upload_to='images/', null=True, blank=True)
+    created = models.DateField(auto_now_add=True, null=True)
+    modified = models.DateField(auto_now=True, null=True)
+    
+    
+    def __str__(self):
+        return self.titre
+    
+    
+    
+class Valeur(models.Model):
+    valeur = models.TextField(blank=True, null=True)
+    created = models.DateField(auto_now_add=True, null=True)
+    modified = models.DateField(auto_now=True, null=True)
+    
+    def __str__(self):
+        return self.valeur
+    
+    
+class MessageMent(models.Model):
+    sender = models.ForeignKey(User, blank=True, null=True, related_name='sent_messages', on_delete=models.CASCADE)
+    recipient = models.ForeignKey(User, blank=True, null=True, related_name='received_messages', on_delete=models.CASCADE)
+    content = models.TextField(blank=True, null=True, verbose_name="Contenu")
+    timestamp = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    
+    
+class Inbox(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
+    messages = models.ManyToManyField(MessageMent)
+    created = models.DateField(auto_now_add=True, blank=True, null=True)
+    modified = models.DateField(auto_now=True, blank=True, null=True)
