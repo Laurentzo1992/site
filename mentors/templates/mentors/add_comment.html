@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block main %}
+<div class="container-fluid text-center">
+    <div class="card">
+        <div class="card-body">
+            <h1>{{forum.titre}}</h1>
+            <p>{{forum.titre}}</p>
+        </div>
+      </div>
+    
+    <h4 class="text-bold">Réactions</h4>
+    {% for comment in page_obj %}
+
+    <div class="alert alert-info" role="alert">
+        <ul>
+           
+            <li>{{ comment.user_comment.username }} à écris {{ comment.comment }} - le {{ comment.created }} 
+                &nbsp; 
+                {% if comment.user_comment == request.user %}
+                <a href="{% url 'edit_comment' comment.id %}">
+                    <i class="fa fa-pencil text-warning"></i>
+                </a> 
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+    {% endfor %}
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; debut</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">précédent</a>
+                {% endif %}
+        
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+        
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">suivant</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">fin &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+   
+    
+
+    <form method="post" class="row g-3 mb-3">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-primary" style="background-color:#0080ff"; type="submit">Je commente</button>
+    </form>
+</div>
+
+
+{% for message in messages %}
+        {% comment %} <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> {% endcomment %}
+        <script src="{% static 'js/sweetalert.min.js' %}"></script>
+        {% if message.tags == 'error' %}
+        <script>
+            var m = "{{ message }}";
+            swal("Réfusé!", m, "error");
+        </script>
+        {% elif message.tags == 'success' %}
+        <script>
+            var m = "{{ message }}";
+            swal("Bienvenue!", m, "success");
+        </script>
+        {% elif message.tags == 'info' %}
+        <script>
+            var m = "{{ message }}";
+            swal("Félicition!", m, "info");
+        </script>
+        {% endif %}
+
+    {% endfor%}
+{% endblock main %}

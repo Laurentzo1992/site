@@ -1,0 +1,261 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="dashboard/images/favicon.png">
+    <title>Matrix Template - The Ultimate Multipurpose admin template</title>
+    <!-- Custom CSS -->
+    <link href="dashboard/css/float-chart.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="dashboard/css/style.min.css" rel="stylesheet">
+    <link href="dashboard/css/custom.css" rel="stylesheet">
+   
+    <link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/animation.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/asColorPicker.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/fullcalendar.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/calendar.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/fontawesome-all.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/jquery.gritter.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/jquery.minicolors.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/jquery.steps.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/magnific-popup.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/materialdesignicons.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/multicheck.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/perfect-scrollbar.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/quill.core.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/quill.snow.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/select2.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/steps.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/themify-icons.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/toastr.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/weather-icons.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/weather-icons.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/float-chart.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/style.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'dashboard/css/custom.css' %}" rel="stylesheet"/>
+</head>
+
+<body>
+    <!-- ============================================================== -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- ============================================================== -->
+    <div class="preloader">
+        <div class="lds-ripple">
+            <div class="lds-pos"></div>
+            <div class="lds-pos"></div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- Main wrapper - style you can find in pages.scss -->
+    <!-- ============================================================== -->
+    <div id="main-wrapper">
+        <!-- ============================================================== -->
+        <!-- Topbar header - style you can find in pages.scss -->
+        <!-- ============================================================== -->
+        <header class="topbar" data-navbarbg="skin5">
+            <nav class="navbar fixed-top top-navbar navbar-expand-md navbar-dark">
+                <div class="navbar-header" data-logobg="skin5">
+                    <!-- This is for the sidebar toggle which is visible on mobile only -->
+                    <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i class="ti-menu ti-close"></i></a>
+                    <!-- ============================================================== -->
+                    <!-- Logo -->
+                    <!-- ============================================================== -->
+                    <a class="navbar-brand" href="{% url 'home' %}">
+                        <!-- Logo icon -->
+                        <b class="logo-icon p-l-10">
+                            <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
+                            <!-- Dark Logo icon -->
+                            <img src="{% static 'media/images/logo-default-245x50.png' %}" alt="homepage" class="light-logo" />
+                        </b>
+                    
+                    </a>
+                </div>
+            </nav>
+        </header>
+      
+        <aside class="left-sidebar" data-sidebarbg="skin5">
+            <!-- Sidebar scroll-->
+            <div class="scroll-sidebar">
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav">
+                    <ul id="sidebarnav" class="p-t-30">
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{% url 'boad' %}" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span class="hide-menu">Dashboard</span></a></li>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- End Sidebar navigation -->
+            </div>
+            <!-- End Sidebar scroll-->
+        </aside>
+        <div class="page-wrapper">
+            <!-- Container fluid  -->
+            <!-- ============================================================== -->
+            <div class="container-fluid mb-5">
+                <!-- ============================================================== -->
+                <!-- Sales chart -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-md-flex align-items-center">
+                                    <div>
+                                        <h4 class="card-title">Mentors</h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <!-- column -->
+                                    <div class="col-lg-9">
+                                        <div class="flot-chart">
+                                            <table id="zero_config" class="table table-striped table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Nom</th>
+                                                        <th>Prenom</th>
+                                                        <th>Profile</th>
+                                                        <th>Temps</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for data in mentorslists %}
+                                                    <tr>
+                                                        <td>{{data.user.last_name}}</td>
+                                                        <td>{{data.user.first_name}}</td>
+                                                        <td>{{data.user.profile}}</td>
+                                                        <td>{{data.total_time_on_platform}}</td>
+                                                        <td><a href=""><i class="fa fa-eye"></i></a></td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="bg-dark p-10 text-white text-center">
+                                                   <i class="fa fa-users m-b-5 font-16"></i>
+                                                   <h5 class="m-b-0 m-t-5">{{users}}</h5>
+                                                   <small class="font-light">Total Users</small>
+                                                </div>
+                                            </div>
+                                             <div class="col-6">
+                                                <div class="bg-dark p-10 text-white text-center">
+                                                   <i class="fa fa-user-circle m-b-5 font-16"></i>
+                                                   <h5 class="m-b-0 m-t-5">{{mentors}}</h5>
+                                                   <small class="font-light">Mentors</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 m-t-15">
+                                                <div class="bg-dark p-10 text-white text-center">
+                                                   <i class="fa fa-users m-b-5 font-16"></i>
+                                                   <h5 class="m-b-0 m-t-5">{{mentores}}</h5>
+                                                   <small class="font-light">Mentorés</small>
+                                                </div>
+                                            </div>
+                                             <div class="col-6 m-t-15">
+                                                <div class="bg-dark p-10 text-white text-center">
+                                                   <i class="fa fa-user m-b-5 font-16"></i>
+                                                   <h5 class="m-b-0 m-t-5">{{sansmentores}}</h5>
+                                                   <small class="font-light">Sans mentor</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 m-t-15">
+                                                <div class="bg-dark p-10 text-white text-center">
+                                                   <i class="fa fa-book m-b-5 font-16"></i>
+                                                   <h5 class="m-b-0 m-t-5">{{superadmins}}</h5>
+                                                   <small class="font-light">Compte Admin</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 m-t-15">
+                                                <div class="bg-dark p-10 text-white text-center">
+                                                   <i class="fa fa-globe m-b-5 font-16"></i>
+                                                   <h5 class="m-b-0 m-t-5">{{nombre_utilisateurs_connectes}}</h5>
+                                                   <small class="font-light">Connecté</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- column -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Container fluid  -->
+            <!-- ============================================================== -->
+            <!-- ============================================================== -->
+            <!-- footer -->
+            <!-- ============================================================== -->
+            <footer class="footer text-center">
+                Tout droit réservé. Debeloppeé par vuneemtech
+            </footer>
+            <!-- ============================================================== -->
+            <!-- End footer -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Page wrapper  -->
+        <!-- ============================================================== -->
+    </div>
+    <script src="{% static 'dashboard/js/jquery.min.js' %}"></script>
+        <script src="{% static 'dashboard/js/popper.min.js' %}"></script>
+        <script src="{% static 'dashboard/js/bootstrap.min.js' %}"></script>
+
+        <script src="{% static 'dashboard/js/perfect-scrollbar.jquery.min.js' %}"></script>
+        <script src="{% static 'dashboard/js/sparkline.js' %}"></script>
+        <script src="{% static 'dashboard/js/waves.js' %}"></script>
+        <script src="{% static 'dashboard/js/sidebarmenu.js' %}"></script>
+        <script src="{% static 'dashboard/js/custom.min.js' %}"></script>
+
+        <script src="{% static 'dashboard/js/excanvas.js' %}"></script>
+        <script src="{% static 'dashboard/js/jquery.flot.js' %}"></script>
+        <script src="{% static 'dashboard/js/jquery.flot.pie.js' %}"></script>
+        <script src="{% static 'dashboard/js/jquery.flot.time.js' %}"></script>
+        <script src="{% static 'dashboard/js/jquery.flot.time.js' %}"></script>
+        <script src="{% static 'dashboard/js/jquery.flot.stack.js' %}"></script>
+        <script src="{% static 'dashboard/js/jquery.flot.crosshair.js' %}"></script>
+        <script src="{% static 'dashboard/js/jquery.flot.tooltip.min.js' %}"></script>
+        <script src="{% static 'dashboard/js/moment.min.js' %}"></script>
+        <script src="{% static 'dashboard/js/chart-page-init.js' %}"></script>
+        <script src="{% static 'dashboard/js/app-style-switcher.js' %}"></script>
+        <script src="{% static 'dashboard/js/bootstrap-datepicker.min.js' %}"></script>
+        <script src="{% static 'dashboard/js/datatable-checkbox-init.js' %}"></script>
+        <script src="{% static 'dashboard/js/datatables.min.js' %}"></script>
+        <script src="{% static 'dashboard/js/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'dashboard/js/dataTables.bootstrap4.min.js' %}"></script>
+        
+    
+        <script src="{% static 'dashboard/js/jquery.charts-sparkline.js' %}"></script>
+        <script src="{% static 'dashboard/js/jquery.magnific-popup.min.js' %}"></script>
+        <script src="{% static 'dashboard/js/jquery-asColor.min.js' %}"></script>
+        <script src="{% static 'dashboard/js/jquery-asGradient.js' %}"></script>
+        <script src="{% static 'dashboard/js/jquery-asColorPicker.min.js' %}"></script>
+        <script src="{% static 'dashboard/js/jquery.minicolors.min.js' %}"></script>
+        <script src="{% static 'dashboard/js/jquery.multicheck.js' %}"></script>
+        <script src="{% static 'dashboard/js/jquery.validate.min.js' %}"></script>
+        <script src="{% static 'dashboard/js/toastr.min.js' %}"></script>
+        <script src="{% static 'dashboard/js/select2.min.js' %}"></script>
+        <script src="{% static 'dashboard/js/jquery.inputmask.bundle.min.js' %}"></script>
+
+        <script>
+            $('#zero_config').DataTable();
+        </script>
+
+</body>
+
+</html>

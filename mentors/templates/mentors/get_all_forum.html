@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block main %}
+
+<section class="section section-lg bg-default text-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            {% for data in forums %}
+            <div class="col-sm-10 col-md-4 col-lg-4 mb-2">
+                <!-- Post Light-->
+                <div class="card text-center">
+                    <div class="card-header">
+                      <h4 class="card-title">{{data.titre}}</h4>
+                      {% if data.fichier %}
+                      <img src="{{data.fichier.url}}" class="thumbnail">
+                      {% else %}
+                      <img src="{% static 'media/images/1.pnp' %}" class="thumbnail">
+                      {% endif %}
+                     
+                    </div>
+                    <div class="card-body">
+                      <p class="card-text">{{data.description}}</p>
+                    </div>
+                    <div class="card-footer text-muted">
+                        Publié le : {{data.created|date:"D d M Y"}} par {{data.initiateur.last_name}} {{data.initiateur.first_name}} &nbsp; <a href="{% url 'add_comment' data.id %}" class="btn btn-primary" style="background-color:#0080ff;">Mon avis</a>
+                    </div>
+                  </div>     
+                
+            </div>
+            {% if forloop.counter|divisibleby:4 and not forloop.last %}
+        </div><div class="row justify-content-center">
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+
+{% for message in messages %}
+<script src="{% static 'js/sweetalert.min.js' %}"></script>
+{% if message.tags == 'error' %}
+<script>
+    var m = "{{ message }}";
+    swal("Réfusé!", m, "error");
+</script>
+{% elif message.tags == 'success' %}
+<script>
+    var m = "{{ message }}";
+    swal("Bienvenue!", m, "success");
+</script>
+{% elif message.tags == 'warning' %}
+<script>
+    var m = "{{ message }}";
+    swal("A bientôt!", m, "warning");
+</script>
+{% endif %}
+
+{% endfor%}
+{% endblock main %}

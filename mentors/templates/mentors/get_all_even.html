@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block main %}
+ <!-- Featured Projects-->
+ <section class="section section-lg bg-default text-center">
+    <div class="container">
+      <div class="row row-30 row-md-50 row-xl-70">
+        <div class="col-sm-4 col-lg-4 wow fadeIn">
+          <!-- Post Minimal-->
+          {% for data in evenements %}
+          <div class="post-minimal">
+            {% if data.image.url %}
+              <figure class="post-minimal-media">
+                <a href="#">
+                  <img class="post-minimal-image" src="{{data.image.url}}" alt="" width="370" height="260"/>
+                </a>
+              </figure>
+              {% else %}
+              <figure class="post-minimal-media">
+                <a href="#">
+                  <img class="post-minimal-image" src="static/media/images/grid-gallery-6-370x260.jpg" alt="" width="370" height="260"/>
+                </a>
+              </figure>
+              {% endif %}
+            <div class="post-minimal-meta">
+              <ul class="list-inline">
+                <li class="list-inline-item">Mentor:</li>
+                <li class="list-inline-itema">{{data.initiateur.username}}</li>
+              </ul>
+              <ul class="list-inline">
+                <li class="list-inline-itema"><a href="{{data.lien}}" >{{data.lien}}</a></li>
+              </ul>
+            </div>
+            <h4 class="post-minimal-title">{{data.libelle}}</h4>
+          </div>
+        </div>
+        {% endfor %}
+    </div>
+  </section>
+
+
+  {% for message in messages %}
+  <script src="{% static 'js/sweetalert.min.js' %}"></script>
+  {% if message.tags == 'error' %}
+  <script>
+      var m = "{{ message }}";
+      swal("Réfusé!", m, "error");
+  </script>
+  {% elif message.tags == 'success' %}
+  <script>
+      var m = "{{ message }}";
+      swal("Bienvenue!", m, "success");
+  </script>
+  {% elif message.tags == 'warning' %}
+  <script>
+      var m = "{{ message }}";
+      swal("A bientôt!", m, "warning");
+  </script>
+  {% endif %}
+
+  {% endfor%}
+{% endblock main %}

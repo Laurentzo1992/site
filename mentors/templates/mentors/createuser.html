@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+{% block main %}
+
+<div class="auth-wrapper d-flex no-block justify-content-center align-items-center">
+    <div class="auth-box">
+        <div>
+            <!-- Form -->
+            <form class="form-horizontal m-t-20" action="{% url 'createuser' %}" method="post">
+                {% csrf_token %}
+                <div class="row p-b-30">
+                    <div class="col-md-6">
+                        <!-- Champs sur la première colonne -->
+                         <!-- prenom -->
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend mx-1">
+                                <span class="input-group-text" style="background-color:#0080ff;" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
+                            </div>
+                            <input type="text" class="form-control form-control-lg" name="first_name" placeholder="Prenom" aria-label="first_name" aria-describedby="basic-addon1" required>
+                        </div>
+                          <!-- nom -->
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend mx-1">
+                                <span class="input-group-text" style="background-color:#0080ff;" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
+                            </div>
+                            <input type="text" class="form-control form-control-lg" name="last_name" placeholder="Nom" aria-label="last_name" aria-describedby="basic-addon1" required>
+                        </div>
+                        <!-- email -->
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend mx-1">
+                                <span class="input-group-text" style="background-color:#0080ff;" id="basic-addon1"><i class="fa fa-envelope text-primary"></i></span>
+                            </div>
+                            <input type="email" class="form-control form-control-lg" name="email" placeholder="Addresse email " aria-label="Username" aria-describedby="basic-addon1" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- Champs sur la deuxième colonne -->
+                        <!-- username -->
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend mx-1">
+                                <span class="input-group-text" style="background-color:#0080ff;" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
+                            </div>
+                            <input type="text" class="form-control form-control-lg" name="username" placeholder="Nom d'utilisateur" aria-label="Username" aria-describedby="basic-addon1" required>
+                        </div>
+                        <!-- password -->
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend mx-1">
+                                <span class="input-group-text" style="background-color:#0080ff;" id="basic-addon2"><i class="fa fa-key text-primary"></i></span>
+                            </div>
+                            <input type="password" class="form-control form-control-lg" name="password" placeholder="Mot de Passe" aria-label="Password" aria-describedby="basic-addon1" required>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend mx-1">
+                                <span class="input-group-text" style="background-color:#0080ff;" id="basic-addon2"><i class="fa fa-key text-primary"></i></span>
+                            </div>
+                            <input type="password" class="form-control form-control-lg" name="password2" placeholder="Confirmer Mot de Passe" aria-label="Password" aria-describedby="basic-addon1" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row border-top border-secondary border-5 text-center mb-5">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <div class="p-t-20 mt-3">
+                                <button class="btn btn-block text-white" style="background-color:#0080ff;" type="submit">S'Inscrire</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% for message in messages %}
+        {% comment %} <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> {% endcomment %}
+        <script src="{% static 'js/sweetalert.min.js' %}"></script>
+        {% if message.tags == 'error' %}
+        <script>
+            var m = "{{ message }}";
+            swal("Réfusé!", m, "error");
+        </script>
+        {% elif message.tags == 'success' %}
+        <script>
+            var m = "{{ message }}";
+            swal("Bienvenue!", m, "success");
+        </script>
+        {% elif message.tags == 'warning' %}
+        <script>
+            var m = "{{ message }}";
+            swal("A bientôt!", m, "warning");
+        </script>
+        {% endif %}
+
+{% endfor%}
+
+{% endblock main %}

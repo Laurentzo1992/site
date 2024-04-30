@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block main %}
+
+<section class="section section-lg bg-default text-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            {% for ressource in ressources %}
+            <div class="col-sm-10 col-md-4 col-lg-4 mb-2">
+                <!-- Post Light-->
+                {% if ressource.get_mime_type %}
+                    {% if 'video' in ressource.get_mime_type %}
+                        <video controls style="width: 100%;">
+                            <source src="{{ ressource.ressource.url }}" type="{{ ressource.get_mime_type }}">
+                            Your browser does not support the video tag.
+                        </video>
+                        <time class="post-light-time">{{ ressource.created|date:"D d M Y" }}</time>
+                        <h4 class="post-light-title"> {{ ressource.titre }} <div class="badge">Nouveau</div></h4>
+                    {% else %}
+                        <a class="post-light context-dark" href="{{ressource.ressource.url}}" style="background-image: url(media/images/background.jpeg);">
+                            <div class="post-light-inner">
+                                <div class="post-light-main">
+                                    <time class="post-light-time">{{ ressource.created|date:"D d M Y" }}</time>
+                                    <h6 class="post-light-title"> {{ ressource.titre }} </h6>
+                                    <h6 class="post-light-title"> {{ ressource.description }} </h6>
+                                </div>
+                            </div>
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+            {% if forloop.counter|divisibleby:4 and not forloop.last %}
+        </div><div class="row justify-content-center">
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+{% for message in messages %}
+<script src="{% static 'js/sweetalert.min.js' %}"></script>
+{% if message.tags == 'error' %}
+<script>
+    var m = "{{ message }}";
+    swal("Réfusé!", m, "error");
+</script>
+{% elif message.tags == 'success' %}
+<script>
+    var m = "{{ message }}";
+    swal("Bienvenue!", m, "success");
+</script>
+{% elif message.tags == 'warning' %}
+<script>
+    var m = "{{ message }}";
+    swal("A bientôt!", m, "warning");
+</script>
+{% endif %}
+
+{% endfor%}
+
+{% endblock main %}

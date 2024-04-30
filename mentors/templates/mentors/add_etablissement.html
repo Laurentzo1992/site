@@ -1,0 +1,40 @@
+<div class="modal fade" id="etablissementA" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="etablissementALabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h1 class="modal-title fs-5" id="etablissementALabel">Ajout Etablisssement</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'add_etablissement' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="libelle">Nom de l'etablissement</label>
+                        <input type="text" class="form-control" name="libelle" id="libelle" placeholder="libelle" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="commune">Commune</label>
+                        <select class="form-control form-control-sm" name="commune" id="commune" required>
+                            {% for data in communes %}
+                            <option value="{{ data.id }}">{{ data.nom_commune }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="statut">Statut</label>
+                        <select class="form-control form-control-sm" name="statut" id="statut" required>
+                            {% for data in statuts %}
+                            <option value="{{ data.id }}">{{ data.statut }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

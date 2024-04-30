@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+{% block main %}
+
+
+<section class="section section-lg">
+    <div class="container">
+        <div class="row row-50 justify-content-center justify-content-xl-between flex-lg-row-reverse">
+            <div class="col-lg-12">
+                <div class="box-1">
+                    <h5 style="color:#0080ff;">1- Qui sommes-nous? </h5>
+                    <h3>
+                        {{presents.about}}
+                    </h3>
+                </div>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="container mt-5 mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card p-3 mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <div class="d-flex flex-row align-items-center">
+                                        <div class="icon"> <i class="bx bxl-mailchimp"></i> </div>
+                                        <div class="ms-2 c-details">
+                                            <h5 class="text-center" style="color:#0080ff;">2- Notre mission </h5>
+                                        </div>
+                                    </div>
+                                    <i class="fa fa-bookmark" style="color:#0080ff; font-size:18px;" aria-hidden="true"></i>
+                                </div>
+                                <div class="mt-5">
+                                    <h3>
+                                        {{presents.mission}}
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card p-3 mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <div class="d-flex flex-row align-items-center">
+                                        <div class="icon"> <i class="bx bxl-dribbble"></i> </div>
+                                        <div class="ms-2 c-details text-center">
+                                            <h5 class="text-center" style="color:#0080ff;">3- Notre vision </h5>
+                                        </div>
+                                    </div>
+                                    <i class="fa fa-bookmark" style="color:#0080ff; font-size:18px;" aria-hidden="true"></i>
+                                </div>
+                                <div class="mt-5">
+                                    <h3>
+                                        {{presents.vision}}
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h5 style="color:#0080ff;" class="text-center">4- Nos valeurs </h5>
+        <div class="row row-50 justify-content-center justify-content-xl-between flex-lg-row-reverse mx-3">
+            <div class="container mt-5 mb-3">
+                <div class="row">
+                    {% for data in valeurs %}
+                    <div class="col-md-6">
+                        <div class="card p-3 mb-2">
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex flex-row align-items-center">
+                                    <div class="icon"> <i class="fa fa-bar-chart" style="color:#0080ff; font-siez:20px;"></i> </div>
+                                    <div class="ms-2 c-details">
+                                        <h6 class="mb-0" style="color:#0080ff;">{{forloop.counter}} {{data.titre}}</h6>
+                                    </div>
+                                </div>
+                                <div class="badge"><i class="fa fa-bar-chart" style="color:#0080ff; font-siez:20px;"></i> </div>
+                            </div>
+                            <div class="mt-5">
+                                <h3 class="heading">{{data.valeur}}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="section">
+    <div class="container">
+        <div class="row row-50 justify-content-center justify-content-xl-between flex-lg-row-reverse">
+            <div class="col-md-11 col-lg-12 text-center">
+                <div class="col-xl-12 wow fadeIn" data-wow-delay=".4s"><img class="img-rounded w-50 h-50" src="{% static 'media/images/groupedetravail.svg' %}" alt=""></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services-->
+<section class="section section-lg bg-default">
+    <div class="container">
+        <h6 class="wow fadeIn text-center" style="background-color:#F2CF05; color:#0080ff">DOMAINES DE FORMATIONS</h6>
+        <div class="row row-50 justify-content-center justify-content-xl-between flex-lg-row-reverse">
+            <div class="col-md-11 col-lg-12">
+                <div class="accordion accordion-flush" id="accordionFlushExample">
+                    {% for data in categories %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-heading{{data.id}}">
+                            <button class="accordion-button collapsed text-white" style="background-color:#0080ff;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{data.id}}" aria-expanded="false" aria-controls="flush-collapse{{data.id}}">
+                                {{ data.libelle }}
+                            </button>
+                        </h2>
+                        {% for domaine in data.domaine_set.all %}
+                        <div id="flush-collapse{{data.id}}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{data.id}}" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">{{ domaine.libelle }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock main %}
+

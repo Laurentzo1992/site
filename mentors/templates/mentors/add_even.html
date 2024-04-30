@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_libelle" class="form-label">Titre</label>
+                    {{ form.libelle.errors }}
+                    {{ form.libelle }}
+                </div>
+                <div class="mb-3">
+                    <label for="id_description" class="form-label">Description</label>
+                    {{ form.description.errors }}
+                    {{ form.description }}
+                </div>
+                <div class="mb-3">
+                    <label for="id_date_even" class="form-label">Date de l'Evènement</label>
+                    {{ form.date_even.errors }}
+                    {{ form.date_even }}
+                </div>
+                <div class="mb-3">
+                    <label for="id_lien" class="form-label">Lien d'accès</label>
+                    {{ form.lien.errors }}
+                    {{ form.lien }}
+                </div>
+                <div class="mb-3">
+                    <label for="id_image" class="form-label">Image Illustrative</label>
+                    {{ form.image.errors }}
+                    {{ form.image }}
+                </div>
+                <div class="mb-3">
+                    <button class="btn btn-info" type="submit">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock main %}

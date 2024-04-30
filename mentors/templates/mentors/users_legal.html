@@ -1,0 +1,43 @@
+<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel"> <i class="fa fa-book" aria-hidden="true"></i> Charte</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Engagement envers le Mentor :Le mentoré s'engage à participer
+          activement au programme de mentorat et à travailler en collaboration
+          avec le mentor.</p>
+          ● Communication Ouverte :Le mentoré s'engage à communiquer
+          ouvertement ses objectifs, ses préoccupations et ses besoins au mentor.
+          ● Respect des Règles du Programme : Le mentoré respecte les règles et les
+          protocoles établis par le programme de mentorat.
+          ● Responsabilité Personnelle : Le mentoré prend la responsabilité de son
+          propre développement et met en œuvre les actions convenues avec le
+          mentor.
+          ● Écoute et Réflexion : Le mentoré pratique une écoute active, réfléchit aux
+          conseils du mentor et met en œuvre les actions recommandées.
+          ● Feedback Constructif : Le mentoré fournit un feedback constructif au
+          mentor pour améliorer la qualité de la relation de mentorat.
+          ● Respect et Prévention du Harcèlement : Le mentoré s'engage à respecter
+          les principes de non-harcèlement y compris le harcèlement sexuel. Tout
+          comportement inapproprié, discriminatoire ou offensant ne sera pas
+          toléré.La prévention du harcèlement sexuel est essentielle pour créer un
+          environnement sûr et respectueux. Tout comportement inapproprié,
+          discriminatoire ou offensant ne sera pas toléré.
+        </div>
+        <div class="modal-footer">
+          <form method="post" action="{% url 'Mentors' %}">
+              {% csrf_token %}
+              <input type="hidden" name="choix" value="2">
+              <p>En signant cette charte, le mentor et le mentoré acceptent de respecter les engagements
+                énoncés ci-dessus et de travailler ensemble pour une relation de mentorat réussie.</p>
+              <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Refuser</button>
+              <button type="submit" class="btn btn-success">Accepter</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  

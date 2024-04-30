@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="container">
+    <h4 class="text-center mb-3">Tableau des orientations</h4>
+
+    <table id="example" class="table table-striped">
+        <thead class="table-success">
+            <tr>
+                <th>Type d'orientation</th>
+                <th>Filières/Series</th>
+                <th>Débouchées</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+                {% for filiere in item.filieres %}
+                    <tr>
+                        {% if forloop.first %}
+                            <td rowspan="{{ item.filieres|length }}"><i class="fa fa-check text-success"></i>&nbsp; {{ item.type }}</td>
+                        {% endif %}
+                        <td>{{ filiere.filiere }}</td>
+                        <td>
+                            <ul>
+                                {% for debouche in filiere.debouches %}
+                                    <li><i class="fa fa-link text-warning"></i>&nbsp; {{ debouche }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock main %}
+
+{% block jsscript %}
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable(
+            {
+                "info": false,
+            }
+        );
+    });
+</script>
+{% endblock jsscript %}

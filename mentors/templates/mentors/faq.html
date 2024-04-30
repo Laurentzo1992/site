@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+{% block main %}
+<!-- My Approach-->
+<section class="section bg-default mb-5">
+    <h6 class="wow fadeIn text-center shadow-lg border border-5" style="background-color:#0080ff; color:white">FAQ</h6>
+</section>
+
+
+
+<section class="section section-lg bg-default">
+    <div class="container">
+        <div class="row row-50 justify-content-center justify-content-xl-between flex-lg-row-reverse">
+            <div class="col-md-11 col-lg-12">
+                <div class="accordion accordion-flush" id="accordionFlushExample">
+                    {% for data in fqs %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-heading{{data.id}}">
+                            <button class="accordion-button collapsed text-white" style="background-color:#0080ff;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{data.id}}" aria-expanded="false" aria-controls="flush-collapse{{data.id}}">
+                                {{ data.la_question }}
+                            </button>
+                        </h2>
+                        <div id="flush-collapse{{data.id}}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{data.id}}" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">{{ data.la_reponse }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock main %}

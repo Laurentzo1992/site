@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load static %}
+
+      <!-- Page Header-->
+      {% block main %}
+      {% block Carousel %}
+      <section>
+        <!-- Swiper-->
+      
+        <div class="swiper-container swiper-slider swiper-slider-1" data-loop="false" data-autoplay="5000" data-simulate-touch="false">
+          <div class="swiper-wrapper">
+            {% for slide in slides %}
+            <div class="swiper-slide" data-slide-bg="{{slide.image.url}}">
+              <div class="swiper-slide-caption context-dark">
+                <div class="container">
+                  <div class="row">
+                    <div class="col-md-10 col-lg-7">
+                      <div class="box-animation">
+                        <h6 style="color:white;" data-caption-animate="slideInLeft" data-caption-delay="150">{{slide.titre1}}</h6>
+                        <h2 style="color:white;" data-caption-animate="slideInLeft" data-caption-delay="300">{{slide.titre2}} <span class="text-italic font-weight-bold text-white">{{slide.titre3}}</span>
+                        </h2>
+                        <div class="button-block" data-caption-animate="fadeInUp" data-caption-delay="450"><a class="button" style="background-color:#0080ff;" href="{% url 'login' %}"><span style="color:white;">Connexion</span></a></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
+      </section>
+      {% endblock Carousel %}
+      <!-- A Few Words About Me-->
+      {% block content %}
+      
+      <section class="section section-lg">
+        <div class="container">
+          <div class="row row-50 justify-content-center justify-content-lg-between">
+            <div class="col-12">
+              <h3 class="h-custom-1 f1" style="color:#0080ff;">Qui sommes nous? </h3>
+            </div>
+            <div class="col-6">
+              <h3>{{debut.about|slice:":300"}}.</h3><a class="btn" href="{% url 'about' %}"><span style="color:#0080ff;">Lire plus</span></a>
+            </div>
+            
+            <div class="col-6" data-wow-delay=".4s"><img class="" src="{% static 'media/images/equipe.svg' %}" alt=""></div>
+          </div>
+        </div>
+      </section>
+      <!-- Featured Projects-->
+      <section class="section section-lg bg-default text-center">
+        <div class="container">
+          <h6 class="wow fadeIn" style="color:#0080ff;">A venir...</h6>
+          <div class="row row-30 row-md-50 row-xl-70">
+            <div class="col-sm-6 col-lg-4 wow fadeIn">
+              <!-- Post Minimal-->
+              {% for data in upcoming_events %}
+              <div class="post-minimal">
+                <figure class="post-minimal-media"><a href="#"><img class="post-minimal-image" src="{{data.image.url}}" alt="" width="370" height="260"/></a></figure>
+                <div class="post-minimal-meta">
+                  <ul class="list-inline">
+                    <li class="list-inline-item" style="color:#0080ff;">Mentor:</li>
+                    <li class="list-inline-itema">{{data.initiateur.first_name}} {{data.initiateur.last_name}}</li>
+                  </ul>
+                </div>
+                <h4 class="post-minimal-title" style="color:#0080ff;">{{data.libelle}} le {{data.date_even|date:"D d M Y"}}</h4>
+              </div>
+            </div>
+            {% endfor %}
+            <a class="button wow fadeIn text-center" style="color:#0080ff;" href="{% url 'get_all_even' %}" data-wow-delay=".2s"><span>Tous les évèments</span></a>
+        </div>
+      </section>
+
+
+      <!-- Dernière resource -->
+      <section class="section section-lg bg-default text-center">
+        <div class="container">
+            <h6 class="wow fadeIn" style="color:#0080ff;">Ils nous font confiance</h6>
+            <div class="row justify-content-center">
+                {% for ressource in partenariats %}
+                <div class="col-sm-10 col-md-4 col-lg-4 wow fadeIn mb-4">
+                            <a class="post-light context-dark" href="{{ressource.ressource.url}}" style="background-image: url({{ressource.patenaire_image.url}});">
+                                <div class="post-light-inner">
+                                    <div class="badge" style="color:#0080ff;">{{ressource.nom}}</div>
+                                    <div class="post-light-main">
+                                    </div>
+                                </div>
+                            </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    
+      {% endblock content %}
+
+            
+      {% for message in messages %}
+      <script src="{% static 'js/sweetalert.min.js' %}"></script>
+      {% if message.tags == 'error' %}
+      <script>
+          var m = "{{ message }}";
+          swal("Réfusé!", m, "error");
+      </script>
+      {% elif message.tags == 'success' %}
+      <script>
+          var m = "{{ message }}";
+          swal("Bienvenue!", m, "success");
+      </script>
+      {% elif message.tags == 'warning' %}
+      <script>
+          var m = "{{ message }}";
+          swal("A bientôt!", m, "warning");
+      </script>
+      {% endif %}
+
+      {% endfor%}
+
+      {% endblock main %}
+     
+    
+    
+   

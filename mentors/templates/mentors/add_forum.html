@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_titre" class="form-label">Titre</label>
+                    {{ form.titre.errors }}
+                    {{ form.titre }}
+                </div>
+                <div class="mb-3">
+                    <label for="id_description" class="form-label">Description</label>
+                    {{ form.description.errors }}
+                    {{ form.description }}
+                </div>
+                <div class="mb-3">
+                    <label for="id_fichier" class="form-label">Fichier</label>
+                    {{ form.fichier.errors }}
+                    {{ form.fichier }}
+                </div>
+                <div class="mb-3">
+                    <button class="btn btn-info" type="submit">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock main %}

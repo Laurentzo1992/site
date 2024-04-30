@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% load static %}
+{% block main %}
+<div class="container mb-3">
+    <div class="row gutters">
+        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="account-settings text-center">
+                        <div class="user-profile">
+                          {% if user_profile.photo %}
+                            <div class="user-avatar">
+                              <img class="w-25 mx-auto d-block" src="{{user_profile.photo.url}}" alt="{{user_profile.user.username}}">
+                            </div>
+                          {% else %}
+                            <div class="user-avatar">
+                                <img class="w-25 mx-auto d-block" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="{{user_profile.user.username}}">
+                            </div>
+                            {% endif %}
+                            <h6 class="user-email">{{user_profile.user.email}}</h6>
+                        </div>
+                        <div class="about">
+                            <a href="{% url 'editprofile' user_profile.id %}" class="btn btn-primary" style="background-color:#0080ff; color:white">Mise à jour</a>
+                        </div>
+                        <div class="about">
+                          <h6 class="user-email">Temps de connexion <span style="background-color:#0080ff;">{{temps_de_connxion}}</span></h6>
+                          {% if mentors_group %}<img class="w-25 mx-auto d-block" src="{% static "media/images/badg2.jpg" %}" alt="{{user_profile.user.username}}">{% endif %}
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="row gutters">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <h6 class="mb-2" style="color:#0080ff;">Tableau de bord personnel</h6>
+                        </div>
+                        <div class="row">
+                          {% if mentor %}
+                            <div class="col-sm-6">
+                              <div class="card">
+                                <div class="card-body">
+                                    <div class="card mb-3" style="max-width: 540px;">
+                                        <div class="row no-gutters">
+                                          <div class="col-md-8">
+                                            <div class="card-body">
+                                              <h5 class="card-title">Mentor : {{mentor.user.first_name}} &nbsp; {{mentor.user.last_name}}</h5>
+                                              <p class="card-text">{{mentor.description}}</p>
+                                              <p class="card-text"><small class="text-muted">En ligne depuis : {{mentor.user.last_login}} </small></p>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+
+                            <div class="col-sm-6">
+                              <div class="card">
+                                <div class="card-body">
+                                    <div class="card mb-3" style="max-width: 540px;">
+                                        <div class="row no-gutters">
+                                            <div class="card-body">
+                                              <div class="about mb-2">
+                                                {% if mentors_group %}<a href="{% url 'add_ressource' %}" class="btn btn-success"><i class="fa fa-plus-circle"></i></a> {% endif %}
+                                                <a href="{% url 'get_all_ressource' %}" class="btn btn-primary" style="background-color:#0080ff; color:white">Ressources</a>
+                                              </div>
+                                              <div class="about mb-2">
+                                                {% if mentors_group %}<a href="{% url 'add_even' %}" class="btn btn-success"><i class="fa fa-plus-circle"></i></a> {% endif %}
+                                                <a href="{% url 'get_all_even' %}" class="btn btn-primary" style="background-color:#0080ff; color:white">Evenements</a>
+                                              </div>
+                                              <div class="about mb-2">
+                                                {% if mentors_group %}<a href="{% url 'add_forum' %}" class="btn btn-success"><i class="fa fa-plus-circle"></i></a> {% endif %}
+                                                <a href="{% url 'get_all_forum' %}" class="btn btn-primary" style="background-color:#0080ff; color:white">Forum</a>
+                                              </div>
+                                              <div class="about mb-2">
+                                                {% if mentors_group %}
+                                                <a href="{% url 'send_message_to_users' %}" class="btn btn-success"><i class="fa fa-plus-circle"></i></a>
+                                                <a href="{% url 'mentor_messages' %}" class="btn btn-primary position-relative" style="background-color:#0080ff; color:white">Message
+                                                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                    {{inbox}}
+                                                    <span class="visually-hidden">unread messages</span>
+                                                  </span>
+                                                </a>
+                                                {% else %}
+                                                <a href="{% url 'send_message' %}" class="btn btn-success"><i class="fa fa-plus-circle"></i></a>
+                                                <a href="{% url 'message_thread' %}" class="btn btn-primary position-relative" style="background-color:#0080ff; color:white">Message
+                                                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                                    {{inbox}}
+                                                    <span class="visually-hidden">unread messages</span>
+                                                  </span>
+                                                </a>
+                                                {% endif %}
+                                               
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                </div>
+                              </div>
+                            </div>
+
+                         
+                            {% if mentors_group %}
+                            <div class="col-sm-6">
+                              <div class="card">
+                                <div class="card-body">
+                                  <div class="card text-white mb-3" style="max-width: 18rem;">
+                                    <div class="card-header text-center" style="color:#0080ff;">Mes Ressources</div>
+                                    <div class="card-body">
+                                      <h1 class="card-title text-center text-bold">{{nbr_res}}</h1>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+
+                            <div class="col-sm-6">
+                              <div class="card">
+                                <div class="card-body">
+                                  <div class="card text-white mb-3" style="max-width: 18rem;">
+                                    <div class="card-header text-center" style="color:#0080ff;">Mes Evenements</div>
+                                    <div class="card-body">
+                                      <h1 class="card-title text-center text-bold">{{nrb_even}}</h1>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+
+                            <div class="col-sm-6">
+                              <div class="card">
+                                <div class="card-body">
+                                  <div class="card text-white mb-3" style="max-width: 18rem;">
+                                    <div class="card-header text-center" style="color:#0080ff;">Mes Mentorés</div>
+                                    <div class="card-body">
+                                      <h1 class="card-title text-center text-bold">{{nbr}}</h1>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                              <div class="card">
+                                <div class="card-body">
+                                  <div class="card text-white mb-3" style="max-width: 18rem;">
+                                    <div class="card-header text-center" style="color:#0080ff;">Mes Forums</div>
+                                    <div class="card-body">
+                                      <h1 class="card-title text-center text-bold">{{nrb_forum}}</h1>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+</div>
+
+
+
+{% for message in messages %}
+  <script src="{% static 'js/sweetalert.min.js' %}"></script>
+  {% if message.tags == 'error' %}
+    <script>
+      var m = "{{ message }}";
+      swal("Réfusé!", m, "error");
+    </script>
+  {% elif message.tags == 'success' %}
+    <script>
+      var m = "{{ message }}";
+      swal("Bienvenue!", m, "success");
+    </script>
+  {% elif message.tags == 'warning' %}
+    <script>
+      var m = "{{ message }}";
+      swal(" Attention!", m, "warning");
+    </script>
+  {% endif %}
+{% endfor %}
+
+
+
+{% endblock main %}

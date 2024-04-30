@@ -1,0 +1,319 @@
+{% extends "base.html" %}
+
+{% block main %}
+<form method="post" enctype="multipart/form-data">
+<div class="container mb-3">
+    <div class="row gutters">
+        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="account-settings text-center">
+                        <div class="user-profile" id="userAvatar">
+                            {% if user_act.photo %}
+                            <div class="user-avatar">
+                                <img class="w-25 mx-auto d-block" src="{{user_act.photo.url}}" alt="{{user_act.username}}">
+                            </div>
+                            {% else %}
+                            <div class="user-avatar" id="userAvatar">
+                                <img class="w-25 mx-auto d-block" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="{{user_act.username}}">
+                            </div>
+                            {% endif %}
+                            <h6 class="user-email">{{user_act.user.email}}</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+            <div class="card h-100">
+                <div class="card-body">
+                   
+                        {% csrf_token %}
+                    <div class="row gutters">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <h6 class="mb-2 text-center" style="background-color:#0080ff; color:white">Details personels</h6>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="form-group d-flex flex-lg-row mb-2">
+                                <label for="username">user</label> &nbsp;
+                                <input type="text" class="form-control" id="username" name="username" placeholder="{{user_act.user.username}}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="form-group d-flex flex-lg-row mb-2">
+                                <label for="first_name">Prenom</label> &nbsp;
+                                <input type="text" class="form-control" id="first_name" name="first_name" placeholder="{{user_act.user.first_name}}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="form-group d-flex flex-lg-row mb-2">
+                                <label for="last_name">Nom</label> &nbsp;
+                                <input type="text" name="last_name" class="form-control" id="last_name" placeholder="{{user_act.user.last_name}}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="form-group d-flex flex-lg-row mb-2">
+                                <label for="telephone">Téléphone</label> &nbsp;
+                                <input type="text" class="form-control" name="telephone" id="phone" placeholder="{{user_act.telephone}}">
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="form-group d-flex flex-lg-row mb-2">
+                                <label for="etablissement">Etablissement</label> &nbsp;
+                                <select class="form-control form-control-sm" name="etablissement" id="etablissement">
+                                    <option value="{{user_act.etablissement.id}}">{{user_act.etablissement.libelle }}</option>
+                                    {% for data in etablissements %}
+                                    <option value="{{data.id}}" >{{data.libelle}}</option>
+                                    {% endfor %}
+                                </select>
+                                <button style="color:#0080ff;"type="button" data-bs-toggle="modal" data-bs-target="#etablissementA">
+                                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                </button> 
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="form-group d-flex flex-lg-row mb-2">
+                                <label for="commune">Commune</label> &nbsp;
+                                <select class="form-control form-control-sm" name="commune" id="commune">
+                                    <option value="{{user_act.commune.id}}">{{user_act.commune.nom_commune }}</option>
+                                    {% for data in communes %}
+                                    <option value="{{data.id}}">{{ data.nom_commune }}</option>
+                                    {% endfor %}
+                                </select> 
+                                &nbsp; 
+                                <button style="color:#0080ff;"type="button" data-bs-toggle="modal" data-bs-target="#communeA">
+                                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                </button>                              
+                            </div>
+                        </div>
+
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="form-group d-flex flex-lg-row mb-2">
+                                <label for="last_name">Village</label> &nbsp;
+                                <input type="text" name="village" class="form-control" id="village" placeholder="{{user_act.village}}">
+                            </div>
+                        </div>
+
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="form-group d-flex flex-lg-row mb-2">
+                                <label for="niveau">Niveau</label> &nbsp;
+                                <select class="form-control" name="niveau" id="niveau">
+                                    <option value="{{user_act.niveau.id}}">{{user_act.niveau.libelle }}</option>
+                                    {% for data in niveaux %}
+                                    <option value="{{data.id}}" >{{data.libelle}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="form-group d-flex flex-lg-row mb-2">
+                                <label for="domaine">Domaine</label> &nbsp;
+                                <select class="form-control form-control-sm"  name="domaine" id="domaine">
+                                    <option value="{{user_act.domaine.id}}">{{user_act.domaine.libelle }}</option>
+                                    {% for data in domaines %}
+                                    <option value="{{data.id}}" >{{data.libelle}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="form-group d-flex flex-lg-row mb-2">
+                                <label for="profile">Profile</label> &nbsp;
+                                <textarea class="form-control" name="profile" id="profile" placeholder="{{user_act.profile}}" required></textarea>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="form-group d-flex flex-lg-row mb-2">
+                                <label for="objectif">Objectif</label> &nbsp;
+                                <textarea class="form-control" name="objectif" id="objectif" placeholder="{{user_act.objectif}}" required></textarea>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="form-group d-flex flex-lg-row mb-2">
+                                <label for="type_mentorat">Mentorat</label> &nbsp;
+                                <select class="form-control" name="type_mentorat" id="type_mentorat">
+                                    <option value="{{user_act.type_mentorat.id}}">{{user_act.type_mentorat.libelle }}</option>
+                                    {% for data in types %}
+                                    <option value="{{data.id}}" >{{data.libelle}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="form-group d-flex flex-lg-row mb-2">
+                                <label for="ojectif_academique">Quels sont vos objectifs académiques</label> &nbsp;
+                                <select class="form-control" name="ojectif_academique" id="ojectif_academique">
+                                    <option value="{{user_act.ojectif_academique.id}}">{{user_act.ojectif_academique.libelle }}</option>
+                                    {% for data in ojectifs %}
+                                    <option value="{{data.id}}" >{{data.libelle}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="form-group d-flex flex-lg-row mb-2">
+                                <label for="cannau">Par quel canal de préférence souhaitez-vous échanger avec le mentor?</label> &nbsp;
+                                <select class="form-control" name="cannau" id="cannau">
+                                    <option value="{{user_act.cannaux.id}}">{{user_act.cannaux.libelle }}</option>
+                                    {% for data in cannaux %}
+                                    <option value="{{data.id}}" >{{data.libelle}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="form-group d-flex flex-lg-row mb-2">
+                                <label for="frequesce">Quelle est la fréquence idéale des rencontres avec le mentor?</label> &nbsp;
+                                <select class="form-control" name="frequesce" id="frequesce">
+                                    <option value="{{user_act.frequesce.id}}">{{user_act.frequesce.libelle }}</option>
+                                    {% for data in frequesces %}
+                                    <option value="{{data.id}}" >{{data.libelle}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="form-group d-flex flex-lg-row mb-2">
+                                <label for="connaissance">Comment avez-vous entendu parler de notre programme de mentorat ?</label> &nbsp;
+                                <select class="form-control" name="connaissance" id="connaissance">
+                                    <option value="{{user_act.connaissance.id}}">{{user_act.connaissance.libelle }}</option>
+                                    {% for data in connaissances %}
+                                    <option value="{{data.id}}" >{{data.libelle}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="form-group d-flex flex-lg-row mb-2">
+                                <label for="attente">Qu'attendez-vous principalement de ce programme de mentorat ?</label> &nbsp;
+                                <textarea class="form-control" name="attente" id="attente" placeholder="{{user_act.attente}}"></textarea>
+                            </div>
+                        </div>
+
+                        
+
+                    </div>
+                    <div class="row gutters">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="text-right">
+                                <a href="{% url 'user_profile' %}" class="btn btn-danger">Anuler</a>
+                                <button type="submit" id="submit" name="submit" class="btn btn-info">valider</button>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</form>
+
+<!-- JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var userAvatar = document.getElementById('userAvatar');
+        var inputFile = document.createElement('input');
+        inputFile.type = 'file';
+        inputFile.style.display = 'none';
+        inputFile.setAttribute('id', 'photo'); 
+        inputFile.setAttribute('name', 'photo'); 
+        userAvatar.appendChild(inputFile);
+    
+        userAvatar.addEventListener('click', function() {
+            inputFile.click();
+        });
+    
+        inputFile.addEventListener('change', function() {
+            var file = this.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    userAvatar.querySelector('img').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    });    
+</script>
+
+
+
+<script>
+    $("#commune").select2({
+     placeholder: "selectionner la commune",
+     allowClear: true,
+     theme: "classic",
+    });
+
+    $("#etablissement").select2({
+        placeholder: "selectionner votre établissement",
+        allowClear: true,
+        theme: "classic",
+       });
+
+       
+    $("#domaine").select2({
+        placeholder: "selectionner votre domaine",
+        allowClear: true,
+        theme: "classic",
+       });
+
+
+    
+       $("#niveau").select2({
+        placeholder: "selectionner votre niveau",
+        allowClear: true,
+        theme: "classic",
+       });
+
+       $("#type_mentorat").select2({
+        placeholder: "selectionner votre type  de mentorat",
+        allowClear: true,
+        theme: "classic",
+       });
+
+
+       $("#ojectif_academique").select2({
+        placeholder: "selectionner un ojectif",
+        allowClear: true,
+        theme: "classic",
+       });
+
+
+
+       $("#connaissance").select2({
+        placeholder: "selectionner un élément",
+        allowClear: true,
+        theme: "classic",
+       });
+
+
+       $("#frequesce").select2({
+        placeholder: "selectionner",
+        allowClear: true,
+        theme: "classic",
+       });
+
+       $("#cannau").select2({
+        placeholder: "selectionner un canal",
+        allowClear: true,
+        theme: "classic",
+       });
+
+  </script>
+
+
+{% include "mentors/add_commune.html" %}
+{% include "mentors/add_etablissement.html" %}
+
+
+{% endblock main %}
