@@ -23,6 +23,9 @@
                             <a href="{% url 'editprofile' user_profile.id %}" class="btn btn-primary" style="background-color:#0080ff; color:white">Mise à jour</a>
                         </div>
                         <div class="about">
+                          <a href="{% url 'logout_user'%}" class="btn btn-warning" style="background-color:#0080ff; color:white">Déconnexion</a>
+                      </div>
+                        <div class="about">
                           <h6 class="user-email">Temps de connexion <span style="background-color:#0080ff;">{{temps_de_connxion}}</span></h6>
                           {% if mentors_group %}<img class="w-25 mx-auto d-block" src="{% static "media/images/badg2.jpg" %}" alt="{{user_profile.user.username}}">{% endif %}
                       </div>

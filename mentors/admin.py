@@ -32,5 +32,9 @@ admin.site.register(Frequence_Echange)
 admin.site.register(Cannaux_Connaissance)
 admin.site.register(Faq)
 admin.site.register(Partenaire)
+admin.site.register(Equipe)
+admin.site.register(Storie)
+admin.site.register(Politique_Securite)
+admin.site.register(Temoignage)
 
 

@@ -75,8 +75,8 @@ class Etablissement(models.Model):
 
 
 class Ressources(models.Model):
-    titre = models.CharField(max_length=50, null=True, blank=True)
-    description = models.TextField(blank=True, null=True)
+    titre = models.CharField(max_length=50, null=True, blank=True, verbose_name="Titre")
+    description = models.TextField(blank=True, null=True, verbose_name="Description")
     ressource = models.FileField(upload_to='Fichiers/', null=True, blank=True)
     owner = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
@@ -95,8 +95,8 @@ class Ressources(models.Model):
         
         
 class Forum(models.Model):
-    titre = models.CharField(max_length=50, null=True, blank=True)
-    description = models.TextField(blank=True, null=True)
+    titre = models.CharField(max_length=50, null=True, blank=True, verbose_name="Titre")
+    description = models.TextField(blank=True, null=True, verbose_name="Description")
     fichier = models.FileField(upload_to='forum_img/', null=True, blank=True, verbose_name="Image illustrative")
     initiateur = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
@@ -105,15 +105,17 @@ class Forum(models.Model):
     IMAGE_MAX_SIZE = (370, 260)
     
     def resize_image(self):
-        image = Image.open(self.fichier)
-        image.thumbnail(self.IMAGE_MAX_SIZE)
-        # sauvegarde de l’image redimensionnée dans le système de fichiers
-        # ce n’est pas la méthode save() du modèle !
-        image.save(self.fichier.path)
-    
+        if self.fichier:
+            image = Image.open(self.fichier)
+            image.thumbnail(self.IMAGE_MAX_SIZE)
+            # sauvegarde de l’image redimensionnée dans le système de fichiers
+            # ce n’est pas la méthode save() du modèle !
+            image.save(self.fichier.path)
+        
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.resize_image()
+        if self.fichier:
+            self.resize_image()
         
         
     def __str__(self):
@@ -138,17 +140,18 @@ class Badge(models.Model):
     description = models.TextField(blank=True, null=True)
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
     modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
-    
     IMAGE_MAX_SIZE = (39, 60)
     
     def resize_image(self):
-        image = Image.open(self.badge)
-        image.thumbnail(self.IMAGE_MAX_SIZE)
-        image.save(self.badge.path)
+        if self.badge:
+            image = Image.open(self.badge)
+            image.thumbnail(self.IMAGE_MAX_SIZE)
+            image.save(self.badge.path)
     
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.resize_image()
+        if self.badge:
+            self.resize_image()
         
     
     
@@ -177,47 +180,6 @@ class Domaine(models.Model):
 
 
 
-
-
-class Evenement(models.Model):
-    libelle = models.CharField(max_length=100, blank=True, null=True, verbose_name="Libelle")
-    description = models.TextField(blank=True, null=True)
-    lien = models.CharField(max_length=1000, blank=True, null=True)
-    image = models.FileField(upload_to='images/', null=True, blank=True)
-    date_even = models.DateField(blank=True, null=True)
-    initiateur = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
-    created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
-    modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
-    
-    
-    def __str__(self):
-        return self.libelle 
-    
-    
-    IMAGE_MAX_SIZE = (370, 260)
-    
-    def resize_image(self):
-        image = Image.open(self.image)
-        image.thumbnail(self.IMAGE_MAX_SIZE)
-        image.save(self.image.path)
-    
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.resize_image()
-        
-        
-@receiver(post_save, sender=Evenement)
-def send_newsletter_emails(sender, instance, **kwargs):
-    if kwargs['created']:
-        if  NexletterEmail.objects.all().exists():
-            for subscriber in  NexletterEmail.objects.all():
-                send_mail(
-                    'Nouvel événement disponible',
-                    f'Un nouvel événement "{instance.libelle} {instance.description}" est disponible.le lien {instance.lien}',
-                    settings.EMAIL_HOST,
-                    [subscriber.useremail],
-                    fail_silently=True,
-                )
         
 class Type_oriention(models.Model):
     libelle = models.CharField(max_length=100, blank=True, null=True)
@@ -328,23 +290,31 @@ class Profiles(models.Model):
     last_login = models.DateTimeField(blank=True, null=True)
     created = models.DateField(auto_now_add=True)
     modified = models.DateField(auto_now=True)
-
+    
+    IMAGE_MAX_SIZE = (50, 50)
+    
+    
+    
     def __str__(self):
         return self.user.username
     
     def unsubscribe(self):
         self.mentor = None
         self.save()
-    
-    IMAGE_MAX_SIZE = (50, 50)
+
     
     def resize_image(self):
-        image = Image.open(self.image)
-        image.thumbnail(self.IMAGE_MAX_SIZE)
-        # sauvegarde de l’image redimensionnée dans le système de fichiers
-        # ce n’est pas la méthode save() du modèle !
-        image.save(self.image.path)
-        
+        if self.photo:
+            image = Image.open(self.photo)
+            image.thumbnail(self.IMAGE_MAX_SIZE)
+            # sauvegarde de l’image redimensionnée dans le système de fichiers
+            # ce n’est pas la méthode save() du modèle !
+            image.save(self.photo.path)
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.photo:
+            self.resize_image()
         
     def total_time_on_platform_hours(self):
         total_hours = self.total_time_on_platform.total_seconds() / 3600
@@ -479,10 +449,136 @@ class Partenaire(models.Model):
     
     
     
-class NexletterEmail(models.Model):
+class NewletterEmail(models.Model):
     useremail = models.EmailField(blank=True, null=True, unique=True)
     created = models.DateField(auto_now_add=True, blank=True, null=True)
     modified = models.DateField(auto_now=True, blank=True, null=True)
     
     def __str__(self):
         return self.useremail
+    
+    
+
+
+class Equipe(models.Model):
+    nom_prenom = models.CharField(max_length=200, verbose_name="Nom et Prenom", blank=True, null=True)
+    description = models.TextField(verbose_name="Description", blank=True, null=True)
+    photo = models.FileField(upload_to='images/', verbose_name="Photo", blank=True, null=True)
+    created = models.DateField(auto_now_add=True, blank=True, null=True)
+    modified = models.DateField(auto_now=True, blank=True, null=True)
+
+    IMAGE_MAX_SIZE = (170, 170)
+
+    def __str__(self):
+        return self.nom_prenom
+
+    def resize_image(self):
+        if self.photo:
+            image = Image.open(self.photo)
+            image.thumbnail(self.IMAGE_MAX_SIZE)
+            # Sauvegarde de l’image redimensionnée dans le système de fichiers
+            image.save(self.photo.path)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.photo:
+            self.resize_image()
+            
+            
+            
+
+class Storie(models.Model):
+    nom_prenom = models.CharField(max_length=200, verbose_name="Nom et Prenom", blank=True, null=True)
+    description = models.TextField(verbose_name="Description", blank=True, null=True)
+    photo = models.FileField(upload_to='images/', verbose_name="Photo", blank=True, null=True)
+    created = models.DateField(auto_now_add=True, blank=True, null=True)
+    modified = models.DateField(auto_now=True, blank=True, null=True)
+
+    IMAGE_MAX_SIZE = (170, 170)
+
+    def __str__(self):
+        return self.nom_prenom
+
+    def resize_image(self):
+        if self.photo:
+            image = Image.open(self.photo)
+            image.thumbnail(self.IMAGE_MAX_SIZE)
+            # Sauvegarde de l’image redimensionnée dans le système de fichiers
+            image.save(self.photo.path)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.photo:
+            self.resize_image()
+            
+            
+            
+class Evenement(models.Model):
+    libelle = models.CharField(max_length=100, blank=True, null=True, verbose_name="Libelle")
+    description = models.TextField(blank=True, null=True,  verbose_name="Description")
+    lien = models.CharField(max_length=1000, blank=True, null=True,  verbose_name="Lien de l'évènement")
+    image = models.FileField(upload_to='images/', null=True, blank=True,  verbose_name="Image illustrative")
+    date_even = models.DateField(blank=True, null=True,  verbose_name="Date de l'évènement")
+    initiateur = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+    created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    IMAGE_MAX_SIZE = (370, 260)
+    
+    def __str__(self):
+        return self.libelle 
+    
+
+    
+    def resize_image(self):
+        if self.image:
+            image = Image.open(self.image)
+            image.thumbnail(self.IMAGE_MAX_SIZE)
+            image.save(self.image.path)
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.image:
+            self.resize_image()
+        
+        
+@receiver(post_save, sender=Evenement)
+def send_newsletter_emails(sender, instance, **kwargs):
+    if kwargs['created']:
+        if  NewletterEmail.objects.all().exists():
+            for subscriber in  NewletterEmail.objects.all():
+                send_mail(
+                    'Nouvel événement disponible',
+                    f'Un nouvel événement "{instance.libelle} {instance.description}" est disponible.le lien {instance.lien}',
+                    settings.EMAIL_HOST,
+                    [subscriber.useremail],
+                    fail_silently=True,
+                )
+                
+                
+                
+                
+
+
+class Politique_Securite(models.Model):
+    titre = models.CharField(max_length=100, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    created = models.DateField(auto_now_add=True, blank=True, null=True)
+    modified = models.DateField(auto_now=True, blank=True, null=True)
+    
+    def __str__(self):
+        return self.titre
+    
+    
+    
+    
+class Temoignage(models.Model):
+    nom_prenom = models.CharField(max_length=50, null=True, blank=True, verbose_name="Titre")
+    description = models.TextField(blank=True, null=True, verbose_name="Description")
+    photo = models.FileField(upload_to='Fichiers/', null=True, blank=True)
+    created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+
+    
+    def __str__(self):
+        return self.nom_prenom
+    

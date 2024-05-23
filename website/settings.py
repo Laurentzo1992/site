@@ -69,6 +69,7 @@ WSGI_APPLICATION = 'website.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -76,19 +77,20 @@ DATABASES = {
     }
 } 
 
-
 """
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'association_bd',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'oser',
+        'USER': 'ubuntu',
+        'PASSWORD': 'pago@2023',
+        'HOST': '94.23.165.51',
+        'PORT': '5432',
     }
 }
-"""
+
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -151,8 +153,12 @@ LOGIN_REDIRECT_URL = 'home'
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'ssl0.ovh.net'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'lnikiema9@gmail.com'
-EMAIL_HOST_PASSWORD = 'VONGONOGO@1992'
+EMAIL_HOST_USER = 'infos@oser-bf.org'
+EMAIL_HOST_PASSWORD = 'oser-bf2024'
+DEFAULT_FROM_EMAIL = 'infos@oser-bf.org'
+
+
+

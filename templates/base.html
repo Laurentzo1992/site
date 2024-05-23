@@ -24,7 +24,7 @@
 
     <div class="d-flex justify-content-between" style="background-color:#0080ff;">
       <p class="d-flex flex-row">
-          <a class="text-bold" style="color:#ffffff; font-size:13px;" href="tel:+22654542526">Appelez nous au +226 54 54 25 26 | mtenkodogo9@gmail.com</a>
+          <a class="text-bold" style="color:#ffffff; font-size:13px;" href="tel:+22654542526">Appelez nous au +226 54 54 25 26 | infos@oser-bf.org</a>
       </p>
       <p class="d-flex flex-row mb-2">
           <a class="mx-3" style="color:#ffffff" href=""><i class="fa fa-youtube"></i></a>
@@ -65,41 +65,57 @@
                     <!-- RD Navbar Nav		-->
                   
                     <ul class="rd-navbar-nav">
-                      {% if user.is_superuser %}<li class="rd-nav-item" style="color:#0080ff; font-size:13px;"><a class="" style="color:#000000; font-size:13px;" href="{% url 'boad' %}"> <i class="fa fa-gears" style="color:#0080ff;"></i></a>{% endif %}
+                      {% if user.is_superuser %}
+                      <li class="rd-nav-item" style="color:#0080ff; font-size:13px;"><a class="" style="color:#000000; font-size:13px;" href="{% url 'boad' %}"> <i class="fa fa-gears" style="color:#0080ff;"></i></a>
+                      </li>
+                      {% endif %}
                       <li class="rd-nav-item" style="color:#0080ff; font-size:13px;"><a class="" style="color:#000000; font-size:13px;" href="{% url 'home' %}"> <i class="fa fa-home" style="color:#0080ff; font-size:13px;"></i> ACCUEIL</a>
                       </li>
-                      <li class="rd-nav-item" style="color:#0080ff; font-size:13px;"><a class="" style="color:#000000; font-size:13px;" href="{% url 'about' %}"> <i class="fa fa-book" style="color:#0080ff; font-size:13px;"></i> A PROPOS</a>
-                      </li>
-                      <li class="rd-nav-item" style="color:#0080ff; font-size:13px;"><a class="" style="color:#000000; font-size:13px;" href="{% url 'projet' %}"> <i class="fa fa-calculator" style="color:#0080ff; font-size:13px;"></i>PROJETS</a>
+                      <li class="rd-nav-item">
+                        <div class="btn-group dropdown" id="dropdown0">
+                          <button type="button" style="color:#000000; font-size:13px;" class="dropdown-toggle" data-bs-toggle="dropdown0" aria-expanded="false">
+                            <i class="fa fa-gears" style="color:#0080ff; font-size:13px;"></i> &nbsp;  A PROPOS 
+                          </button>
+                          <ul class="dropdown-menu">
+                            <li class="dropdown-item" style="color:#0080ff; font-size:13px;"><a class="" style="color:#000000; font-size:13px;" href="{% url 'about' %}"> <i class="fa fa-book" style="color:#0080ff; font-size:13px;"></i> &nbsp;  A PROPOS </a>
+                            </li>
+                            <li class="dropdown-item" style="color:#0080ff; font-size:13px;"><a class="" style="color:#000000; font-size:13px;" href="{% url 'projet' %}"> <i class="fa fa-gear" style="color:#0080ff; font-size:13px;"></i> &nbsp;  NOS ACTIONS </a>
+                            </li>
+                            <li class="dropdown-item" style="color:#0080ff; font-size:13px;"><a class="" style="color:#000000; font-size:13px;" href="{% url 'equipe' %}"> <i class="fa fa-users" style="color:#0080ff; font-size:13px;"></i>  &nbsp; NOTRE EQUIPE</a>
+                            </li>
+                            <li class="dropdown-item" style="color:#0080ff; font-size:13px;"><a class="" style="color:#000000; font-size:13px;" href="{% url 'joint_us' %}"> <i class="fa fa-user-plus" style="color:#0080ff; font-size:13px;"></i> &nbsp;  NOUS REJOINDRE</a>
+                            </li>
+                            <li class="dropdown-item" style="color:#0080ff; font-size:13px;"><a class="" style="color:#000000; font-size:13px;" href="{% url 'storie' %}"> <i class="fa fa-check-circle" style="color:#0080ff; font-size:13px;"></i> &nbsp;  SUCCES-STORIES</a>
+                            </li>
+                          </ul>
+                        </div>
                       </li>
                         {% if user.is_authenticated %}
                         
                        <!-- Default dropstart button -->
-                       <li class="rd-nav-item">
-                       <div class="btn-group dropdown" id="dropdown">
-                        <button type="button" style="color:#000000; font-size:13px;" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                          <i class="fa fa-gears" style="color:#0080ff; font-size:13px;"></i> OSER
-                        </button>
-                        <ul class="dropdown-menu">
-                          <li class="dropdown-item"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'Mentors' %}"><i class="fa fa-users" style="color:#0080ff; font-size:13px;"> </i> MENTORAT</a>
-                          </li>
-                          <li class="dropdown-item"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'orientation' %}"><i class="fa fa-question" style="color:#0080ff; font-size:13px;"></i> ORIENTATION</a>
-                          </li>
-                        </ul>
-                      </div>
-                    </li>
+                        <li class="rd-nav-item">
+                          <div class="btn-group dropdown" id="dropdown">
+                            <button type="button" style="color:#000000; font-size:13px;" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                              <i class="fa fa-pencil" style="color:#0080ff; font-size:13px;"></i> &nbsp; 2CLIC 
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li class="dropdown-item"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'Mentors' %}"><i class="fa fa-users" style="color:#0080ff; font-size:13px;"> </i>&nbsp;  MENTORAT</a>
+                              </li>
+                              <li class="dropdown-item"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'orientation' %}"><i class="fa fa-question" style="color:#0080ff; font-size:13px;"></i> &nbsp; ORIENTATION</a>
+                              </li>
+                            </ul>
+                          </div>
+                        </li>
                         {% endif %}
                     {% if not user.is_authenticated %}
                     <li class="rd-nav-item" style="color:#0080ff;"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'login' %}"><i class="fa fa-unlock" style="color:#0080ff; font-size:13px;"></i> CONNEXION</a>
                     </li>
                     {% endif %}
                     {% if user.is_authenticated %}
-                    <li class="rd-nav-item" id="users"><a class="text-bold" style="color:#000000; font-size:13px;" href="{% url 'logout_user' %}">{{request.user}}<i class="fa fa-check" style="color:#0080ff; font-size:13px;"></i></a>
-                    </li>
-                    <li class="rd-nav-item" id="users"><a style="color:#000000; font-size:13px;" href="{% url 'user_profile' %}"><i class="fa fa-users" style="color:#0080ff; font-size:13px;"></i></a>
+                    <li class="rd-nav-item" id="users"><a style="color:#000000; font-size:13px;" href="{% url 'user_profile' %}"><i class="fa fa-users" style="color:#0080ff; font-size:13px;"></i> &nbsp; COMPTE</a>
                     </li>
                     {% endif %}
-                    <li class="rd-nav-item" id="faq"><a class="" style="color:#000000; font-size:13px;" href="{% url 'faq' %}">FAQ<i class="fa fa-question" style="color:#0080ff; font-size:13px;"></i></a>
+                    <li class="rd-nav-item" id="faq"><a class="" style="color:#000000; font-size:13px;" href="{% url 'faq' %}"><i class="fa fa-question" style="color:#0080ff; font-size:13px;"></i> &nbsp; FAQ</a>
                     </li>
                     <li class="rd-nav-item" id="search"><a class="" style="color:#000000; font-size:13px;" href="{% url 'search' %}"><i class="fa fa-search" style="color:#0080ff; font-size:13px;"></i></a>
                     </li>
@@ -128,8 +144,7 @@
               <div class="col-sm-6 col-lg-4 col-xl-5">
                 <h3 class="text-white">Nos Contact</h3>
                 <p><i class="fa fa-phone text-white"></i> <a class="text-bold text-white" style="color:#0080ff" href="tel:+22654542526">+226 54 54 25 26</a></p>
-                <p><i class="fa fa-google text-white"></i> <a class="text-bold text-white" style="color:#0080ff" href="mailto:mtenkodogo9@gmail.com">mtenkodogo9@gmail.com</a></p>
-                <p><i class="fa fa-google text-white"></i> <a class="text-bold text-white" style="color:#0080ff" href="mailto:yameogojudicaela@gmail.com">yameogojudicaela@gmail.com</a></p>
+                <p><i class="fa fa-google text-white"></i> <a class="text-bold text-white" style="color:#0080ff" href="mailto:infos@oser-bf.org">infos@oser-bf.org</a></p>
               </div>
               <div class="col-sm-6 col-lg-5 col-xl-4">
                 <div class="row row-50 row-xl-70">

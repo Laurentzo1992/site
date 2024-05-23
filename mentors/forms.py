@@ -52,6 +52,7 @@ class EvenementForm(forms.ModelForm):
     class Meta:
         model = Evenement
         fields = '__all__'
+        exclude = ('initiateur',)
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4, 'cols': 80}),
             'date_even': forms.DateInput(attrs={'type': 'date'})

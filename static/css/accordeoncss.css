@@ -1,8 +1,4 @@
-.dropdown:hover>.dropdown-menu {
+.dropdown:hover .dropdown-menu {
   display: block;
-}
-
-.dropdown>.dropdown-toggle:active {
-  /*Without this, clicking will make it sticky*/
-    pointer-events: none;
+  margin-top: 0; /* remove the gap so it doesn't close */
 }

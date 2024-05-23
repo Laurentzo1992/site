@@ -17,10 +17,13 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.sessions.models import Session
 from django.utils import timezone
+from django.core.mail import send_mail, BadHeaderError
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def home(request):
+    politiques = Politique_Securite.objects.all()
+    temoignages = Temoignage.objects.all()
     partenariats = Partenaire.objects.all().order_by('-created')
     debut = Presentation.objects.all().first()
     slides = Slideimage.objects.all()
@@ -28,7 +31,7 @@ def home(request):
     ressources = Ressources.objects.filter(created__gte=thirty_days_ago)
     #Récupérer les événements dont la date est postérieure à aujourd'hui
     upcoming_events = Evenement.objects.filter(date_even__gte=date.today()).order_by('date_even')
-    context = {"partenariats":partenariats, "debut":debut, "upcoming_events":upcoming_events, "slides":slides, "ressources":ressources}
+    context = {"temoignages":temoignages, "politiques":politiques, "partenariats":partenariats, "debut":debut, "upcoming_events":upcoming_events, "slides":slides, "ressources":ressources}
     return render(request, 'mentors/home.html', context)
 
 
@@ -329,11 +332,25 @@ def add_even(request):
             even = form.save(commit=False)
             even.initiateur = request.user
             even.save()
-            messages.success(request, "Nouveau Evenment Ajouté")
+
+            # Envoyer un email à tous les utilisateurs
+            subject = 'Nouveau Événement Ajouté'
+            message = f'Un nouveau événement "{even.libelle}" a été ajouté par {even.initiateur.first_name} " " {even.initiateur.last_name}'
+            from_email = settings.DEFAULT_FROM_EMAIL
+            recipient_list = NewletterEmail.objects.values_list('useremail', flat=True)
+
+            try:
+                send_mail(subject, message, from_email, recipient_list)
+                messages.success(request, "Nouveau Événement Ajouté et emails envoyés")
+            except BadHeaderError:
+                messages.error(request, "Erreur lors de l'envoi de l'email")
+                return redirect('get_all_even')
+
             return redirect('get_all_even')
     else:
         form = EvenementForm()
     return render(request, 'mentors/add_even.html', {'form': form})
+
 
 
 
@@ -737,15 +754,15 @@ def newletter(request):
         post_useremail = request.POST.get('email')
         if post_useremail:
             # Vérifier si l'email existe déjà
-            if NexletterEmail.objects.filter(useremail=post_useremail).exists():
+            if NewletterEmail.objects.filter(useremail=post_useremail).exists():
                 messages.error(request, 'Cet email est déjà abonné.')
             else:
-                new = NexletterEmail.objects.create(useremail=post_useremail)
+                new = NewletterEmail.objects.create(useremail=post_useremail)
                 new.save()
                 send_mail(
-                    'Confirmation d\'abonnement',
+                    'Confirmation abonnement',
                     'Vous êtes maintenant abonné à notre newsletter.',
-                    settings.EMAIL_HOST,
+                    settings.DEFAULT_FROM_EMAIL,
                     [post_useremail],
                     fail_silently=False,
                 )
@@ -753,3 +770,23 @@ def newletter(request):
         else:
             messages.error(request, 'Échec de l\'abonnement, veuillez vérifier votre email.')
     return redirect('home')
+
+
+
+
+
+def equipe(request):
+    equipes = Equipe.objects.all()
+    context = {"equipes":equipes}
+    return render(request, 'mentors/equipe.html', context)
+
+
+def joint_us(request):
+    context = {}
+    return render(request, 'mentors/joint_us.html', context)
+
+
+def storie(request):
+    stories = Storie.objects.all()
+    context = {"stories":stories}
+    return render(request, 'mentors/storie.html', context)

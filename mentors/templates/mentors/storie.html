@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="container">
+    <div class="row">
+        {% for data in stories %}
+        <div class="col-4">
+            <div class="card">
+                {% if data.photo %}
+                <img src="{{data.photo.url}}" class="card-img-top" alt="photo ulustrative">
+                {% else %}
+                <img class="w-25 mx-auto d-block" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="photo ulustrative">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{data.nom_prenom}}</h5>
+                    <p class="card-text">{{data.description}}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        Pas de données
+        {% endfor %}
+    </div>
+</div>
+{% endblock main %}
