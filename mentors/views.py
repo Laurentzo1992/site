@@ -30,14 +30,17 @@ def home(request):
     thirty_days_ago = datetime.now() - timedelta(days=30)
     ressources = Ressources.objects.filter(created__gte=thirty_days_ago)
     #Récupérer les événements dont la date est postérieure à aujourd'hui
-    upcoming_events = Evenement.objects.filter(date_even__gte=date.today()).order_by('date_even')
-    context = {"temoignages":temoignages, "politiques":politiques, "partenariats":partenariats, "debut":debut, "upcoming_events":upcoming_events, "slides":slides, "ressources":ressources}
+    activites = Activite.objects.all()
+    #upcoming_events = Activite.objects.filter(date_even__gte=date.today()).order_by('date_even')
+    context = {"temoignages":temoignages, "politiques":politiques, "partenariats":partenariats, "debut":debut, "activites":activites, "slides":slides, "ressources":ressources}
     return render(request, 'mentors/home.html', context)
 
 
 def boad(request):
     users = User.objects.all().count()
+    demandes = Adession.objects.all()
     #mentorslists = User.objects.filter(groups__name='mentors')
+    users_profiles = Profiles.objects.filter(user__groups__name='utilisateurs')
     mentorslists = Profiles.objects.filter(user__groups__name='mentors')
     mentors = User.objects.filter(groups__name='mentors').count()
     mentores = User.objects.filter(groups__name='utilisateurs').count()
@@ -64,7 +67,15 @@ def boad(request):
     nombre_utilisateurs_connectes = utilisateurs_connectes.count()
 
 
-    context = {"mentorslists":mentorslists, "utilisateurs_connectes":utilisateurs_connectes, "nombre_utilisateurs_connectes":nombre_utilisateurs_connectes, "superadmins":superadmins, "sansmentores":sansmentores, "mentores":mentores, "mentors":mentors, "users":users}
+    context = {"users_profiles":users_profiles,
+               "mentorslists":mentorslists,
+               "utilisateurs_connectes":utilisateurs_connectes,
+               "nombre_utilisateurs_connectes":nombre_utilisateurs_connectes,
+               "superadmins":superadmins, "sansmentores":sansmentores,
+               "mentores":mentores, "mentors":mentors,
+               "users":users,
+               "demandes":demandes,
+               }
     return render(request, 'mentors/boad.html', context)
 
 
@@ -767,6 +778,7 @@ def newletter(request):
                     fail_silently=False,
                 )
                 messages.success(request, 'Abonnement réussi')
+                return redirect('home')
         else:
             messages.error(request, 'Échec de l\'abonnement, veuillez vérifier votre email.')
     return redirect('home')
@@ -790,3 +802,31 @@ def storie(request):
     stories = Storie.objects.all()
     context = {"stories":stories}
     return render(request, 'mentors/storie.html', context)
+
+
+
+def adesion(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        tel = request.POST.get('tel')
+        motivation = request.POST.get('raison')
+        if email and tel and motivation:
+            # Vérifier si l'email existe déjà
+            if Adession.objects.filter(email=email).exists():
+                messages.warning(request, 'demande déja fait.')
+                return redirect('joint_us')
+            else:
+                adde = Adession.objects.create(email=email, tel=tel, motivation=motivation)
+                adde.save()
+                send_mail(
+                    'Confirmation de votre demaande',
+                    'Votre demande pour nous rejoindre à été bien pris en compte.',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                    fail_silently=False,
+                )
+                messages.success(request, 'Demande reussi!')
+                return redirect('joint_us')
+        else:
+            messages.error(request, 'Échec , veuillez vérifier.')
+    return redirect('joint_us')

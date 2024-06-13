@@ -39,4 +39,5 @@ urlpatterns = [
     path('equipe/', views.equipe, name='equipe'),
     path('storie/', views.storie, name='storie'),
     path('joint_us/', views.joint_us, name='joint_us'),
+    path('joint_us/add', views.adesion, name='adesion'),
 ]

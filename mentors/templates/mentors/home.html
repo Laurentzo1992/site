@@ -39,10 +39,10 @@
         <div class="container">
           <div class="row row-50 justify-content-center justify-content-lg-between">
             <div class="col-12">
-              <h3 class="h-custom-1 f1" style="color:#0080ff;">2clic? </h3>
+              <h1 class="h-custom-1 f1" style="color:#0080ff;">2clic? </h1>
             </div>
             <div class="col-6">
-              <h3>{{debut.about|slice:":300"}}.</h3><a class="btn" href="{% url 'about' %}"><span style="color:#0080ff;">Lire plus</span></a>
+              <p style="text-align: justify;">{{debut.about1}}.</p><a class="btn" href="{% url 'about' %}"><span style="color:#0080ff;">Lire plus</span></a>
             </div>
             
             <div class="col-6" data-wow-delay=".4s"><img class="" src="{% static 'media/images/equipe.svg' %}" alt=""></div>
@@ -71,29 +71,23 @@
           </div>
       </div>
 
+       <!-- Temoignage -->
 
-      {% comment %} <section class="section section-lg bg-default text-center">
-        <div class="container">
-          <h6 class="wow fadeIn" style="color:#0080ff;">A venir...</h6>
-          <div class="row row-30 row-md-50 row-xl-70">
-            <div class="col-sm-6 col-lg-4 wow fadeIn">
-              <!-- Post Minimal-->
-              {% for data in upcoming_events %}
-              <div class="post-minimal">
-                <figure class="post-minimal-media"><a href="#"><img class="post-minimal-image" src="{{data.image.url}}" alt="" width="370" height="260"/></a></figure>
-                <div class="post-minimal-meta">
-                  <ul class="list-inline">
-                    <li class="list-inline-item" style="color:#0080ff;">Mentor:</li>
-                    <li class="list-inline-itema">{{data.initiateur.first_name}} {{data.initiateur.last_name}}</li>
-                  </ul>
-                </div>
-                <h4 class="post-minimal-title" style="color:#0080ff;">{{data.libelle}} le {{data.date_even|date:"D d M Y"}}</h4>
-              </div>
+      <section class="section section-lg bg-default text-center">
+        <div class="container222">
+            <h6 class="wow fadeIn" style="color:#0080ff;">Nos Activités </h6>
+            {% for activite in activites %}
+            <div class="activite">
+                {% if activite.image_des %}
+                <img src="{{ activite.image_des.url }}" alt="{{ activite.titre }}">
+                {% endif %}
+                <h2>{{ activite.titre }}</h2>
+                <p>{{ activite.description }}</p>
+                <small>Créé le : {{ activite.created }}</small>
             </div>
             {% endfor %}
-            <a class="button wow fadeIn text-center" style="color:#0080ff;" href="{% url 'get_all_even' %}" data-wow-delay=".2s"><span>Tous les évèments</span></a>
         </div>
-      </section> {% endcomment %}
+      </section>
 
 
         <!-- Temoignage -->
@@ -140,31 +134,34 @@
       </section>
 
 
-<!-- RGPH-->
-<section class="section section-lg bg-default">
-  <div class="container">
-      <h6 class="wow fadeIn text-center" style="background-color:#F2CF05; color:#0080ff">RGPG</h6>
-      <div class="row row-50 justify-content-center justify-content-xl-between flex-lg-row-reverse">
-          <div class="col-md-11 col-lg-12">
-              <div class="accordion accordion-flush" id="accordionFlushExample">
-                  {% for data in politiques %}
-                  <div class="accordion-item">
-                      <h2 class="accordion-header" id="flush-heading{{data.id}}">
-                          <button class="accordion-button collapsed text-white" style="background-color:#0080ff;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{data.id}}" aria-expanded="false" aria-controls="flush-collapse{{data.id}}">
-                              {{ data.titre }}
-                          </button>
-                      </h2>
-                      
-                      <div id="flush-collapse{{data.id}}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{data.id}}" data-bs-parent="#accordionFlushExample">
-                          <div class="accordion-body">{{ data.description }}</div>
-                      </div>
-                  </div>
-                  {% endfor %}
-              </div>
-          </div>
-      </div>
-  </div>
-</section>
+      <!-- RGPH-->
+      <section class="section section-lg bg-default">
+        <div class="container">
+            <div class="text-center">
+                <button id="toggleButton" type="button" class="btn btn-warning">
+                    Règlement Générale sur la Protection des données Personnelles
+                </button>
+            </div>
+            <div class="row row-50 justify-content-center justify-content-xl-between flex-lg-row-reverse" id="rgpd" style="display: none;">
+                <div class="col-md-11 col-lg-12">
+                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                        {% for data in politiques %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-heading{{data.id}}">
+                                <button class="accordion-button collapsed text-white" style="background-color:#0080ff;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{data.id}}" aria-expanded="false" aria-controls="flush-collapse{{data.id}}">
+                                    {{ data.titre }}
+                                </button>
+                            </h2>
+                            <div id="flush-collapse{{data.id}}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{data.id}}" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">{{ data.description }}</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>    
     
       {% endblock content %}
 
@@ -190,6 +187,21 @@
 
       {% endfor%}
 
+
+      <script>
+          document.addEventListener("DOMContentLoaded", function() {
+            const toggleButton = document.getElementById("toggleButton");
+            const rgpdSection = document.getElementById("rgpd");
+        
+            toggleButton.addEventListener("click", function() {
+                if (rgpdSection.style.display === "none" || rgpdSection.style.display === "") {
+                    rgpdSection.style.display = "block";
+                } else {
+                    rgpdSection.style.display = "none";
+                }
+            });
+        });
+      </script>
       {% endblock main %}
      
     

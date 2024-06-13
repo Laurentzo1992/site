@@ -3,7 +3,7 @@ from mentors.models import *
 
 
 
-
+admin.site.register(Activite)
 admin.site.register(Regions)
 admin.site.register(Provinces)
 admin.site.register(Communes)

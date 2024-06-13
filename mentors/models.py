@@ -374,6 +374,7 @@ class Slideimage(models.Model):
         return self.titre1
     
 class Presentation(models.Model):
+    about1 = models.TextField(blank=True, null=True, verbose_name="A propos de 2click")
     about = models.TextField(blank=True, null=True, verbose_name="Qui nous sommes")
     mission = models.TextField(blank=True, null=True, verbose_name="Notre mission")
     vision = models.TextField(blank=True, null=True, verbose_name="Notre vision")
@@ -562,6 +563,7 @@ def send_newsletter_emails(sender, instance, **kwargs):
 class Politique_Securite(models.Model):
     titre = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
+    date_even = models.DateField(blank=True, null=True,  verbose_name="Date de l'activité")
     created = models.DateField(auto_now_add=True, blank=True, null=True)
     modified = models.DateField(auto_now=True, blank=True, null=True)
     
@@ -582,3 +584,27 @@ class Temoignage(models.Model):
     def __str__(self):
         return self.nom_prenom
     
+    
+    
+class Activite(models.Model):
+    titre = models.CharField(max_length=50, null=True, blank=True, verbose_name="Titre")
+    description = models.TextField(blank=True, null=True, verbose_name="Description")
+    image_des = models.FileField(upload_to='Fichiers/', null=True, blank=True, verbose_name="Image Descriptive")
+    created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    
+    
+    def __str__(self):
+        return self.titre
+    
+    
+class Adession(models.Model):
+    email = models.EmailField(null=True, blank=True, verbose_name="Email")
+    tel = models.CharField(max_length=15, blank=True, null=True, verbose_name="Téléphone")
+    motivation = models.TextField(null=True, blank=True, verbose_name="Motivation")
+    created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    
+    
+    def __str__(self):
+        return self.email
