@@ -4,10 +4,10 @@
 <div class="container">
     <div class="row">
         {% for data in equipes %}
-        <div class="col-4">
-            <div class="card">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+            <div class="card h-100 shadow-lg p-3 mb-5 bg-warning">
                 {% if data.photo %}
-                <img src="{{data.photo.url}}" class="mx-auto d-block" alt="photo ulustrative">
+                <img src="{{data.photo.url}}" class="mx-auto d-block rounded-circle" alt="photo ulustrative">
                 {% else %}
                 <img class="w-25 mx-auto d-block" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="photo ulustrative">
                 {% endif %}
@@ -18,7 +18,9 @@
             </div>
         </div>
         {% empty %}
-        Pas de données
+        <div class="col-12">
+            <p class="text-center">Pas de données</p>
+        </div>
         {% endfor %}
     </div>
 </div>

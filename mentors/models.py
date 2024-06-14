@@ -472,18 +472,6 @@ class Equipe(models.Model):
 
     def __str__(self):
         return self.nom_prenom
-
-    def resize_image(self):
-        if self.photo:
-            image = Image.open(self.photo)
-            image.thumbnail(self.IMAGE_MAX_SIZE)
-            # Sauvegarde de l’image redimensionnée dans le système de fichiers
-            image.save(self.photo.path)
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        if self.photo:
-            self.resize_image()
             
             
             
@@ -574,7 +562,7 @@ class Politique_Securite(models.Model):
     
     
 class Temoignage(models.Model):
-    nom_prenom = models.CharField(max_length=50, null=True, blank=True, verbose_name="Titre")
+    nom_prenom = models.CharField(max_length=50, null=True, blank=True, verbose_name="Nom et Prenom")
     description = models.TextField(blank=True, null=True, verbose_name="Description")
     photo = models.FileField(upload_to='Fichiers/', null=True, blank=True)
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
@@ -587,7 +575,7 @@ class Temoignage(models.Model):
     
     
 class Activite(models.Model):
-    titre = models.CharField(max_length=50, null=True, blank=True, verbose_name="Titre")
+    titre = models.CharField(max_length=200, blank=True, null=True,verbose_name="Titre")
     description = models.TextField(blank=True, null=True, verbose_name="Description")
     image_des = models.FileField(upload_to='Fichiers/', null=True, blank=True, verbose_name="Image Descriptive")
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)

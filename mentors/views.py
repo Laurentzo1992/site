@@ -18,7 +18,7 @@ from django.conf import settings
 from django.contrib.sessions.models import Session
 from django.utils import timezone
 from django.core.mail import send_mail, BadHeaderError
-
+from django.db.models import Count
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def home(request):
@@ -32,7 +32,12 @@ def home(request):
     #Récupérer les événements dont la date est postérieure à aujourd'hui
     activites = Activite.objects.all()
     #upcoming_events = Activite.objects.filter(date_even__gte=date.today()).order_by('date_even')
-    context = {"temoignages":temoignages, "politiques":politiques, "partenariats":partenariats, "debut":debut, "activites":activites, "slides":slides, "ressources":ressources}
+    
+    data = Profiles.objects.all().exclude(niveau__isnull=True).values('niveau__libelle').annotate(user_count=Count('user')).order_by('niveau__libelle')
+    levels = [entry['niveau__libelle'] for entry in data]
+    counts = [entry['user_count'] for entry in data]
+    
+    context = {"data":data, "counts": counts, "levels": levels, "temoignages":temoignages, "politiques":politiques, "partenariats":partenariats, "debut":debut, "activites":activites, "slides":slides, "ressources":ressources}
     return render(request, 'mentors/home.html', context)
 
 

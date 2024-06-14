@@ -3,7 +3,7 @@ from mentors.models import *
 
 
 
-admin.site.register(Activite)
+
 admin.site.register(Regions)
 admin.site.register(Provinces)
 admin.site.register(Communes)
@@ -36,5 +36,6 @@ admin.site.register(Equipe)
 admin.site.register(Storie)
 admin.site.register(Politique_Securite)
 admin.site.register(Temoignage)
+admin.site.register(Activite)
 
 
