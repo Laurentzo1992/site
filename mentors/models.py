@@ -270,7 +270,7 @@ class Niveau_formation(models.Model):
     
 class Profiles(models.Model):
     user = models.OneToOneField(User, blank=True, null=True, on_delete=models.CASCADE)
-    telephone = models.CharField(max_length=20, blank=True, null=True)
+    telephone = models.CharField(max_length=20, blank=True, null=True, verbose_name='Téléphone')
     niveau = models.ForeignKey(Niveau_formation, blank=True, null=True, on_delete=models.CASCADE)
     commune = models.ForeignKey(Communes, blank=True, null=True, on_delete=models.CASCADE)
     village = models.CharField(max_length=20, blank=True, null=True)
@@ -279,12 +279,11 @@ class Profiles(models.Model):
     profile = models.TextField(blank=True, null=True)
     objectif = models.CharField(max_length=200, blank=True, null=True)
     type_mentorat = models.ForeignKey(Typementorat, blank=True, null=True, on_delete=models.CASCADE)
-    mentor = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True, related_name='mentored_profiles')
     photo = models.FileField(upload_to='profile/', null=True, blank=True)
     ojectif_academique = models.ForeignKey(Objectif_Accademique, blank=True, null=True, on_delete=models.CASCADE)
-    cannaux = models.ForeignKey(Cannaux_Communication, blank=True, null=True, on_delete=models.CASCADE)
-    frequesce = models.ForeignKey(Frequence_Echange, blank=True, null=True, on_delete=models.CASCADE)
-    connaissance = models.ForeignKey(Cannaux_Connaissance, blank=True, null=True, on_delete=models.CASCADE)
+    cannaux = models.ForeignKey(Cannaux_Communication, blank=True, null=True, on_delete=models.CASCADE, verbose_name='Quel canal de communication préférez vous pour echanger avec le mentor')
+    frequesce = models.ForeignKey(Frequence_Echange, blank=True, null=True, on_delete=models.CASCADE, verbose_name='A quelle fréquence vous vous echangez avec le mentor?')
+    connaissance = models.ForeignKey(Cannaux_Connaissance, blank=True, null=True, on_delete=models.CASCADE, verbose_name='Comment avez vous connu MEntorMe')
     attente = models.TextField(blank=True, null=True)
     total_time_on_platform = models.DurationField(default=timezone.timedelta())
     last_login = models.DateTimeField(blank=True, null=True)
@@ -357,10 +356,35 @@ def create_or_update_profile(sender, instance, created, **kwargs):
     else:
         instance.profiles.save()
 
-        
+class Mentorat_Statut(models.Model):
+    statut = models.CharField(max_length=200, blank=True, null=True)
+    created = models.DateField(auto_now_add=True, null=True)
+    modified = models.DateField(auto_now=True, null=True)
+    
+    def __str__(self):
+        return self.statut
+    
 
+class Mentorat(models.Model):
+    date_debut = models.DateField(null=True, blank=True)
+    date_fin = models.DateField(null=True, blank=True)
+    demandeur = models.ForeignKey(Profiles, related_name='demandes_mentorat', on_delete=models.CASCADE, blank=True, null=True)
+    mentor = models.ForeignKey(Profiles, related_name='mentorats', on_delete=models.CASCADE, blank=True, null=True)
+    statut = models.ForeignKey(Mentorat_Statut, on_delete=models.CASCADE, blank=True, null=True)
+    created = models.DateField(auto_now_add=True, null=True)
+    modified = models.DateField(auto_now=True, null=True)
+    
+    
+    def __str__(self):
+        return f'Mentorat from {self.demandeur} with {self.mentor} (Status: {self.statut})'
 
+   
 
+class Mentorat_Score(models.Model):
+    mentore_note = models.CharField(max_length=10, blank=True, null=True)
+    mentorat_score = models.ForeignKey(Mentorat, on_delete=models.CASCADE, blank=True, null=True)
+    
+    
 class Slideimage(models.Model):
     image = models.FileField(upload_to='images/', null=True, blank=True)
     titre1 = models.CharField(max_length=200, blank=True, null=True)
@@ -596,3 +620,19 @@ class Adession(models.Model):
     
     def __str__(self):
         return self.email
+    
+    
+
+
+class Mot_du_Fondateur(models.Model):
+    STATUS = (
+    ('actif', ('mot actif')),
+    ('inactif', ('mot inactif')),
+    )
+    
+    mot = models.TextField(blank=True, null=True, verbose_name="Mot du fondateur")
+    statut = models.CharField(max_length=32, choices=STATUS, blank=True, null=True, verbose_name="Statut")
+    
+    
+    def __str__(self):
+        return self.mot

@@ -4,9 +4,8 @@ from mentors.views import *
 
 
 urlpatterns = [
-    #gestion site
     path('', views.home, name='home'),
-    path('tableau_de bord/', views.boad, name='boad'),
+    path('tableau_de_bord/', views.boad, name='boad'),
     path('login/', views.Login, name='login'),
     path('user_profile/', views.user_profile, name='user_profile'),
     path('editprofile/<int:id>', views.editprofile, name='editprofile'),
@@ -16,18 +15,12 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('projet/', views.projet, name='projet'),
     path('Mentors/', views.Mentors, name='Mentors'),
-    path('abonnement/<int:id>', views.abonnement, name='abonnement'),
-    path('desabonnement/', views.desabonnement, name='desabonnement'),
     path('orientation/', views.tableau_orientations, name='orientation'),
     path('get_all_even/', views.get_all_even, name='get_all_even'),
     path('get_all_ressource/', views.get_all_ressource, name='get_all_ressource'),
     path('add_even/', views.add_even, name='add_even'),
     path('add_ressource/', views.add_ressource, name='add_ressource'),
     path('get_all_forum/', views.get_all_forum, name='get_all_forum'),
-    path('send_message/', views.send_message, name='send_message'),
-    path('send_message_to_users/', views.send_message_to_users, name='send_message_to_users'),
-    path('message_thread/', views.message_thread, name='message_thread'),
-    path('mentor_messages/', views.mentor_messages, name='mentor_messages'),
     path('add_forum/', views.add_forum, name='add_forum'),
     path('get_all_forum/add_comment/<int:id>/', views.add_comment, name='add_comment'),
     path('get_all_forum/edit_comment/<int:id>/', views.edit_comment, name='edit_comment'),
@@ -40,4 +33,8 @@ urlpatterns = [
     path('storie/', views.storie, name='storie'),
     path('joint_us/', views.joint_us, name='joint_us'),
     path('joint_us/add', views.adesion, name='adesion'),
+    path('demande_ment/add', views.demande_ment, name='demande_ment'),
+    path('valider_mentorat/valid/<int:mentorat_id>/', views.valider_mentorat, name='valider_mentorat'),
+    path('fermer_mentorat/fermer/<int:mentorat_id>/', views.fermer_mentorat, name='fermer_mentorat'),
+    path('complete_profile', views.complete_profile, name='complete_profile'),
 ]

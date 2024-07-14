@@ -12,7 +12,7 @@
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="dashboard/images/favicon.png">
-    <title>Matrix Template - The Ultimate Multipurpose admin template</title>
+    <title>Dashboard</title>
     <!-- Custom CSS -->
     <link href="dashboard/css/float-chart.css" rel="stylesheet">
     <!-- Custom CSS -->
@@ -44,6 +44,12 @@
     <link href="{% static 'dashboard/css/float-chart.css' %}" rel="stylesheet"/>
     <link href="{% static 'dashboard/css/style.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'dashboard/css/custom.css' %}" rel="stylesheet"/>
+     <!-- Datatable export data lib css-->
+    <link href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" rel="stylesheet"/>
+    <link href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.css" rel="stylesheet"/>
+
+   
+    
 </head>
 
 <body>
@@ -105,7 +111,7 @@
                 <!-- ============================================================== -->
                 <!-- Sales chart -->
                 <!-- ============================================================== -->
-                <div class="row">
+                <div class="row mb-5">
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
@@ -117,7 +123,7 @@
                                 <div class="row">
                                     <!-- column -->
                                     <div class="col-lg-9">
-                                        <div class="flot-chart">
+                                        <div class="table-responsive">
                                             <table id="zero_config" class="table table-striped table-bordered">
                                                 <thead>
                                                     <tr>
@@ -208,7 +214,7 @@
                                 <div class="row">
                                     <!-- column -->
                                     <div class="col-lg-12">
-                                        <div class="flot-chart">
+                                        <div class="table-responsive">
                                             <table id="profile" class="table table-striped table-bordered">
                                                 <thead>
                                                     <tr>
@@ -243,7 +249,7 @@
 
 
                  <!-- liste demande adesion -->
-                 <div class="row mb-5">
+                <div class="row mb-5 mt-5">
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
@@ -255,7 +261,7 @@
                                 <div class="row">
                                     <!-- column -->
                                     <div class="col-lg-12">
-                                        <div class="flot-chart">
+                                        <div class="table-responsive">
                                             <table id="demande" class="table table-striped table-bordered">
                                                 <thead>
                                                     <tr>
@@ -283,6 +289,82 @@
                         </div>
                     </div>
                 </div>
+
+
+                <!-- liste de demande de mentorat -->
+                <div class="row mb-5">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-md-flex align-items-center">
+                                    <div>
+                                        <h4 class="card-title">Liste des demande de mentorat</h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <!-- column -->
+                                    <div class="col-lg-12">
+                                        <div class="table-responsive">
+                                            <table id="mentorat" class="table table-striped table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Mentoré</th>
+                                                        <th>Téléphone</th>
+                                                        <th>Email</th>
+                                                        <th>Date debut</th>
+                                                        <th>Date fin</th>
+                                                        <th>Mentor</th>
+                                                        <th>Statut</th>
+                                                        <th>Action</th>
+                                                        <th>Fermer</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for data in demandes_mentorats %}
+                                                    <tr>
+                                                        <td>{{data.demandeur.user.last_name}}--{{data.demandeur.user.first_name}}</td>
+                                                        <td>{{data.demandeur.telephone}}</td>
+                                                        <td>{{data.demandeur.user.email}}</td>
+                                                        <td>{{data.date_debut}}</td>
+                                                        <td>{{data.date_fin}}</td>
+                                                        {% if data.mentor %}
+                                                        <td>{{data.mentor}}</td>
+                                                        {% else %}
+                                                        <td>Aucun</td>
+                                                        {% endif %}
+                                                        {% if data.statut.statut == "demande" %}
+                                                        <td class="text-warning">En cours de validation <i class="fa fa-check-circle-o text-warning"></i></td>
+                                                        {% elif data.statut.statut == "valide" %}
+                                                        <td>Validé <i class="fa fa-check-circle text-success"></i></td>
+                                                        {% else %}
+                                                        <td class="text-danger">session fermer <i class="fa fa-close text-success"></i></td>
+                                                        {% endif %}
+                                                        <td>
+                                                            <a class="btn btn-primary" href="{% url 'valider_mentorat' data.id %}" title="valider la session"><i class="fa fa-eye"></i></a>
+                                                        </td>
+                                                        {% if data.statut.id == 3 %}
+                                                        <td>
+                                                    
+                                                        </td>
+                                                        {% else %}
+                                                        <td>
+                                                            <a class="btn btn-primary" href="{% url 'fermer_mentorat' data.id %}" title="fermer la session"><i class="fa fa-eye-slash"></i></a>
+                                                        </td>
+                                                        {% endif %}
+                                                    </tr>
+                                                    {% include "mentors/detail.html" %}
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <!-- column -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
             </div>
             <!-- ============================================================== -->
@@ -342,17 +424,82 @@
         <script src="{% static 'dashboard/js/select2.min.js' %}"></script>
         <script src="{% static 'dashboard/js/jquery.inputmask.bundle.min.js' %}"></script>
 
+        <!-- Datatable export data lib js-->
+        <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+        <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
+        <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.dataTables.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+        <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
+       
+        
+       
+       
+        
+        
+
         <script>
-            $('#zero_config').DataTable();
+            $('#zero_config').DataTable({
+                scrollCollapse: true,
+                pagingType: "simple_numbers",
+                lengthMenu:[5,10,15,20,25],
+                pageLength: 3
+            });
+            
         </script>
 
         <script>
-            $('#profile').DataTable();
+            $('#profile').DataTable({
+                scrollCollapse: true,
+                pagingType: "simple_numbers",
+                lengthMenu:[5,10,15,20,25],
+                pageLength: 3
+            });
         </script>
 
         <script>
-            $('#demande').DataTable();
+            $('#demande').DataTable({
+                scrollCollapse: true,
+                pagingType: "simple_numbers",
+                lengthMenu:[5,10,15,20,25],
+                pageLength: 3
+            });
         </script>
+        <script>
+            $('#mentorat').DataTable({
+                scrollCollapse: true,
+                pagingType: "simple_numbers",
+                lengthMenu:[5,10,15,20,25],
+                pageLength: 3,
+                layout: {
+                topStart: {
+                    buttons: ['copyHtml5', 'excelHtml5', 'pdfHtml5']
+                }
+            }
+            });
+        </script>
+        
+        {% for message in messages %}
+      <script src="{% static 'js/sweetalert.min.js' %}"></script>
+      {% if message.tags == 'error' %}
+      <script>
+          var m = "{{ message }}";
+          swal("Réfusé!", m, "error");
+      </script>
+      {% elif message.tags == 'success' %}
+      <script>
+          var m = "{{ message }}";
+          swal("Bienvenue!", m, "success");
+      </script>
+      {% elif message.tags == 'warning' %}
+      <script>
+          var m = "{{ message }}";
+          swal("A bientôt!", m, "warning");
+      </script>
+      {% endif %}
+
+      {% endfor%}
 
 </body>
 

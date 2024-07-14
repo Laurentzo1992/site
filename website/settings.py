@@ -1,5 +1,7 @@
 from pathlib import Path
 import os
+from celery.schedules import crontab
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -12,9 +14,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=5=l(*q*m0p&trqrs&4gj48hyo=f1^#wfcv1ofc6$+z%0mdwx('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
+DEBUG = True
 
-DEBUG = False
+#DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -31,6 +33,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mentors',
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -42,6 +46,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'mentors.middleware.ProfileCompletionMiddleware',
 ]
 
 ROOT_URLCONF = 'website.urls'
@@ -71,15 +76,15 @@ WSGI_APPLICATION = 'website.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-"""
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 } 
-"""
 
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -90,7 +95,7 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-
+"""
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -130,17 +135,17 @@ STATIC_URL = "static/"
 
 STATIC_ROOT = BASE_DIR / 'static'
 
-"""
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "website/static")
 ]
-"""
+
 MEDIA_URL = '/media/'
 
-#MEDIA_ROOT = os.path.join(BASE_DIR, "website/static/media")
+MEDIA_ROOT = os.path.join(BASE_DIR, "website/static/media")
 
 #production
-MEDIA_ROOT = os.path.join(BASE_DIR, "static/media")
+#MEDIA_ROOT = os.path.join(BASE_DIR, "static/media")
 
 
 # Default primary key field type
@@ -165,3 +170,25 @@ DEFAULT_FROM_EMAIL = 'infos@oser-bf.org'
 
 
 
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+
+
+
+CELERY_BEAT_SCHEDULE = {
+    'fermer-mentorat-automatiquement': {
+        'task': 'mentors.tasks.fermer_mentorat_automatiquement',
+        'schedule': crontab(minute=0, hour=0),
+    },
+}
+
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'

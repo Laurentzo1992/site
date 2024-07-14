@@ -9,7 +9,7 @@
           <div class="swiper-container swiper-slider swiper-slider-1" data-loop="false" data-autoplay="5000" data-simulate-touch="false">
               <div class="swiper-wrapper">
                   {% for slide in slides %}
-                  <div class="swiper-slide" style="background-image: url('{{slide.image.url}}');">
+                  <div class="swiper-slide" style="background-image: url('{{slide.image.url}}'); background-size: cover; background-position: center;">
                       <div class="swiper-slide-caption context-dark">
                           <div class="container">
                               <div class="row">
@@ -40,7 +40,7 @@
         <div class="container">
             <div class="row row-50 justify-content-center justify-content-lg-between">
                 <div class="col-12">
-                    <h1 class="h-custom-1 f1" style="color:#0080ff;">2clic? </h1>
+                    <h1 class="h-custom-1 f1" style="color:#0080ff;">Faso Mentorat ? </h1>
                 </div>
                 <div class="col-12 col-md-6 mb-4 mb-md-0">
                     <p style="text-align: justify;">{{debut.about1}}.</p>
@@ -56,26 +56,35 @@
       <!-- Featured-->
 
       <div class="row mx-3 mb-3">
-          <div class="col-sm-6 text-center">
-            <div class="card">
-              <div class="card-body">
-                <p style="color:#0080ff;">Je suis jeune, je trouve un mentor</p>
-                <a href="{% url 'login' %}" class="btn btn-primary" style="background-color:#0080ff;">Je m'inscris</a>
+        <div class="col-sm-6 text-center">
+          <div class="card">
+            <div class="card-body d-flex flex-column">
+              <p style="color:#0080ff;">Je suis jeune, je trouve un mentor</p>
+              <a href="{% url 'login' %}" class="btn btn-primary mb-auto" style="background-color:#0080ff;">Je m'inscris</a>
+              <div class="mt-auto">
+                <img id="animated-image1" src="https://www.supercoloring.com/sites/default/files/styles/coloring_full/public/cif/2022/01/mentor-coloring-page.png" class="custom-image-size w-25 mt-3 animated-image" alt="Image mentor">
               </div>
             </div>
           </div>
-  
-          <div class="col-sm-6 text-center">
-            <div class="card">
-              <div class="card-body">
-                <p style="color:#0080ff;">Je suis un professionnel, j’accompagne un jeune</p>
-                <a href="{% url 'login' %}" class="btn btn-primary" style="background-color:#0080ff;">Je m'inscris</a>
+        </div>
+      
+        <div class="col-sm-6 text-center">
+          <div class="card">
+            <div class="card-body d-flex flex-column">
+              <p style="color:#0080ff;">Je suis un professionnel, j’accompagne un jeune</p>
+              <a href="{% url 'login' %}" class="btn btn-primary mb-auto" style="background-color:#0080ff;">Je m'inscris</a>
+              <div class="mt-auto">
+                <img id="animated-image" src="https://st3.depositphotos.com/2801893/13369/v/450/depositphotos_133699472-stock-illustration-mentoring-and-coaching.jpg" class="custom-image-size w-25 mt-5 animated-image" alt="Image mentor">
               </div>
             </div>
           </div>
+        </div>
       </div>
+      
+      
+      
 
-       <!-- Temoignage -->
+       <!-- Activité -->
 
       <section class="section section-lg bg-default text-center">
         <div class="container222">
@@ -96,10 +105,10 @@
 
       <!-- Temoignage -->
        
-      <!-- Temoignage -->
+
       <section class="section section-lg bg-default text-center">
         <div class="container">
-          <h6 class="wow fadeIn" style="color:#0080ff;">Témoignage</h6>
+          <h6 class="wow fadeIn" style="color:#0080ff;">Nos Mentorés Témoignent</h6>
             <div class="row">
                 {% for data in temoignages %}
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
@@ -149,20 +158,48 @@
 
 
       <!-- Statistique -->
-          <section class="section section-lg bg-default text-center">
-              <div class="container">
-                  <h6 class="wow fadeIn" style="color:#0080ff;">Statistique</h6>
-                  <div class="row justify-content-center">
-                      <div class="col-12 col-md-10 col-lg-8">
-                          <div class="chart-container" style="position: relative; height:60vh; width:100%">
-                              <canvas id="myChart"></canvas>
+      <section class="section section-lg bg-default text-center">
+        <div class="container">
+            <h6 class="wow fadeIn" style="color:#0080ff;">Statistique</h6>
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="row">
+                        <!-- Exemple d'indicateur 1 -->
+                        <div class="col-12 col-md-6 col-lg-4 mb-4">
+                            <div class="chart-container" style="position: relative; height:40vh; width:100%">
+                                <canvas id="myChart"></canvas>
+                            </div>
+                            <h6 class="text-secondary font-italic font-weight-bold">Utilisteur par Niveau</h6>
+                        </div>
+                        <!-- Exemple d'indicateur 2 -->
+                        <div class="col-12 col-md-6 col-lg-4 mb-4">
+                          <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+                            <div class="card-header">Nombre de Mentoré</div>
+                            <div class="card-body">
+                              <h1 class="card-title text-bold">{{mentores}}</h1>
+                            </div>
                           </div>
-                          <h6 class="text-secondary font-italic font-weight-bold">Rapport des utilisateurs par profil</h6>
-                      </div>
-                  </div>
-              </div>
-          </section>
+                            <h6 class="text-secondary font-italic font-weight-bold">Nombre de Mentors</h6>
+                        </div>
+                        <!-- Ajouter d'autres indicateurs ici -->
+                        <div class="col-12 col-md-6 col-lg-4 mb-4">
+                          <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+                            <div class="card-header">Nombre de Mentors</div>
+                            <div class="card-body">
+                              <h1 class="card-title">{{mentors}}</h1>
+                            </div>
+                          </div>
+                            <h6 class="text-secondary font-italic font-weight-bold">Nombre de Mentors</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </section>
+
       
+
+
 
       <!-- RGPH-->
       <section class="section section-lg bg-default">
@@ -265,6 +302,98 @@
             }
         });
     </script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const img = document.getElementById('animated-image');
+        
+          // Animation de flottement
+          function floatAnimation() {
+            img.animate([
+              { transform: 'translateY(0px)' },
+              { transform: 'translateY(-20px)' },
+              { transform: 'translateY(0px)' }
+            ], {
+              duration: 1000,
+              iterations: Infinity
+            });
+          }
+        
+          // Animation de zoom sur survol
+          function addHoverEffect() {
+            img.addEventListener('mouseenter', () => {
+              img.animate([
+                { transform: 'scale(1)' },
+                { transform: 'scale(1.05)' }
+              ], {
+                duration: 100,
+                fill: 'forwards'
+              });
+            });
+        
+            img.addEventListener('mouseleave', () => {
+              img.animate([
+                { transform: 'scale(1.05)' },
+                { transform: 'scale(1)' }
+              ], {
+                duration: 100,
+                fill: 'forwards'
+              });
+            });
+          }
+        
+          floatAnimation();
+          addHoverEffect();
+        });
+        </script>
+
+
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              const img = document.getElementById('animated-image1');
+            
+              // Animation de flottement
+              function floatAnimation() {
+                img.animate([
+                  { transform: 'translateY(0px)' },
+                  { transform: 'translateY(-20px)' },
+                  { transform: 'translateY(0px)' }
+                ], {
+                  duration: 1000,
+                  iterations: Infinity
+                });
+              }
+            
+              // Animation de zoom sur survol
+              function addHoverEffect() {
+                img.addEventListener('mouseenter', () => {
+                  img.animate([
+                    { transform: 'scale(1)' },
+                    { transform: 'scale(1.05)' }
+                  ], {
+                    duration: 100,
+                    fill: 'forwards'
+                  });
+                });
+            
+                img.addEventListener('mouseleave', () => {
+                  img.animate([
+                    { transform: 'scale(1.05)' },
+                    { transform: 'scale(1)' }
+                  ], {
+                    duration: 100,
+                    fill: 'forwards'
+                  });
+                });
+              }
+            
+              floatAnimation();
+              addHoverEffect();
+            });
+            </script>
+      
 
     {% endblock main %}
      

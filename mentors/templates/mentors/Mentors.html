@@ -2,9 +2,11 @@
 
 {% load static %}
 {% block main %}
+{% if request.user.groups %}
 
 <div class="row mx-3 mb-3">
-  {% if not mentors_group%}
+  {% if not mentors_group %}
+  {% if not user_group %}
     <div class="col-sm-6 text-center">
       <div class="card">
         <div class="card-body">
@@ -13,8 +15,10 @@
       </div>
     </div>
   {% endif %}
+  {% endif %}
     
   {% if not user_group %}
+  {% if not mentors_group %}
     <div class="col-sm-6 text-center">
       <div class="card">
         <div class="card-body">
@@ -23,10 +27,11 @@
       </div>
     </div>
   {% endif %}
+  {% endif %}
 </div>
 
 
-<section class="section">
+<section class="section mb-3"> 
   <div class="container">
       <div class="row row-50 justify-content-center justify-content-xl-between flex-lg-row-reverse">
           <div class="col-md-12 col-lg-6">
@@ -39,64 +44,8 @@
   </div>
 </section>
 
-
- 
-{% if user_group %}
-  <div class="container mb-3">
-    <div class="py-6">
-      <div class="row">
-        <table class="table" id="example">
-          <thead>
-            <tr>
-              <th>Photo</th>
-              <th>Nom</th>
-              <th>Profile</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for mentor in mentors_profiles %}
-            <tr>
-                <td>
-                  <div class="avatar avatar-xl mt-n7 ms-4">
-                      {% if mentor.photo %}
-                        <img src="{{ mentor.photo.url }}" alt="Image" class="w-25 rounded-circle border-4 border-white-color-40">
-                      {% else %}
-                        <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Image" class="w-25 rounded-circle border-4 border-white-color-40">
-                      {% endif %}
-                  </div>
-                </td>
-                <td>
-                  <div class="avatar avatar-xl mt-n7 ms-4">
-                    <h6 class="mb-1" style="color:#0080ff;">{{mentor.user.first_name}} &nbsp; {{mentor.user.last_name}}</h6>
-                  </div>
-                </td>
-                <td>
-                  <div class="avatar avatar-xl mt-n7 ms-4">
-                    <p class="mb-1" style="color:#0080ff;">{{mentor.profile}}</p>
-                  </div>
-                </td>
-                <td>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <a href="{% url 'abonnement' mentor.id %}" style="background-color:#0080ff;" class="btn btn-primary">S'abonner</a>
-                    <div class="dropdown dropstart">
-                      <a href="#!" class="btn btn-ghost btn-icon btn-sm rounded-circle" id="dropdownMenuOne" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical icon-xs"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
-                      </a>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuOne">
-                          <a class="dropdown-item d-flex align-items-center" href="{% url 'desabonnement' %}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text me-2 icon-xxs dropdown-item-icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>Désabonné</a>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
 {% endif %}
+ 
 
 {% include "mentors/mentors_legal.html" %}
 {% include "mentors/users_legal.html" %}

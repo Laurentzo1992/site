@@ -90,13 +90,27 @@
 
 <section class="section">
     <div class="container">
-        <div class="row row-50 justify-content-center justify-content-xl-between flex-lg-row-reverse">
-            <div class="col-md-11 col-lg-12 text-center">
-                <div class="col-xl-12 wow fadeIn" data-wow-delay=".4s"><img class="img-rounded w-50 h-50" src="{% static 'media/images/groupedetravail.svg' %}" alt=""></div>
+        <div class="row row-50 justify-content-center justify-content-xl-between">
+            <div class="col-md-6 col-lg-6 text-center">
+                <div class="wow fadeIn" data-wow-delay=".4s">
+                    <img class="img-rounded w-100 h-auto" src="{% static 'media/images/groupedetravail.svg' %}" alt="">
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-6 text-center d-flex align-items-center">
+                <div class="wow fadeIn" data-wow-delay=".6s" style="overflow: hidden; position: relative; height: 200px; width: 100%;" id="marquee-container">
+                    <div id="marquee-content" style="position: absolute; width: 100%;">
+                        {% for mot in mots %}
+                        <p class="lead" style="color:#0080ff; text-align: justify;">{{ mot.mot }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
+
+
+
 
 <!-- Services-->
 <section class="section section-lg bg-default">
@@ -149,6 +163,31 @@
 {% endif %}
 
 {% endfor%}
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var container = document.getElementById('marquee-container');
+        var content = document.getElementById('marquee-content');
+
+        var containerHeight = container.offsetHeight;
+        var contentHeight = content.offsetHeight;
+        var currentTop = containerHeight;
+
+        function scrollMarquee() {
+            if (currentTop <= -contentHeight) {
+                currentTop = containerHeight;
+            }
+            currentTop--;
+            content.style.top = currentTop + 'px';
+            requestAnimationFrame(scrollMarquee);
+        }
+
+        content.style.top = containerHeight + 'px';
+        scrollMarquee();
+    });
+</script>
 
 {% endblock main %}
 

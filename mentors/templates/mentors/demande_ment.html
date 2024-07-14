@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block main %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h1 class="h3 mb-0">Demander une session de mentorat</h1>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-primary mt-3">Soumettre</button>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-6 d-flex justify-content-center align-items-center">
+              <img id="animated-image" src="data:image/jpeg;base64,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" alt="Image illustrative" class="img-fluid">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const img = document.getElementById('animated-image');
+
+  // Animation de flottement
+  function floatAnimation() {
+    img.animate([
+      { transform: 'translateY(0px)' },
+      { transform: 'translateY(-10px)' },
+      { transform: 'translateY(0px)' }
+    ], {
+      duration: 3000,
+      iterations: Infinity
+    });
+  }
+
+  // Animation de zoom sur survol
+  function addHoverEffect() {
+    img.addEventListener('mouseenter', () => {
+      img.animate([
+        { transform: 'scale(1)' },
+        { transform: 'scale(1.05)' }
+      ], {
+        duration: 300,
+        fill: 'forwards'
+      });
+    });
+
+    img.addEventListener('mouseleave', () => {
+      img.animate([
+        { transform: 'scale(1.05)' },
+        { transform: 'scale(1)' }
+      ], {
+        duration: 300,
+        fill: 'forwards'
+      });
+    });
+  }
+
+  floatAnimation();
+  addHoverEffect();
+});
+</script>
+{% endblock main %}

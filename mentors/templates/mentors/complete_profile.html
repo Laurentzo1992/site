@@ -1,0 +1,290 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completer votre profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+   
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container mt-5">
+      <div class="alert alert-danger text-center" role="alert">
+        Completer votre profile pour poursuivre !
+      </div>
+      
+        <form method="post" action="{% url 'complete_profile' %}" enctype="multipart/form-data">
+           
+            <div class="question row" id="question1">
+                <div class="col-md-8 mb-2">
+                    <label for="question1Input">Numero de téléphone ?</label>
+                    <input class="form-control" type="text" name="telephone" id="phone" placeholder="{{user_act.telephone}}" required>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="button" class="btn btn-primary btn-block mt-md-0 mt-2" onclick="nextQuestion(1)">Suivant</button>
+                </div>
+            </div>
+            <div class="question row" id="question2" style="display: none;">
+                <div class="col-md-8 mb-2">
+                    <label for="question2Input">Etablissement</label>
+                    <select class="form-control form-control-sm" name="etablissement" id="etablissement">
+                        <option value="{{user_act.etablissement.id}}">{{user_act.etablissement.libelle }}</option>
+                        {% for data in etablissements %}
+                        <option value="{{data.id}}" >{{data.libelle}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="button" class="btn btn-secondary mr-2 btn-block mt-md-0 mt-2" onclick="previousQuestion(2)">Précédent</button>
+                    <button type="button" class="btn btn-primary btn-block mt-md-0 mt-2" onclick="nextQuestion(2)">Suivant</button>
+                </div>
+            </div>
+            <div class="question row" id="question3" style="display: none;">
+                <div class="col-md-8 mb-2">
+                    <label for="question3Input">Commune</label>
+                    <select class="form-control form-control-sm" name="commune" id="commune">
+                        <option value="{{user_act.commune.id}}">{{user_act.commune.nom_commune }}</option>
+                        {% for data in communes %}
+                        <option value="{{data.id}}">{{ data.nom_commune }}</option>
+                        {% endfor %}
+                    </select> 
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="button" class="btn btn-secondary mr-2 btn-block mt-md-0 mt-2" onclick="previousQuestion(3)">Précédent</button>
+                    <button type="button" class="btn btn-primary btn-block mt-md-0 mt-2" onclick="nextQuestion(3)">Suivant</button>
+                </div>
+            </div>
+            <div class="question row" id="question4" style="display: none;">
+                <div class="col-md-8 mb-2">
+                    <label for="question4Input">Village</label>
+                    <input type="text" name="village" class="form-control" id="village" placeholder="{{user_act.village}}">
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="button" class="btn btn-secondary mr-2 btn-block mt-md-0 mt-2" onclick="previousQuestion(4)">Précédent</button>
+                    <button type="button" class="btn btn-primary btn-block mt-md-0 mt-2" onclick="nextQuestion(4)">Suivant</button>
+                </div>
+            </div>
+            <div class="question row" id="question5" style="display: none;">
+                <div class="col-md-8 mb-2">
+                    <label for="question5Input">Niveau</label>
+                    <select class="form-control" name="niveau" id="niveau">
+                        <option value="{{user_act.niveau.id}}">{{user_act.niveau.libelle }}</option>
+                        {% for data in niveaux %}
+                        <option value="{{data.id}}" >{{data.libelle}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="button" class="btn btn-secondary mr-2 btn-block mt-md-0 mt-2" onclick="previousQuestion(5)">Précédent</button>
+                    <button type="button" class="btn btn-primary btn-block mt-md-0 mt-2" onclick="nextQuestion(5)">Suivant</button>
+                </div>
+            </div>
+            <div class="question row" id="question6" style="display: none;">
+                <div class="col-md-8 mb-2">
+                    <label for="question6Input">Domaine</label>
+                    <select class="form-control form-control-sm"  name="domaine" id="domaine">
+                        <option value="{{user_act.domaine.id}}">{{user_act.domaine.libelle }}</option>
+                        {% for data in domaines %}
+                        <option value="{{data.id}}" >{{data.libelle}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="button" class="btn btn-secondary mr-2 btn-block mt-md-0 mt-2" onclick="previousQuestion(6)">Précédent</button>
+                    <button type="button" class="btn btn-primary btn-block mt-md-0 mt-2" onclick="nextQuestion(6)">Suivant</button>
+                </div>
+            </div>
+            <div class="question row" id="question7" style="display: none;">
+                <div class="col-md-8 mb-2">
+                    <label for="question7Input">Profile personnel</label>
+                    <textarea class="form-control" name="profile" id="profile" placeholder="{{user_act.profile}}" required></textarea>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="button" class="btn btn-secondary mr-2 btn-block mt-md-0 mt-2" onclick="previousQuestion(7)">Précédent</button>
+                    <button type="button" class="btn btn-primary btn-block mt-md-0 mt-2" onclick="nextQuestion(7)">Suivant</button>
+                </div>
+            </div>
+            <div class="question row" id="question8" style="display: none;">
+                <div class="col-md-8 mb-2">
+                    <label for="question8Input">Objectif</label>
+                    <textarea class="form-control" name="objectif" id="objectif" placeholder="{{user_act.objectif}}" required></textarea>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="button" class="btn btn-secondary mr-2 btn-block mt-md-0 mt-2" onclick="previousQuestion(8)">Précédent</button>
+                    <button type="button" class="btn btn-primary btn-block mt-md-0 mt-2" onclick="nextQuestion(8)">Suivant</button>
+                </div>
+            </div>
+            <div class="question row" id="question9" style="display: none;">
+                <div class="col-md-8 mb-2">
+                    <label for="question9Input">Quel est votre type de mentorat</label>
+                    <select class="form-control" name="type_mentorat" id="type_mentorat">
+                        <option value="{{user_act.type_mentorat.id}}">{{user_act.type_mentorat.libelle }}</option>
+                        {% for data in types %}
+                        <option value="{{data.id}}" >{{data.libelle}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% csrf_token %}
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="button" class="btn btn-secondary mr-2 btn-block mt-md-0 mt-2" onclick="previousQuestion(9)">Précédent</button>
+                    <button type="button" class="btn btn-primary btn-block mt-md-0 mt-2" onclick="nextQuestion(9)">Suivant</button>
+                </div>
+            </div>
+            <div class="question row" id="question10" style="display: none;">
+                <div class="col-md-8 mb-2">
+                    <label for="question10Input">Quels sont vos objectifs académiques</label>
+                    <select class="form-control" name="ojectif_academique" id="ojectif_academique">
+                        <option value="{{user_act.ojectif_academique.id}}">{{user_act.ojectif_academique.libelle }}</option>
+                        {% for data in ojectifs %}
+                        <option value="{{data.id}}" >{{data.libelle}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="button" class="btn btn-secondary mr-2 btn-block mt-md-0 mt-2" onclick="previousQuestion(10)">Précédent</button>
+                    <button type="button" class="btn btn-primary btn-block mt-md-0 mt-2" onclick="nextQuestion(10)">Suivant</button>
+                </div>
+            </div>
+
+            <div class="question row" id="question11" style="display: none;">
+                <div class="col-md-8 mb-2">
+                    <label for="question11Input">Par quel canal de préférence souhaitez-vous échanger avec le mentor?</label>
+                    <select class="form-control" name="cannau" id="cannau">
+                        <option value="{{user_act.cannaux.id}}">{{user_act.cannaux.libelle }}</option>
+                        {% for data in cannaux %}
+                        <option value="{{data.id}}" >{{data.libelle}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="button" class="btn btn-secondary mr-2 btn-block mt-md-0 mt-2" onclick="previousQuestion(11)">Précédent</button>
+                    <button type="button" class="btn btn-primary btn-block mt-md-0 mt-2" onclick="nextQuestion(11)">Suivant</button>
+                </div>
+            </div>
+
+
+
+            <div class="question row" id="question12" style="display: none;">
+                <div class="col-md-8 mb-2">
+                    <label for="question12Input">Quelle est la fréquence idéale des rencontres avec le mentor?</label>
+                    <select class="form-control" name="frequesce" id="frequesce">
+                        <option value="{{user_act.frequesce.id}}">{{user_act.frequesce.libelle }}</option>
+                        {% for data in frequesces %}
+                        <option value="{{data.id}}" >{{data.libelle}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="button" class="btn btn-secondary mr-2 btn-block mt-md-0 mt-2" onclick="previousQuestion(12)">Précédent</button>
+                    <button type="button" class="btn btn-primary btn-block mt-md-0 mt-2" onclick="nextQuestion(12)">Suivant</button>
+                </div>
+            </div>
+
+
+            <div class="question row" id="question13" style="display: none;">
+                <div class="col-md-8 mb-2">
+                    <label for="question13Input">Comment avez-vous entendu parler de notre programme de mentorat ?</label>
+                    <select class="form-control" name="connaissance" id="connaissance">
+                        <option value="{{user_act.connaissance.id}}">{{user_act.connaissance.libelle }}</option>
+                        {% for data in connaissances %}
+                        <option value="{{data.id}}" >{{data.libelle}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="button" class="btn btn-secondary mr-2 btn-block mt-md-0 mt-2" onclick="previousQuestion(13)">Précédent</button>
+                    <button type="button" class="btn btn-primary btn-block mt-md-0 mt-2" onclick="nextQuestion(13)">Suivant</button>
+                </div>
+            </div>
+
+            <div class="question row" id="question14" style="display: none;">
+                <div class="col-md-8 mb-2">
+                    <label for="question14Input">Qu'attendez-vous principalement de ce programme de mentorat ?</label>
+                    <textarea class="form-control" name="attente" id="attente" placeholder="{{user_act.attente}}"></textarea>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="button" class="btn btn-secondary mr-2 btn-block mt-md-0 mt-2" onclick="previousQuestion(14)">Précédent</button>
+                    <button type="submit" class="btn btn-primary btn-block mt-md-0 mt-2">Soumettre</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>  
+    <script src="{% static 'js/js.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+   
+    
+   
+
+    <script>
+        $("#commune").select2({
+         placeholder: "selectionner la commune",
+         allowClear: true,
+         theme: "classic",
+        });
+    
+        $("#etablissement").select2({
+            placeholder: "selectionner votre établissement",
+            allowClear: true,
+            theme: "classic",
+           });
+    
+           
+        $("#domaine").select2({
+            placeholder: "selectionner votre domaine",
+            allowClear: true,
+            theme: "classic",
+           });
+    
+    
+        
+           $("#niveau").select2({
+            placeholder: "selectionner votre niveau",
+            allowClear: true,
+            theme: "classic",
+           });
+    
+           $("#type_mentorat").select2({
+            placeholder: "selectionner votre type  de mentorat",
+            allowClear: true,
+            theme: "classic",
+           });
+    
+    
+           $("#ojectif_academique").select2({
+            placeholder: "selectionner un ojectif",
+            allowClear: true,
+            theme: "classic",
+           });
+    
+    
+    
+           $("#connaissance").select2({
+            placeholder: "selectionner un élément",
+            allowClear: true,
+            theme: "classic",
+           });
+    
+    
+           $("#frequesce").select2({
+            placeholder: "selectionner",
+            allowClear: true,
+            theme: "classic",
+           });
+    
+           $("#cannau").select2({
+            placeholder: "selectionner un canal",
+            allowClear: true,
+            theme: "classic",
+           });
+    
+      </script>
+    
+</body>
+</html>

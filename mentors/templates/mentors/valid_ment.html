@@ -1,0 +1,82 @@
+
+{% extends "base.html" %}
+
+
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+{% block main %}
+
+<div class="container mt-5 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h1 class="h3 mb-0">Valider la session</h1>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-primary mt-3">Valider</button>
+                </div>
+              </form>
+            </div>
+            <div class="col-md-6 d-flex justify-content-center align-items-center">
+              <img id="animated-image" src="https://7agestion.fr/wp-content/uploads/2017/03/ok-2282499_640.png" alt="Image illustrative" class="img-fluid">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const img = document.getElementById('animated-image');
+
+  // Animation de flottement
+  function floatAnimation() {
+    img.animate([
+      { transform: 'translateY(0px)' },
+      { transform: 'translateY(-10px)' },
+      { transform: 'translateY(0px)' }
+    ], {
+      duration: 1000,
+      iterations: Infinity
+    });
+  }
+
+  // Animation de zoom sur survol
+  function addHoverEffect() {
+    img.addEventListener('mouseenter', () => {
+      img.animate([
+        { transform: 'scale(1)' },
+        { transform: 'scale(1.05)' }
+      ], {
+        duration: 100,
+        fill: 'forwards'
+      });
+    });
+
+    img.addEventListener('mouseleave', () => {
+      img.animate([
+        { transform: 'scale(1.05)' },
+        { transform: 'scale(1)' }
+      ], {
+        duration: 100,
+        fill: 'forwards'
+      });
+    });
+  }
+
+  floatAnimation();
+  addHoverEffect();
+});
+</script>
+{% endblock main %}
+

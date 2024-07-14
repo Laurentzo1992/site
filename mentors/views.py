@@ -1,5 +1,5 @@
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from  django.views.decorators.cache import cache_control 
@@ -22,6 +22,8 @@ from django.db.models import Count
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def home(request):
+    mentors = User.objects.filter(groups__name='mentors').count()
+    mentores = User.objects.filter(groups__name='utilisateurs').count()
     politiques = Politique_Securite.objects.all()
     temoignages = Temoignage.objects.all()
     partenariats = Partenaire.objects.all().order_by('-created')
@@ -37,7 +39,7 @@ def home(request):
     levels = [entry['niveau__libelle'] for entry in data]
     counts = [entry['user_count'] for entry in data]
     
-    context = {"data":data, "counts": counts, "levels": levels, "temoignages":temoignages, "politiques":politiques, "partenariats":partenariats, "debut":debut, "activites":activites, "slides":slides, "ressources":ressources}
+    context = {"mentores":mentores, "mentors":mentors, "data":data, "counts": counts, "levels": levels, "temoignages":temoignages, "politiques":politiques, "partenariats":partenariats, "debut":debut, "activites":activites, "slides":slides, "ressources":ressources}
     return render(request, 'mentors/home.html', context)
 
 
@@ -71,6 +73,7 @@ def boad(request):
     # Nombre d'utilisateurs connectés
     nombre_utilisateurs_connectes = utilisateurs_connectes.count()
 
+    demandes_mentorats = Mentorat.objects.all().order_by('-created')
 
     context = {"users_profiles":users_profiles,
                "mentorslists":mentorslists,
@@ -80,6 +83,7 @@ def boad(request):
                "mentores":mentores, "mentors":mentors,
                "users":users,
                "demandes":demandes,
+               "demandes_mentorats":demandes_mentorats,
                }
     return render(request, 'mentors/boad.html', context)
 
@@ -151,9 +155,9 @@ def logout_user(request):
 def user_profile(request):
     user_profile = Profiles.objects.get(user=request.user)
     # Accéder au mentor de l'utilisateur connecté
-    mentor = user_profile.mentor
+    # mentor = user_profile.mentor
     # Récupérer la liste des mentors
-    mentors = User.objects.filter(groups__name='mentors')
+    # mentors = User.objects.filter(groups__name='mentors')
     # Vérifier si l'utilisateur appartient au groupe 'mentors'
     mentors_group = request.user.groups.filter(name='mentors').exists()
     # Vérifier si l'utilisateur appartient au groupe 'utilisateurs'
@@ -167,17 +171,14 @@ def user_profile(request):
     
     temps_de_connxion = user_profile.formatted_total_time_on_platform()
     
-    nbr = Profiles.objects.filter(mentor=user_profile).count()
+    #nbr = Profiles.objects.filter(mentor=user_profile).count()
     context = {
                'nrb_even':nrb_even,
                'nrb_forum':nrb_forum,
                'nbr_res':nbr_res,
-               'mentors': mentors,
                'mentors_group': mentors_group,
                "user_group": user_group,
                "user_profile":user_profile,
-               "mentor":mentor,
-               "nbr":nbr,
                "temps_de_connxion":temps_de_connxion
                }
     return render(request, 'mentors/profile.html', context)
@@ -286,16 +287,16 @@ def editprofile(request, id):
 @login_required
 def get_all_ressource(request):
     # Récupérer le profil de l'utilisateur connecté
-    user_profile = Profiles.objects.get(user=request.user)
+    #user_profile = Profiles.objects.get(user=request.user)
     
     # Vérifier s'il a un mentor
-    if user_profile.mentor:
+    """ if user_profile.mentor:
         # Filtrer les ressources pour n'afficher que celles du mentor de l'utilisateur connecté
         ressources = Ressources.objects.filter(owner=user_profile.mentor.user)
     else:
         # Si l'utilisateur n'a pas de mentor, afficher toutes les ressources
-        ressources = Ressources.objects.filter(owner=request.user)
-    
+        ressources = Ressources.objects.filter(owner=request.user) """
+    ressources = Ressources.objects.all()
     context = {"ressources": ressources}
     return render(request, 'mentors/get_all_ressource.html', context)
 
@@ -305,7 +306,7 @@ def get_all_ressource(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def get_all_even(request):
     # Récupérer le profil de l'utilisateur connecté
-    user_profile = Profiles.objects.get(user=request.user)
+    """  user_profile = Profiles.objects.get(user=request.user)
     
     # Vérifier s'il a un mentor
     if user_profile.mentor:
@@ -313,8 +314,8 @@ def get_all_even(request):
         evenements = Evenement.objects.filter(initiateur=user_profile.mentor.user)
     else:
         # Si l'utilisateur n'a pas de mentor, afficher toutes les evenements
-        evenements = Evenement.objects.filter(initiateur=request.user)
-    
+        evenements = Evenement.objects.filter(initiateur=request.user) """
+    evenements = Evenement.objects.all()
     context = {"evenements": evenements}
     return render(request, 'mentors/get_all_even.html', context)
 
@@ -439,16 +440,16 @@ def edit_comment(request, id):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def get_all_forum(request):
     # Récupérer le profil de l'utilisateur connecté
-    user_profile = Profiles.objects.get(user=request.user)
+    # user_profile = Profiles.objects.get(user=request.user)
     
-    # Vérifier s'il a un mentor
+    """ # Vérifier s'il a un mentor
     if user_profile.mentor:
         # Filtrer les forums pour n'afficher que celles du mentor de l'utilisateur connecté
         forums = Forum.objects.filter(initiateur=user_profile.mentor.user)
     else:
         # Si l'utilisateur n'a pas de mentor, afficher toutes les forums
-        forums = Forum.objects.filter(initiateur=request.user)
-    
+        forums = Forum.objects.filter(initiateur=request.user) """
+    forums = Forum.objects.all()
     context = {"forums": forums}
     return render(request, 'mentors/get_all_forum.html', context)
 
@@ -457,10 +458,11 @@ def get_all_forum(request):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def about(request):
+    mots = Mot_du_Fondateur.objects.filter(statut='actif')
     presents = Presentation.objects.all().first()
     valeurs = Valeur.objects.all()
     categories = CategorieFormation.objects.all().order_by('-created')
-    context = {"valeurs":valeurs, "categories":categories, "presents":presents}
+    context = {"valeurs":valeurs, "categories":categories, "presents":presents, "mots":mots}
     return render(request, 'mentors/about.html', context)
 
 
@@ -519,49 +521,6 @@ def Mentors(request):
 
 
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required
-def abonnement(request, id):
-    user = request.user
-    mentor = Profiles.objects.get(pk=id)
-    user_profile, created = Profiles.objects.get_or_create(user=user)
-    
-    # Vérifier si l'utilisateur actuel est déjà un mentor
-    mentor_group = Group.objects.get(name='mentors')  # Assurez-vous que 'mentors' est le nom de votre groupe mentor
-    if mentor_group in user.groups.all():
-        messages.warning(request, "Vous êtes déjà un mentor. Vous ne pouvez pas vous abonner à un mentor.")
-        return redirect("user_profile")
-    
-    # Si l'utilisateur n'a pas de mentor
-    if not user_profile.mentor:
-        user_profile.mentor = mentor
-        user_profile.save()
-        messages.success(request, "vous vous êtes abonné")
-        return redirect('user_profile')
-    # Si l'utilisateur est déjà abonné au même mentor
-    else:
-        user_profile.mentor == mentor
-        messages.warning(request, "vous avez déja un mentors")
-        return redirect("user_profile")
-   
-
-
-
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required
-def desabonnement(request):
-    user = request.user
-    user_profile = Profiles.objects.get(user=user)
-
-    # Vérifier si l'utilisateur est déjà désabonné
-    if not user_profile.mentor:
-        messages.warning(request, "Vous n'êtes pas actuellement abonné à un mentor.")
-        return redirect("user_profile")
-
-    # Effectuer le désabonnement
-    user_profile.unsubscribe()
-    messages.success(request, "Vous vous êtes désabonné de votre mentor avec succès.")
-    return redirect('user_profile')
 
 
 
@@ -591,108 +550,6 @@ def tableau_orientations(request):
 
 
 
-
-
-@login_required
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-def send_message(request):
-    try:
-        user_profile = Profiles.objects.get(user=request.user)
-        mentor_profile = user_profile.mentor
-    except Profiles.DoesNotExist:
-        # Gérer le cas où le profil de l'utilisateur n'existe pas
-        messages.warning(request, "Verifier votre profile ou cherché un mentor")
-        return redirect('home')
-
-    if mentor_profile is None:
-        # Gérer le cas où l'utilisateur n'a pas de mentor défini
-        messages.warning(request, "Aucun mentor")
-        return redirect('home')
-
-    if request.method == 'POST':
-        form = MessageForm(request.POST)
-        if form.is_valid():
-            content = form.cleaned_data['content']
-            sender = request.user
-            mentor_user = mentor_profile.user
-            message = MessageMent.objects.create(sender=sender, recipient=mentor_user, content=content)
-            # Ajouter le message à la boîte de réception du mentor
-            recipient_inbox, created = Inbox.objects.get_or_create(user=mentor_user)
-            recipient_inbox.messages.add(message)
-            return redirect('message_thread')  # Rediriger vers la boîte de réception après l'envoi du message
-    else:
-        form = MessageForm()
-    return render(request, 'mentors/send_message.html', {'form': form, 'mentor': mentor_profile})
-
-
-
-@login_required
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-def send_message_to_users(request):
-    try:
-        mentor_profile = Profiles.objects.get(user=request.user)
-    except Profiles.DoesNotExist:
-        #Gérer le cas où le profil du mentor n'existe pas
-        messages.warning(request, "Aucun mentor")
-        return redirect('home')
-
-    if request.method == 'POST':
-        form = MessageForm(request.POST)
-        if form.is_valid():
-            content = form.cleaned_data['content']
-            sender = request.user
-            recipient_users = Profiles.objects.filter(mentor=mentor_profile)
-            for user_profile in recipient_users:
-                message = MessageMent.objects.create(sender=sender, recipient=user_profile.user, content=content)
-                recipient_inbox, created = Inbox.objects.get_or_create(user=user_profile.user)
-                recipient_inbox.messages.add(message)
-            return redirect('mentor_messages')
-    else:
-        form = MessageForm()
-    return render(request, 'mentors/send_message_to_users.html', {'form': form})
-
-
-
-@login_required
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-def message_thread(request):
-    try:
-        user_profile = Profiles.objects.get(user=request.user)
-        mentor_profile = user_profile.mentor
-    except Profiles.DoesNotExist:
-        # Gérer le cas où le profil de l'utilisateur n'existe pas
-        messages.warning(request, "Verifier votre profile ou cherché un mentor")
-        return redirect('home')
-
-    if mentor_profile is None:
-        # Gérer le cas où l'utilisateur n'a pas de mentor défini
-        messages.warning(request, "Aucun mentor")
-        return redirect('home')
-
-    messages_sent = MessageMent.objects.filter(sender=user_profile.user, recipient=mentor_profile.user)
-    messages_received = MessageMent.objects.filter(sender=mentor_profile.user, recipient=user_profile.user)
-    #Concaténer les deux listes de messages et les trier par date de création
-    mess = sorted(list(messages_sent) + list(messages_received), key=lambda msg: msg.timestamp)
-    return render(request, 'mentors/message_thread.html', {'mess': mess, 'mentor_profile': mentor_profile})
-
-
-@login_required
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-def mentor_messages(request):
-    try:
-        mentor_profile = Profiles.objects.get(user=request.user)
-    except Profiles.DoesNotExist:
-        # Gérer le cas où le profil du mentor n'existe pas
-        messages.warning(request, "Aucun mentor")
-        return redirect('home')
-
-    user_profiles = Profiles.objects.filter(mentor=mentor_profile)
-    
-    # Récupérer à la fois les messages envoyés et reçus par le mentor
-    messages_sent = MessageMent.objects.filter(sender=mentor_profile.user)
-    messages_received = MessageMent.objects.filter(recipient=mentor_profile.user)
-    mess = sorted(list(messages_sent) + list(messages_received), key=lambda msg: msg.timestamp)
-    return render(request, 'mentors/mentor_messages.html', {'user_profiles': user_profiles, 'mess':mess})
 
 
 
@@ -833,5 +690,185 @@ def adesion(request):
                 messages.success(request, 'Demande reussi!')
                 return redirect('joint_us')
         else:
-            messages.error(request, 'Échec , veuillez vérifier.')
+            messages.error(request, 'Échec , veuillez vérifier')
     return redirect('joint_us')
+
+
+
+
+
+@login_required
+def complete_profile(request):
+    
+    user_act = request.user.profiles
+
+    if request.method == "POST":
+        user_act.telephone = request.POST.get('telephone')
+        user_act.profile = request.POST.get('profile')
+        user_act.objectif = request.POST.get('objectif')
+        user_act.attente = request.POST.get('attente')
+        user_act.village = request.POST.get('village')
+        
+
+        # Récupérer les IDs des clés étrangères
+        niveau_id = int(request.POST.get('niveau'))
+        commune_id = int(request.POST.get('commune'))
+        domaine_id = int(request.POST.get('domaine'))
+        etablissement_id = int(request.POST.get('etablissement'))
+        type_mentorat_id = int(request.POST.get('type_mentorat'))
+        connaissance_id = int(request.POST.get('connaissance'))
+        frequesce_id = int(request.POST.get('frequesce'))
+        cannau_id = int(request.POST.get('cannau'))
+        ojectif_academique_id = int(request.POST.get('ojectif_academique'))
+
+        # Vérifier si les clés étrangères existent dans la base de données
+        try:
+            commune = Communes.objects.get(id=commune_id)
+            domaine = CategorieFormation.objects.get(id=domaine_id)
+            etablissement = Etablissement.objects.get(id=etablissement_id)
+            type_mentorat = Typementorat.objects.get(id=type_mentorat_id)
+            niveau = Niveau_formation.objects.get(id=niveau_id)
+            
+            connaissance = Cannaux_Connaissance.objects.get(id=connaissance_id)
+            frequesce = Frequence_Echange.objects.get(id=frequesce_id)
+            cannau = Cannaux_Communication.objects.get(id=cannau_id)
+            ojectif_academique = Objectif_Accademique.objects.get(id=ojectif_academique_id)
+        except (Communes.DoesNotExist, 
+                CategorieFormation.DoesNotExist, 
+                Etablissement.DoesNotExist, 
+                Typementorat.DoesNotExist, 
+                Niveau_formation.DoesNotExist,
+                Cannaux_Connaissance.DoesNotExist,
+                Frequence_Echange.DoesNotExist,
+                Cannaux_Communication.DoesNotExist,
+                Objectif_Accademique.DoesNotExist):
+            
+            # Gérer le cas où une des clés étrangères n'existe pas
+            return HttpResponseBadRequest("Une ou plusieurs clés étrangères sont invalides")
+
+        # Associer les objets aux clés étrangères
+        user_act.commune = commune
+        user_act.domaine = domaine
+        user_act.etablissement = etablissement
+        user_act.type_mentorat = type_mentorat
+        user_act.niveau = niveau
+        
+        user_act.connaissance = connaissance
+        user_act.frequesce = frequesce
+        user_act.cannaux = cannau
+        user_act.ojectif_academique = ojectif_academique
+        
+        # Sauvegarder le profil
+        user_act.save()
+
+        return redirect('Mentors')
+
+    communes = Communes.objects.all()
+    domaines = CategorieFormation.objects.all()
+    etablissements = Etablissement.objects.all()
+    types = Typementorat.objects.all()
+    niveaux = Niveau_formation.objects.all()
+    provinces = Provinces.objects.all()
+    statuts = Status.objects.all()
+    ojectifs = Objectif_Accademique.objects.all()
+    cannaux = Cannaux_Communication.objects.all()
+    frequesces = Frequence_Echange.objects.all()
+    connaissances= Cannaux_Connaissance.objects.all()
+
+    context = {
+        "connaissances":connaissances,
+        "frequesces":frequesces,
+        "cannaux":cannaux,
+        "ojectifs":ojectifs,
+        "niveaux": niveaux,
+        "types": types,
+        "user_act": user_act,
+        "communes": communes,
+        "domaines": domaines,
+        "etablissements": etablissements,
+        "provinces":provinces,
+        "statuts":statuts,
+    }
+    return render(request, 'mentors/complete_profile.html', context)
+
+
+
+@login_required
+def demande_ment(request):
+    # Vérifie si l'utilisateur a déjà une demande de mentorat en cours
+    demande_existante = Mentorat.objects.filter(demandeur=request.user.profiles, statut__statut='demande').exists()
+    
+    if demande_existante:
+        messages.warning(request, 'Vous avez déja une demande en cours patientez la validation est en cours')
+         # Redirige ou affiche un message d'erreur
+         # Remplacez par le nom de la vue appropriée ou affichez un message
+        return redirect('home') 
+    demande_existante = Mentorat.objects.filter(demandeur=request.user.profiles, statut__statut='valide').exists()
+    if demande_existante:
+        messages.warning(request, 'Vous avez déja une session en cours')
+         # Redirige ou affiche un message d'erreur
+         # Remplacez par le nom de la vue appropriée ou affichez un message
+        return redirect('user_profile') 
+   
+    if request.method == 'POST':
+        form = MentoratForm(request.POST)
+        if form.is_valid():
+            mentorat = form.save(commit=False)
+            # Assurez-vous que le profil de l'utilisateur est accessible
+            mentorat.demandeur = request.user.profiles
+            # Récupère ou crée l'instance de MentoratStatut
+            mentorat_statut, created = Mentorat_Statut.objects.get_or_create(statut='demande')
+            # Assigner l'instance de MentoratStatut
+            mentorat.statut = mentorat_statut  
+            mentorat.save()
+            # Remplacez 'home' par le nom de la vue à rediriger
+            messages.success(request, 'Demande effectué avec succès')
+            return redirect('home')
+    else:
+        form = MentoratForm()
+    return render(request, 'mentors/demande_ment.html', {'form': form})
+
+
+
+@login_required
+def valider_mentorat(request, mentorat_id):
+    mentorat = get_object_or_404(Mentorat, id=mentorat_id)
+    if request.method == 'POST':
+        form = MentoratValidationForm(request.POST, instance=mentorat)
+        if form.is_valid():
+            mentorat = form.save(commit=False)
+            # Mise à jour du statut et assignation du mentor
+            mentorat_statut, created = Mentorat_Statut.objects.get_or_create(statut='valide')
+            mentorat.statut = mentorat_statut
+            mentorat.mentor = form.cleaned_data['mentor']
+            mentorat.date_debut = form.cleaned_data['date_debut']
+            mentorat.date_fin = form.cleaned_data['date_fin']
+            mentorat.save()
+            messages.success(request, 'Session validé')
+            return redirect('boad')  # Remplacez 'home' par le nom de la vue à rediriger
+    else:
+        form = MentoratValidationForm(instance=mentorat)
+    return render(request, 'mentors/valid_ment.html', {'form': form, 'mentorat': mentorat})
+
+
+
+
+
+@login_required
+def fermer_mentorat(request, mentorat_id):
+    mentorat = get_object_or_404(Mentorat, id=mentorat_id)
+    
+    if request.method == 'POST':
+        form = MentoratFrmerForm(request.POST, instance=mentorat)
+        if form.is_valid():
+            mentorat = form.save(commit=False)
+            # Mise à jour du statut et assignation du statut 'fermé'
+            mentorat_statut, created = Mentorat_Statut.objects.get_or_create(statut='fermer')
+            mentorat.statut = mentorat_statut
+            mentorat.save()
+            messages.success(request, 'Session fermée')
+            return redirect('boad')
+    else:
+        form = MentoratFrmerForm(instance=mentorat)
+    
+    return render(request, 'mentors/ferm_ment.html', {'form': form, 'mentorat': mentorat})

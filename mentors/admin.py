@@ -37,5 +37,7 @@ admin.site.register(Storie)
 admin.site.register(Politique_Securite)
 admin.site.register(Temoignage)
 admin.site.register(Activite)
-
+admin.site.register(NewletterEmail)
+admin.site.register(Mentorat_Statut)
+admin.site.register(Mot_du_Fondateur)
 

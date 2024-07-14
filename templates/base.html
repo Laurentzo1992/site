@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html class="wide wow-animation" lang="en">
   <head>
-    <title>Home</title>
+    <title>Accueil</title>
     <meta name="viewport" content="width=device-width height=device-height initial-scale=1.0">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -83,15 +83,13 @@
                             <i class="fa fa-gears" style="color:#0080ff; font-size:13px;"></i> &nbsp;  A PROPOS 
                           </button>
                           <ul class="dropdown-menu">
-                            <li class="dropdown-item" style="color:#0080ff; font-size:13px;"><a class="" style="color:#000000; font-size:13px;" href="{% url 'about' %}"> <i class="fa fa-book" style="color:#0080ff; font-size:13px;"></i> &nbsp;  A PROPOS </a>
+                            <li class="dropdown-item" style="color:#0080ff; font-size:13px;"><a class="" style="color:#000000; font-size:13px;" href="{% url 'about' %}"> <i class="fa fa-book" style="color:#0080ff; font-size:13px;"></i> &nbsp; QUI SOMMES NOUS </a>
                             </li>
                             <li class="dropdown-item" style="color:#0080ff; font-size:13px;"><a class="" style="color:#000000; font-size:13px;" href="{% url 'projet' %}"> <i class="fa fa-gear" style="color:#0080ff; font-size:13px;"></i> &nbsp;  NOS ACTIONS </a>
                             </li>
                             <li class="dropdown-item" style="color:#0080ff; font-size:13px;"><a class="" style="color:#000000; font-size:13px;" href="{% url 'equipe' %}"> <i class="fa fa-users" style="color:#0080ff; font-size:13px;"></i>  &nbsp; NOTRE EQUIPE</a>
                             </li>
                             <li class="dropdown-item" style="color:#0080ff; font-size:13px;"><a class="" style="color:#000000; font-size:13px;" href="{% url 'joint_us' %}"> <i class="fa fa-user-plus" style="color:#0080ff; font-size:13px;"></i> &nbsp;  NOUS REJOINDRE</a>
-                            </li>
-                            <li class="dropdown-item" style="color:#0080ff; font-size:13px;"><a class="" style="color:#000000; font-size:13px;" href="{% url 'storie' %}"> <i class="fa fa-check-circle" style="color:#0080ff; font-size:13px;"></i> &nbsp;  SUCCES-STORIES</a>
                             </li>
                           </ul>
                         </div>
@@ -102,12 +100,14 @@
                         <li class="rd-nav-item">
                           <div class="btn-group dropdown" id="dropdown">
                             <button type="button" style="color:#000000; font-size:13px;" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                              <i class="fa fa-pencil" style="color:#0080ff; font-size:13px;"></i> &nbsp; 2CLIC 
+                              <i class="fa fa-pencil" style="color:#0080ff; font-size:13px;"></i> &nbsp; FASO MENTORAT 
                             </button>
                             <ul class="dropdown-menu">
-                              <li class="dropdown-item"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'Mentors' %}"><i class="fa fa-users" style="color:#0080ff; font-size:13px;"> </i>&nbsp;  MENTORAT</a>
+                              <li class="dropdown-item"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'Mentors' %}"><i class="fa fa-users" style="color:#0080ff; font-size:13px;"> </i>&nbsp; MENTORAT </a>
                               </li>
-                              <li class="dropdown-item"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'orientation' %}"><i class="fa fa-question" style="color:#0080ff; font-size:13px;"></i> &nbsp; ORIENTATION</a>
+                              <li class="dropdown-item"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'orientation' %}"><i class="fa fa-book" style="color:#0080ff; font-size:13px;"></i> &nbsp; ORIENTATION</a>
+                              </li>
+                              <li class="dropdown-item"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'demande_ment' %}"><i class="fa fa-pencil" style="color:#0080ff; font-size:13px;"></i> &nbsp; DEMANDE DE MENTORAT</a>
                               </li>
                             </ul>
                           </div>
@@ -118,7 +118,7 @@
                     </li>
                     {% endif %}
                     {% if user.is_authenticated %}
-                    <li class="rd-nav-item" id="users"><a style="color:#000000; font-size:13px;" href="{% url 'user_profile' %}"><i class="fa fa-users" style="color:#0080ff; font-size:13px;"></i> &nbsp; COMPTE</a>
+                    <li class="rd-nav-item" id="users"><a style="color:#000000; font-size:13px;" href="{% url 'user_profile' %}"><i class="fa fa-users" style="color:#0080ff; font-size:13px;"></i> &nbsp; MON ESPACE</a>
                     </li>
                     {% endif %}
                     <li class="rd-nav-item" id="faq"><a class="" style="color:#000000; font-size:13px;" href="{% url 'faq' %}"><i class="fa fa-question" style="color:#0080ff; font-size:13px;"></i> &nbsp; FAQ</a>
@@ -184,6 +184,14 @@
             </div>
           </div>
         </div>
+         <!-- Succès storie-->
+        <div class="footer-classic-aside">
+          <div class="container">
+           <!-- Rights-->
+           <a class="text-white text-center" href="{% url 'storie' %}">SUCCES STORIE</a>
+          </div>
+      </div>
+
         <div class="footer-classic-aside">
             <div class="container">
              <!-- Rights-->
