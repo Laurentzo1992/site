@@ -14,9 +14,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=5=l(*q*m0p&trqrs&4gj48hyo=f1^#wfcv1ofc6$+z%0mdwx('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
 
-#DEBUG = False
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -77,14 +77,14 @@ WSGI_APPLICATION = 'website.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 
-DATABASES = {
+""" DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
-} 
+} """ 
 
-"""
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -95,7 +95,7 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-"""
+
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -136,16 +136,16 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / 'static'
 
 
-STATICFILES_DIRS = [
+""" STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "website/static")
-]
+] """
 
 MEDIA_URL = '/media/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "website/static/media")
+#MEDIA_ROOT = os.path.join(BASE_DIR, "website/static/media")
 
 #production
-#MEDIA_ROOT = os.path.join(BASE_DIR, "static/media")
+MEDIA_ROOT = os.path.join(BASE_DIR, "static/media")
 
 
 # Default primary key field type
