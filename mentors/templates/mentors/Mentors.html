@@ -2,7 +2,7 @@
 
 {% load static %}
 {% block main %}
-{% if request.user.groups %}
+
 
 <div class="row mx-3 mb-3">
   {% if not mentors_group %}
@@ -44,7 +44,7 @@
   </div>
 </section>
 
-{% endif %}
+
  
 
 {% include "mentors/mentors_legal.html" %}

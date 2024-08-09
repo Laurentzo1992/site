@@ -470,7 +470,7 @@ class Partenaire(models.Model):
     modified = models.DateField(auto_now=True, blank=True, null=True)
     
     def __str__(self):
-        return self.nom
+        return self.patenaire_image.url
     
     
     

@@ -4,7 +4,7 @@ from django.utils.deprecation import MiddlewareMixin
 
 class ProfileCompletionMiddleware(MiddlewareMixin):
     def process_request(self, request):
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and not request.user.is_superuser:
             user_profile = request.user.profiles
             required_fields = [
                 'telephone', 'niveau', 'commune', 'village', 'domaine', 
