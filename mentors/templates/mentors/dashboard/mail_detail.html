@@ -1,0 +1,23 @@
+<div class="modal fade" id="mailModal{{mail.id}}" tabindex="-1" aria-labelledby="mailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="mailModalLabel">{{mail.intituler}} {{mail.objet}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+                <div class="form-group row">
+                  <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Message</label>
+                  <div class="col-sm-10">
+                    {{mail.message}}
+                  </div>
+                </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>

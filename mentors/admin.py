@@ -40,4 +40,5 @@ admin.site.register(Activite)
 admin.site.register(NewletterEmail)
 admin.site.register(Mentorat_Statut)
 admin.site.register(Mot_du_Fondateur)
+admin.site.register(MailsPersonnalisee)
 

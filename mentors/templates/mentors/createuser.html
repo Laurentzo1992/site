@@ -8,6 +8,7 @@
             <!-- Form -->
             <form class="form-horizontal m-t-20" action="{% url 'createuser' %}" method="post">
                 {% csrf_token %}
+                <input type="hidden" name="mentor" value="{{mentor}}">
                 <div class="row p-b-30">
                     <div class="col-md-6">
                         <!-- Champs sur la première colonne -->

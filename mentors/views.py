@@ -85,7 +85,7 @@ def boad(request):
                "demandes":demandes,
                "demandes_mentorats":demandes_mentorats,
                }
-    return render(request, 'mentors/boad.html', context)
+    return render(request, 'mentors/dashboard/boad.html', context)
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -97,7 +97,15 @@ def createuser(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
         password2 = request.POST.get('password2')
-
+        try:
+            can_be_mentor = int(request.POST.get('mentor'))
+            if not 0<=can_be_mentor<=1:
+                messages.error(request, "Vous n'avez pas choisie d'etre mentor ou mentoré")
+                return redirect('login')
+        except Exception as e:
+            messages.error(request, "Vous n'avez pas choisie d'etre mentor ou mentoré")
+            return redirect('login')
+        
         if password == password2:
             # Vérifier si l'utilisateur existe déjà
             if User.objects.filter(username=username).exists():
@@ -109,12 +117,34 @@ def createuser(request):
                 # Connexion automatique de l'utilisateur
                 login(request, user)
                 # Redirection vers la page de connexion
+                profile = Profiles.objects.filter(user=user).first()
+                if profile:
+                    profile.can_be_mentor = True if can_be_mentor==1 else False
+                    profile.save()
+                    
+                if profile.can_be_mentor:
+                    group_name = 'mentors'  
+                    Mentor.objects.create(profile=profile)
+                else: 
+                    group_name = 'utilisateurs'
+                    Mentore.objects.create(profile=profile)
+                if group_name: 
+                    group, created = Group.objects.get_or_create(name=group_name)
+                    user.groups.add(group)
                 messages.success(request, 'operation reussie!')
                 return redirect('Mentors')
         else:
             messages.error(request, 'Les mots de passe ne correspondent pas.')
-
-    return render(request, 'mentors/createuser.html')
+    
+    try:
+        can_be_mentor = int(request.GET.get('mentor'))
+        if not 0<=can_be_mentor<=1:
+            messages.error(request, "Vous n'avez pas choisie d'etre mentor ou mentoré")
+            return redirect('login')
+    except:
+        messages.error(request, "Vous n'avez pas choisie d'etre mentor ou mentoré")
+        return redirect('login')
+    return render(request, 'mentors/createuser.html',{'mentor': can_be_mentor})
 
 
 
@@ -132,13 +162,25 @@ def login_user(request):
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
-        user = authenticate(username = username, password = password)
-        if user != None:
+        
+        import re
+        email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+        
+        if re.match(email_regex, username):
+            try:
+                user = User.objects.get(email=username)
+                username = user.username
+            except User.DoesNotExist:
+                messages.error(request, "Aucun utilisateur trouvé avec cette adresse e-mail.")
+                return HttpResponseRedirect(reverse('login'))
+        
+        user = authenticate(username=username, password=password)
+        if user is not None:
             login(request, user)
-            messages.info(request, "Connexion reussie !")
+            messages.info(request, "Connexion réussie !")
             return redirect('Mentors')
         else:
-            messages.error(request, "Veuillez réssayer encore et saisir vos informations de connexion: utilisateur et mot de passe correctement.")
+            messages.error(request, "Veuillez réessayer et saisir vos informations de connexion : utilisateur et mot de passe correctement.")
             return HttpResponseRedirect(reverse('login'))
 
 @login_required
@@ -473,50 +515,59 @@ def projet(request):
     context = {"projets":projets}
     return render(request, 'mentors/projet.html', context)
 
-
-
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def bourse_opportunite(request):
+    # projets = Projets.objects.all()
+    context = {}
+    return render(request, 'mentors/bourse_opportunite.html', context)
 
 
 @login_required
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def Mentors(request):
-    if request.method == 'POST':
-        choix = request.POST.get('choix')
-        user = request.user
-        # Vérifier si l'utilisateur est déjà dans le groupe "utilisateurs"
-        if user.groups.filter(name='utilisateurs').exists():
-            messages.error(request, 'Vous êtes déja un mentoré')
-            return redirect('Mentors')
+    return HttpResponseRedirect(reverse('user_profile'))
+
+
+
+# @login_required
+# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
+# def Mentors(request):
+#     if request.method == 'POST':
+#         choix = request.POST.get('choix')
+#         user = request.user
+#         # Vérifier si l'utilisateur est déjà dans le groupe "utilisateurs"
+#         if user.groups.filter(name='utilisateurs').exists():
+#             messages.error(request, 'Vous êtes déja un mentoré')
+#             return redirect('Mentors')
     
-        # Vérifier la valeur de l'input 'choix' et attribuer le groupe approprié
-        if choix == '1':
-            group_name = 'mentors'  
-        elif choix == '2':
-            group_name = 'utilisateurs'  
-        else:
-            group_name = '' 
-        # Récupérer ou créer le groupe
-        if group_name:  # S'assurer que le nom du groupe est défini
-            group, created = Group.objects.get_or_create(name=group_name)
-            # Ajouter l'utilisateur au groupe
-            user.groups.add(group)
-            return HttpResponseRedirect(reverse('user_profile'))
-        else:
-            return render(request, 'mentors/Mentors.html', {'error_message': 'Le choix n\'est pas valide'})
-    else:
-        # Récupérer le groupe "mentors"
-        mentors_group = Group.objects.get(name='mentors')
-        # Récupérer les utilisateurs qui sont dans le groupe "mentors"
-        mentors_users = mentors_group.user_set.all()
-        # Maintenant, vous pouvez récupérer les profils associés à ces utilisateurs
-        mentors_profiles = Profiles.objects.filter(user__in=mentors_users)
-        # Vérifier si l'utilisateur appartient au groupe 'mentors'
-        mentors_group = request.user.groups.filter(name='mentors').exists()
-        # Vérifier si l'utilisateur appartient au groupe 'utilisateurs'
-        user_group = request.user.groups.filter(name='utilisateurs').exists()
-        context = {'mentors_profiles': mentors_profiles, 'mentors_group': mentors_group, "user_group": user_group}
-        return render(request, 'mentors/Mentors.html', context)
+#         # Vérifier la valeur de l'input 'choix' et attribuer le groupe approprié
+#         if choix == '1':
+#             group_name = 'mentors'  
+#         elif choix == '2':
+#             group_name = 'utilisateurs'  
+#         else:
+#             group_name = '' 
+#         # Récupérer ou créer le groupe
+#         if group_name:  # S'assurer que le nom du groupe est défini
+#             group, created = Group.objects.get_or_create(name=group_name)
+#             # Ajouter l'utilisateur au groupe
+#             user.groups.add(group)
+#             return HttpResponseRedirect(reverse('user_profile'))
+#         else:
+#             return render(request, 'mentors/Mentors.html', {'error_message': 'Le choix n\'est pas valide'})
+#     else:
+#         # Récupérer le groupe "mentors"
+#         mentors_group = Group.objects.get(name='mentors')
+#         # Récupérer les utilisateurs qui sont dans le groupe "mentors"
+#         mentors_users = mentors_group.user_set.all()
+#         # Maintenant, vous pouvez récupérer les profils associés à ces utilisateurs
+#         mentors_profiles = Profiles.objects.filter(user__in=mentors_users)
+#         # Vérifier si l'utilisateur appartient au groupe 'mentors'
+#         mentors_group = request.user.groups.filter(name='mentors').exists()
+#         # Vérifier si l'utilisateur appartient au groupe 'utilisateurs'
+#         user_group = request.user.groups.filter(name='utilisateurs').exists()
+#         context = {'mentors_profiles': mentors_profiles, 'mentors_group': mentors_group, "user_group": user_group}
+#         return render(request, 'mentors/Mentors.html', context)
 
 
 
@@ -609,7 +660,7 @@ def add_etablissement(request):
 
 
 def faq(request):
-    fqs = Faq.objects.all().order_by('-created')
+    fqs = Faq.objects.all().order_by('id')
     context = {"fqs":fqs}
     return render(request, 'mentors/faq.html', context)
 
@@ -632,13 +683,17 @@ def newletter(request):
             else:
                 new = NewletterEmail.objects.create(useremail=post_useremail)
                 new.save()
-                send_mail(
-                    'Confirmation abonnement',
-                    'Vous êtes maintenant abonné à notre newsletter.',
+                mail_person_newletter = MailsPersonnalisee.objects.filter(intituler='newsletter_abonnement').first()
+                objet_abonnement = mail_person_newletter.objet if mail_person_newletter else 'Confirmation abonnement'
+                message_abonnement = mail_person_newletter.message if mail_person_newletter else 'Vous êtes maintenant abonné à notre newsletter.'
+                mail = send_mail(
+                    objet_abonnement,
+                    message_abonnement,
                     settings.DEFAULT_FROM_EMAIL,
                     [post_useremail],
                     fail_silently=False,
                 )
+                print(mail)
                 messages.success(request, 'Abonnement réussi')
                 return redirect('home')
         else:
@@ -760,6 +815,21 @@ def complete_profile(request):
         
         # Sauvegarder le profil
         user_act.save()
+        # Vérifier si l'utilisateur courant appartient au groupe des mentors
+        if request.user.groups.filter(name='mentors').exists():
+            mail_welcome = MailsPersonnalisee.objects.filter(intituler='welcome_mentor').first()
+        else:
+            mail_welcome = MailsPersonnalisee.objects.filter(intituler='welcome_mentore').first()
+        
+        objet_inscription = mail_welcome.objet if mail_welcome else "Bienvenue sur OSER"
+        message_inscription = mail_welcome.message if mail_welcome else "Bienvenue sur OSER"
+        send_mail(
+            objet_inscription,
+            message_inscription,
+            settings.DEFAULT_FROM_EMAIL,
+            [request.user.email],
+            fail_silently=False,
+        )
 
         return redirect('Mentors')
 
@@ -872,3 +942,12 @@ def fermer_mentorat(request, mentorat_id):
         form = MentoratFrmerForm(instance=mentorat)
     
     return render(request, 'mentors/ferm_ment.html', {'form': form, 'mentorat': mentorat})
+
+
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def mails_personnalisee(request):
+    mails = MailsPersonnalisee.objects.all()
+    context = {"mails": mails}
+    return render(request, 'mentors/dashboard/mails_personnaliser.html', context)
+

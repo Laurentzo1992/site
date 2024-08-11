@@ -121,6 +121,8 @@
                     <li class="rd-nav-item" id="users"><a style="color:#000000; font-size:13px;" href="{% url 'user_profile' %}"><i class="fa fa-users" style="color:#0080ff; font-size:13px;"></i> &nbsp; MON ESPACE</a>
                     </li>
                     {% endif %}
+                    <li class="rd-nav-item" style="color:#0080ff;"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'bourse_opportunite' %}"><i class="fa fa-unlock" style="color:#0080ff; font-size:13px;"></i> Bourses & Opportunités</a>
+                    </li>
                     <li class="rd-nav-item" id="faq"><a class="" style="color:#000000; font-size:13px;" href="{% url 'faq' %}"><i class="fa fa-question" style="color:#0080ff; font-size:13px;"></i> &nbsp; FAQ</a>
                     </li>
                     <li class="rd-nav-item" id="search"><a class="" style="color:#000000; font-size:13px;" href="{% url 'search' %}"><i class="fa fa-search" style="color:#0080ff; font-size:13px;"></i></a>
@@ -140,7 +142,8 @@
       
       
         {% endblock main %}
-  
+  {% include "mentors/chart_mentor.html" %}
+  {% include "mentors/chart_mentore.html" %}
      <!-- Page Footer-->
 
      <footer class="section footer-classic" style="background: linear-gradient(90deg, #F2CF05, #0080ff);">
@@ -156,9 +159,9 @@
                 <div class="row row-50 row-xl-70">
                   <div class="col-12 d-flex flex-column">
                     <h3 class="text-white">Liens utiles</h3>
-                    <p><i class="fa fa-globe text-white"></i> <a class="text-bold text-white" style="color:#0080ff" href="https://www.campusfaso.bf/">Campus faso</a></p>
-                    <p><i class="fa fa-globe text-white"></i> <a class="text-bold text-white" style="color:#0080ff" href="https://www.ciospb.gov.bf/bourses">Direction Générale du Conseil à l’Orientation universitaire et des Bourses</a></p>
-                    <p><i class="fa fa-globe text-white"></i> <a class="text-bold text-white" style="color:#0080ff" href="https://www.education.gov.bf/accueil">Ministère de L'Education Nationale, de l'Alphabétisation et de la Promotion des Langues Nationales </a></p>
+                    <p><i class="fa fa-globe text-white"></i> <a class="text-bold text-white" style="color:#0080ff" href="https://www.campusfaso.bf/" target="_blank">Campus faso</a></p>
+                    <p><i class="fa fa-globe text-white"></i> <a class="text-bold text-white" style="color:#0080ff" href="https://www.ciospb.gov.bf/bourses" target="_blank">Direction Générale du Conseil à l’Orientation universitaire et des Bourses</a></p>
+                    <p><i class="fa fa-globe text-white"></i> <a class="text-bold text-white" style="color:#0080ff" href="https://www.education.gov.bf/accueil" target="_blank">Ministère de L'Education Nationale, de l'Alphabétisation et de la Promotion des Langues Nationales </a></p>
                   </div>
                 </div>
               </div>
@@ -167,14 +170,14 @@
                   <div class="col-12">
                     <h3 class="text-white">Newsletter</h3>
                     <!-- RD Mailform-->
-                    <form class="rd-form rd-mailform form-inline subscribe-form" data-form-output="form-output-global" data-form-type="subscribe" method="post" action="{% url 'newletter' %}">
+                    <form class="rd-form form-inline subscribe-form" method="post" action="{% url 'newletter' %}">
                       {% csrf_token %}
                       <div class="form-wrap">
-                        <input class="form-input" id="subscribe-form-2-email" type="email" name="email" data-constraints="@Email @Required">
-                        <label class="form-label" for="subscribe-form-2-email">E-mail</label>
+                        <input class="form-input" id="email" type="email" name="email" required>
+                        <label class="form-label" for="email">E-mail</label>
                       </div>
                       <div class="form-button">
-                        <button class="button button-primary button-icon-only" type="submit" aria-label="subscribe"><span class="icon icon-md mdi mdi-email-outline"></span></button>
+                        <button class="button button-primary button-icon-only" type="submit"><span class="icon icon-md mdi mdi-email-outline"></span></button>
                       </div>
                     </form>
                   </div>
@@ -188,7 +191,7 @@
         <div class="footer-classic-aside">
           <div class="container">
            <!-- Rights-->
-           <a class="text-white text-center" href="{% url 'storie' %}">SUCCES STORIE</a>
+           <a class="text-white text-center" href="{% url 'storie' %}">Galerie de Succès</a>
           </div>
       </div>
 

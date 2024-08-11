@@ -272,6 +272,7 @@ class Profiles(models.Model):
     user = models.OneToOneField(User, blank=True, null=True, on_delete=models.CASCADE)
     telephone = models.CharField(max_length=20, blank=True, null=True, verbose_name='Téléphone')
     niveau = models.ForeignKey(Niveau_formation, blank=True, null=True, on_delete=models.CASCADE)
+    can_be_mentor = models.BooleanField(default=False, verbose_name="Peut etre mentor?")
     commune = models.ForeignKey(Communes, blank=True, null=True, on_delete=models.CASCADE)
     village = models.CharField(max_length=20, blank=True, null=True)
     domaine = models.ForeignKey(CategorieFormation, blank=True, null=True, on_delete=models.CASCADE)
@@ -326,6 +327,21 @@ class Profiles(models.Model):
         minutes, seconds = divmod(remainder, 60)
         return f"{hours}h {minutes}min {seconds}sec"
 
+class Mentor(models.Model):
+    profile = models.ForeignKey(Profiles, on_delete=models.CASCADE, limit_choices_to={'can_be_mentor': True})
+    created = models.DateField(auto_now_add=True, null=True)
+    modified = models.DateField(auto_now=True, null=True)
+    
+    def __str__(self):
+        return self.profile.user.first_name+ " "+self.profile.user.last_name
+
+class Mentore(models.Model):
+    profile = models.ForeignKey(Profiles, on_delete=models.CASCADE, limit_choices_to={'can_be_mentor': False})
+    created = models.DateField(auto_now_add=True, null=True)
+    modified = models.DateField(auto_now=True, null=True)
+    
+    def __str__(self):
+        return self.profile.user.first_name+ " "+self.profile.user.last_name
 
 
 # Mettre à jour le temps total passé sur la plateforme à chaque fois qu'un utilisateur se déconnecte
@@ -636,3 +652,16 @@ class Mot_du_Fondateur(models.Model):
     
     def __str__(self):
         return self.mot
+    
+class MailsPersonnalisee(models.Model):
+    intituler = models.CharField( max_length=150)
+    objet = models.CharField(max_length=150, blank=True, null=True)
+    message = models.TextField()
+    created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    modified = models.DateField(blank=True, null=True, auto_created=True, auto_now=True)
+    
+    
+
+    def __str__(self):
+        return self.intituler
+

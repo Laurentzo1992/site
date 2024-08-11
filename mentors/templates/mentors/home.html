@@ -6,7 +6,7 @@
       {% block Carousel %}
       <section>
           <!-- Swiper-->
-          <div class="swiper-container swiper-slider swiper-slider-1" data-loop="false" data-autoplay="5000" data-simulate-touch="false">
+          <div class="swiper-container swiper-slider swiper-slider-1" data-loop="false" data-autoplay="15000" data-simulate-touch="false">
               <div class="swiper-wrapper">
                   {% for slide in slides %}
                   <div class="swiper-slide" style="background-image: url('{{slide.image.url}}'); background-size: cover; background-position: center;">
@@ -17,8 +17,16 @@
                                       <div class="box-animation">
                                           <h6 data-caption-animate="slideInLeft" data-caption-delay="150">{{slide.titre1}}</h6>
                                           <h2 data-caption-animate="slideInLeft" data-caption-delay="300">{{slide.titre2}} <span class="text-italic font-weight-bold text-white">{{slide.titre3}}</span></h2>
-                                          <div class="button-block" data-caption-animate="fadeInUp" data-caption-delay="450">
-                                              <a class="btn btn-primary" href="{% url 'login' %}">Connexion</a>
+                                          <div class="dropdown" id="dropdown" data-caption-animate="fadeInUp" data-caption-delay="450">
+                                              <button type="button" class="btn btn-primary" href="{% url 'login' %}" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Connexion</button>
+                                              <ul class="dropdown-menu">
+                                                <li class="dropdown-item"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'login' %}"><i class="fa fa-unlock" style="color:#0080ff; font-size:13px;"></i>&nbsp;  j'ai déjà un compte</a>
+                                                </li>
+                                                <li class="dropdown-item"><a class="" style="color:#000000; font-size:13px; font-size:13px;" data-bs-toggle="modal" data-bs-target="#chartMentorModal" href="#"><i class="fa fa-users" style="color:#0080ff; font-size:13px;"> </i>&nbsp; je veux être mentor </a>
+                                                </li>
+                                                <li class="dropdown-item"><a class="" style="color:#000000; font-size:13px; font-size:13px;" data-bs-toggle="modal" data-bs-target="#chartMentoreModal" href="#"><i class="fa fa-users" style="color:#0080ff; font-size:13px;"> </i>&nbsp; je  trouve un mentor </a>
+                                                </li>
+                                              </ul>
                                           </div>
                                       </div>
                                   </div>
@@ -108,7 +116,7 @@
 
       <section class="section section-lg bg-default text-center">
         <div class="container">
-          <h6 class="wow fadeIn" style="color:#0080ff;">Nos Mentorés Témoignent</h6>
+          <h6 class="wow fadeIn" style="color:#0080ff;">Expériences de Mentorat</h6>
             <div class="row">
                 {% for data in temoignages %}
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">

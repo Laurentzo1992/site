@@ -13,6 +13,7 @@ urlpatterns = [
     path('login_user/', views.login_user, name='login_user'),
     path('logout_user/', views.logout_user, name='logout_user'),
     path('about/', views.about, name='about'),
+    path('bourse-opportunite/', views.bourse_opportunite, name='bourse_opportunite'),
     path('projet/', views.projet, name='projet'),
     path('Mentors/', views.Mentors, name='Mentors'),
     path('orientation/', views.tableau_orientations, name='orientation'),
@@ -37,4 +38,5 @@ urlpatterns = [
     path('valider_mentorat/valid/<int:mentorat_id>/', views.valider_mentorat, name='valider_mentorat'),
     path('fermer_mentorat/fermer/<int:mentorat_id>/', views.fermer_mentorat, name='fermer_mentorat'),
     path('complete_profile', views.complete_profile, name='complete_profile'),
+    path('mails_personnalisee/', views.mails_personnalisee, name='mails_personnalisee'),
 ]
