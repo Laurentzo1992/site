@@ -38,8 +38,9 @@
                                                         <td>{{data.user.first_name}}</td>
                                                         <td>{{data.user.profile}}</td>
                                                         <td>{{data.total_time_on_platform}}</td>
-                                                        <td><a href=""><i class="fa fa-eye"></i></a></td>
+                                                        <td><a type="button" class="btn btn-primary" data-toggle="modal" data-target="#mentorModal{{data.user.id}}"><i class="fa fa-eye"></i></a></td>
                                                     </tr>
+                                                    {% include "mentors/mentordetail.html" %}
                                                     {% endfor %}
                                                 </tbody>
                                             </table>
@@ -174,7 +175,6 @@
                                                         <td>{{data.tel}}</td>
                                                         <td>{{data.motivation}}</td>
                                                     </tr>
-                                                    {% include "mentors/detail.html" %}
                                                     {% endfor %}
                                                 </tbody>
                                             </table>
@@ -249,7 +249,6 @@
                                                         </td>
                                                         {% endif %}
                                                     </tr>
-                                                    {% include "mentors/detail.html" %}
                                                     {% endfor %}
                                                 </tbody>
                                             </table>

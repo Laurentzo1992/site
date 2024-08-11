@@ -149,15 +149,15 @@
             <h6 class="wow fadeIn" style="color:#0080ff;">Ils nous font confiance</h6>
             <div class="row justify-content-center">
                 {% for ressource in partenariats %}
-                <div class="col-sm-10 col-md-4 col-lg-4 wow fadeIn mb-4">
-                            <a class="post-light context-dark" href="{{ressource.ressource.url}}" style="background-image: url({{ressource.patenaire_image.url}});">
-                                <div class="post-light-inner">
-                                    <div class="badge" style="color:#0080ff;">{{ressource.nom}}</div>
-                                    <div class="post-light-main">
-                                    </div>
-                                </div>
-                            </a>
-                </div>
+                
+                <div class="col-sm-10 col-md-4 col-lg-4 mb-4">
+                  <div class="post-light context-dark" style="text-align: center; border-radius: 15px; padding: 20px; background-color: #fff;">
+                      <img src="{{ressource.patenaire_image.url}}" alt="{{ressource.nom}}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px; margin-bottom: 10px;">
+                  </div>
+              </div>
+              
+              
+              
                 {% endfor %}
             </div>
         </div>
@@ -177,7 +177,7 @@
                             <div class="chart-container" style="position: relative; height:40vh; width:100%">
                                 <canvas id="myChart"></canvas>
                             </div>
-                            <h6 class="text-secondary font-italic font-weight-bold">Utilisteur par Niveau</h6>
+                            <h6 class="text-secondary font-italic font-weight-bold">Indicateur</h6>
                         </div>
                         <!-- Exemple d'indicateur 2 -->
                         <div class="col-12 col-md-6 col-lg-4 mb-4">
@@ -187,7 +187,7 @@
                               <h1 class="card-title text-bold">{{mentores}}</h1>
                             </div>
                           </div>
-                            <h6 class="text-secondary font-italic font-weight-bold">Nombre de Mentors</h6>
+                            <h6 class="text-secondary font-italic font-weight-bold">Indicateur</h6>
                         </div>
                         <!-- Ajouter d'autres indicateurs ici -->
                         <div class="col-12 col-md-6 col-lg-4 mb-4">
@@ -197,7 +197,7 @@
                               <h1 class="card-title">{{mentors}}</h1>
                             </div>
                           </div>
-                            <h6 class="text-secondary font-italic font-weight-bold">Nombre de Mentors</h6>
+                            <h6 class="text-secondary font-italic font-weight-bold">Indicateur</h6>
                         </div>
                     </div>
                 </div>
@@ -292,8 +292,7 @@
                 datasets: [{
                     label: 'Rapport des utilisateurs',
                     data: counts,
-                    backgroundColor: 'rgb(0, 128, 255)',
-                    borderColor: 'rgb(160, 128, 25)',
+                    borderColor: 'rgb(0, 128, 225)',
                     borderWidth: 5
                 }]
             },
