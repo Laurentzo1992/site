@@ -49,14 +49,20 @@
                             <div class="input-group-prepend mx-1">
                                 <span class="input-group-text" style="background-color:#0080ff;" id="basic-addon2"><i class="fa fa-key text-primary"></i></span>
                             </div>
-                            <input type="password" class="form-control form-control-lg" name="password" placeholder="Mot de Passe" aria-label="Password" aria-describedby="basic-addon1" required>
+                            <input type="password" class="form-control form-control-lg" id="floatingPassword" name="password" placeholder="Mot de Passe" aria-label="Password" aria-describedby="basic-addon1" required>
+                            <span class="position-absolute top-50 end-0 translate-middle-y pe-3" style="cursor: pointer;" onclick="PasswordVisibility('floatingPassword','togglePassword')">
+                                <i class="fas fa-eye" id="togglePassword"></i>
+                            </span>
                         </div>
 
                         <div class="input-group mb-3">
                             <div class="input-group-prepend mx-1">
                                 <span class="input-group-text" style="background-color:#0080ff;" id="basic-addon2"><i class="fa fa-key text-primary"></i></span>
                             </div>
-                            <input type="password" class="form-control form-control-lg" name="password2" placeholder="Confirmer Mot de Passe" aria-label="Password" aria-describedby="basic-addon1" required>
+                            <input type="password" id="floatingPassword2" class="form-control form-control-lg" name="password2" placeholder="Confirmer Mot de Passe" aria-label="Password" aria-describedby="basic-addon1" required>
+                            <span class="position-absolute top-50 end-0 translate-middle-y pe-3" style="cursor: pointer;" onclick="PasswordVisibility('floatingPassword2','togglePassword2')">
+                                <i class="fas fa-eye" id="togglePassword2"></i>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -74,7 +80,21 @@
     </div>
 </div>
 
-
+<script>
+    function PasswordVisibility(inputId,iconId) {
+      const passwordInput = document.getElementById(inputId);
+      const toggleIcon = document.getElementById(iconId);
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+      }
+    }
+</script>
 
 
 {% for message in messages %}
