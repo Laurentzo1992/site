@@ -914,6 +914,23 @@ def valider_mentorat(request, mentorat_id):
             mentorat.date_debut = form.cleaned_data['date_debut']
             mentorat.date_fin = form.cleaned_data['date_fin']
             mentorat.save()
+            objet = "Demande valider"
+            message_mentor = f""" Vous avez demander en tant que mentor de {mentorat.demandeur.user.first_name} {mentorat.demandeur.user.last_name} et Nous avons valider cette demande donc vous etes a present son mentor"""
+            message_mentore = f""" Votre demande de mentorat a ete validez avec succes a present Mr(Mme) {mentorat.mentor.user.first_name} {mentorat.mentor.user.last_name} est votre mentor"""
+            send_mail(
+                objet,
+                message_mentor,
+                settings.DEFAULT_FROM_EMAIL,
+                [mentorat.mentor.user.email],
+                fail_silently=False,
+            )
+            send_mail(
+                objet,
+                message_mentore,
+                settings.DEFAULT_FROM_EMAIL,
+                [mentorat.demandeur.user.email],
+                fail_silently=False,
+            )
             messages.success(request, 'Session validé')
             return redirect('boad')  # Remplacez 'home' par le nom de la vue à rediriger
     else:

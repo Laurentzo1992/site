@@ -17,6 +17,7 @@
                                       <div class="box-animation">
                                           <h6 data-caption-animate="slideInLeft" data-caption-delay="150">{{slide.titre1}}</h6>
                                           <h2 data-caption-animate="slideInLeft" data-caption-delay="300">{{slide.titre2}} <span class="text-italic font-weight-bold text-white">{{slide.titre3}}</span></h2>
+                                          {% if not request.user.is_authenticated %}
                                           <div class="dropdown" id="dropdown" data-caption-animate="fadeInUp" data-caption-delay="450">
                                               <button type="button" class="btn btn-primary" href="{% url 'login' %}" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Connexion</button>
                                               <ul class="dropdown-menu">
@@ -28,6 +29,7 @@
                                                 </li>
                                               </ul>
                                           </div>
+                                          {% endif %}
                                       </div>
                                   </div>
                               </div>
