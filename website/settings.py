@@ -203,7 +203,6 @@ TINYMCE_DEFAULT_CONFIG = {
     'selector': 'textarea',
     'theme': 'silver',
     'plugins': 'link',
-    'toolbar': 'link',
 }
 
 TINYMCE_JS_URL = os.path.join(BASE_DIR, "website/static/tinymce/js/tinymce/tinymce.min.js")
