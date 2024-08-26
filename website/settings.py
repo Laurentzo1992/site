@@ -210,4 +210,4 @@ TINYMCE_JS_URL = os.path.join(BASE_DIR, "website/static/tinymce/js/tinymce/tinym
 
 # Production mode
 
-# TINYMCE_JS_URL = os.path.join(BASE_DIR, "website/static/tinymce/js/tinymce/tinymce.min.js")
+# TINYMCE_JS_URL = os.path.join(BASE_DIR, "static/tinymce/js/tinymce/tinymce.min.js")
