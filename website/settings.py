@@ -24,6 +24,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'unfold',
     'django_adminlte',
     'django_adminlte_theme',
     'django.contrib.admin',
