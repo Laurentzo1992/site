@@ -1,7 +1,9 @@
 from pathlib import Path
 import os
 from celery.schedules import crontab
-
+from django.templatetags.static import static
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,6 +27,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'unfold',
+    'unfold.contrib.import_export',
     'django_adminlte',
     'django_adminlte_theme',
     'django.contrib.admin',
@@ -78,12 +81,14 @@ WSGI_APPLICATION = 'website.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 
 """DATABASES = {
@@ -95,8 +100,8 @@ DATABASES = {
         'HOST': '94.23.165.51',
         'PORT': '5432',
     }
-}
-"""
+}"""
+
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -212,3 +217,40 @@ TINYMCE_JS_URL = os.path.join(BASE_DIR, "website/static/tinymce/js/tinymce/tinym
 # Production mode
 
 # TINYMCE_JS_URL = os.path.join(BASE_DIR, "static/tinymce/js/tinymce/tinymce.min.js")
+
+
+
+
+
+# settings.py for unflod
+
+
+UNFOLD = {
+    "SITE_TITLE": 'FASO MENTORAT',
+    "SITE_HEADER": 'FASO MENTORAT',
+    "SITE_URL": "/",
+    # "SITE_ICON": lambda request: static("icon.svg"),  # both modes, optimise for 32px height
+    "SITE_ICON": {
+        "light": lambda request: static("media/images/logo_oser.jpg"),  # light mode
+        "dark": lambda request: static("media/images/logo_oser.jpg"),  # dark mode
+    },
+    # "SITE_LOGO": lambda request: static("logo.svg"),  # both modes, optimise for 32px height
+    "SITE_LOGO": {
+        "light": lambda request: static("media/images/logo_oser.jpg"),  # light mode
+        "dark": lambda request: static("media/images/logo_oser.jpg"),  # dark mode
+    },
+    "SITE_SYMBOL": "speed",  # symbol from icon set
+    "SITE_FAVICONS": [
+        {
+            "rel": "icon",
+            "sizes": "32x32",
+            "type": "image/svg+xml",
+            "href": lambda request: static("media/images/favicon.ico"),
+        },
+    ],
+    "SHOW_HISTORY": True, # show/hide "History" button, default: True
+    "SHOW_VIEW_ON_SITE": True, # show/hide "View on site" button, default: True
+    #"THEME": "light", # Force theme: "dark" or "light". Will disable theme switcher
+}
+
+

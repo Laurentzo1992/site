@@ -1,7 +1,7 @@
 from django.contrib import admin
 from mentors.models import *
-
-
+from unfold.admin import ModelAdmin
+from tinymce.widgets import TinyMCE
 
 
 admin.site.register(Regions)
@@ -22,8 +22,20 @@ admin.site.register(Typementorat)
 admin.site.register(Niveau_formation)
 admin.site.register(Slideimage)
 admin.site.register(Profiles)
-admin.site.register(Presentation)
-admin.site.register(Valeur)
+
+@admin.register(Presentation)
+class PresentationAdmin(ModelAdmin):
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
+    }
+
+@admin.register(Valeur)
+class ValeurAdmin(ModelAdmin):
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
+    }
+    
+    
 admin.site.register(ForumComment)
 admin.site.register(Projets)
 admin.site.register(Objectif_Accademique)
@@ -38,24 +50,33 @@ admin.site.register(Politique_Securite)
 admin.site.register(Temoignage)
 admin.site.register(NewletterEmail)
 admin.site.register(Mentorat_Statut)
-admin.site.register(Mot_du_Fondateur)
-admin.site.register(MailsPersonnalisee)
-from tinymce.widgets import TinyMCE
 
 
-class ActiviteAdmin(admin.ModelAdmin):
+
+@admin.register(Mot_du_Fondateur)
+class Mot_du_FondateurAdmin(ModelAdmin):
     formfield_overrides = {
         models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
     }
-admin.site.register(Activite, ActiviteAdmin)
 
 
 
-
-class BourseOpportuniteAdmin(admin.ModelAdmin):
+@admin.register(MailsPersonnalisee)
+class MailsPersonnaliseeAdmin(ModelAdmin):
     formfield_overrides = {
         models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
     }
-    
-    
-admin.site.register(Bourse_Opportinute, BourseOpportuniteAdmin)
+
+@admin.register(Activite)
+class ActiviteAdmin(ModelAdmin):
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
+    }
+
+
+
+@admin.register(Bourse_Opportinute)
+class BourseOpportuniteAdmin(ModelAdmin):
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
+    }

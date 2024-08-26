@@ -617,7 +617,7 @@ class Temoignage(models.Model):
     
     
 class Activite(models.Model):
-    titre = models.CharField(max_length=200, blank=True, null=True,verbose_name="Titre")
+    titre = models.CharField(max_length=200, verbose_name="Titre", default="Bourse et opportunité")
     #description = models.HTMLField(blank=True, null=True, verbose_name="Description")
     description = tinymce_models.HTMLField(blank=True, null=True, verbose_name="Description")
     image_des = models.FileField(upload_to='Fichiers/', null=True, blank=True, verbose_name="Image Descriptive")
@@ -659,7 +659,7 @@ class Mot_du_Fondateur(models.Model):
 class MailsPersonnalisee(models.Model):
     intituler = models.CharField( max_length=150)
     objet = models.CharField(max_length=150, blank=True, null=True)
-    message = models.TextField()
+    message = tinymce_models.HTMLField(blank=True, null=True, verbose_name="Message")
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
     modified = models.DateField(blank=True, null=True, auto_created=True, auto_now=True)
     
@@ -671,7 +671,7 @@ class MailsPersonnalisee(models.Model):
 
 
 class Bourse_Opportinute(models.Model):
-    libelle = models.CharField(max_length=200, verbose_name="Titre")
+    libelle = models.CharField(max_length=200, verbose_name="Titre", default="Bourse et opportunité")
     #description = models.HTMLField(blank=True, null=True, verbose_name="Description")
     description = tinymce_models.HTMLField(blank=True, null=True, verbose_name="Description")
     image_des = models.FileField(upload_to='Fichiers/', null=True, blank=True, verbose_name="Image Descriptive")
