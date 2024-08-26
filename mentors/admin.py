@@ -36,9 +36,16 @@ admin.site.register(Equipe)
 admin.site.register(Storie)
 admin.site.register(Politique_Securite)
 admin.site.register(Temoignage)
-admin.site.register(Activite)
 admin.site.register(NewletterEmail)
 admin.site.register(Mentorat_Statut)
 admin.site.register(Mot_du_Fondateur)
 admin.site.register(MailsPersonnalisee)
+from tinymce.widgets import TinyMCE
 
+
+class ActiviteAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
+    }
+    
+admin.site.register(Activite, ActiviteAdmin)

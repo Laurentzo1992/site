@@ -24,7 +24,7 @@ from django.db.models import Count
 def home(request):
     mentors = User.objects.filter(groups__name='mentors').count()
     mentores = User.objects.filter(groups__name='utilisateurs').count()
-    politiques = Politique_Securite.objects.all()
+    politiques = Politique_Securite.objects.all().order_by('-id')
     temoignages = Temoignage.objects.all()
     partenariats = Partenaire.objects.all().order_by('-created')
     debut = Presentation.objects.all().first()
@@ -32,7 +32,7 @@ def home(request):
     thirty_days_ago = datetime.now() - timedelta(days=30)
     ressources = Ressources.objects.filter(created__gte=thirty_days_ago)
     #Récupérer les événements dont la date est postérieure à aujourd'hui
-    activites = Activite.objects.all()
+    activites = Activite.objects.all().order_by('-id')
     #upcoming_events = Activite.objects.filter(date_even__gte=date.today()).order_by('date_even')
     
     data = Profiles.objects.all().exclude(niveau__isnull=True).values('niveau__libelle').annotate(user_count=Count('user')).order_by('niveau__libelle')

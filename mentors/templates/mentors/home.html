@@ -105,7 +105,7 @@
                 <img src="{{ activite.image_des.url }}" alt="{{ activite.titre }}">
                 {% endif %}
                 <h4>{{ activite.titre }}</h4>
-                <p>{{ activite.description }}</p>
+                <p>{{ activite.description|safe }}</p>
                 <small>Créé le : {{ activite.created }}</small>
             </div>
             {% endfor %}

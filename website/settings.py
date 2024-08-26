@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'mentors',
     'crispy_forms',
     'crispy_bootstrap5',
+    'tinymce',
 ]
 
 MIDDLEWARE = [
@@ -191,3 +192,23 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
+
+
+
+
+TINYMCE_DEFAULT_CONFIG = {
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 20,
+    'width': 1200,
+    'selector': 'textarea',
+    'theme': 'silver',
+    'plugins': 'link',
+    'toolbar': 'link',
+}
+
+TINYMCE_JS_URL = os.path.join(BASE_DIR, "website/static/tinymce/js/tinymce/tinymce.min.js")
+
+
+# Production mode
+
+# TINYMCE_JS_URL = os.path.join(BASE_DIR, "website/static/tinymce/js/tinymce/tinymce.min.js")

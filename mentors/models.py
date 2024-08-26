@@ -8,6 +8,8 @@ from django.utils import timezone
 from django.contrib.auth.signals import user_logged_in,user_logged_out
 from django.core.mail import send_mail
 from django.conf import settings
+from tinymce.models import HTMLField
+from tinymce import models as tinymce_models
 
 class Regions(models.Model):
     numero = models.CharField(max_length=1000, blank=True, null=True, verbose_name="Numero d'ordre")
@@ -616,7 +618,8 @@ class Temoignage(models.Model):
     
 class Activite(models.Model):
     titre = models.CharField(max_length=200, blank=True, null=True,verbose_name="Titre")
-    description = models.TextField(blank=True, null=True, verbose_name="Description")
+    #description = models.HTMLField(blank=True, null=True, verbose_name="Description")
+    description = tinymce_models.HTMLField(blank=True, null=True, verbose_name="Description")
     image_des = models.FileField(upload_to='Fichiers/', null=True, blank=True, verbose_name="Image Descriptive")
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
     modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
