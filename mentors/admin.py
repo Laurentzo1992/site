@@ -47,5 +47,15 @@ class ActiviteAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
     }
-    
 admin.site.register(Activite, ActiviteAdmin)
+
+
+
+
+class BourseOpportuniteAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
+    }
+    
+    
+admin.site.register(Bourse_Opportinute, BourseOpportuniteAdmin)

@@ -1,1 +1,22 @@
 {% extends "base.html" %}
+
+
+{% block main %}
+    <section class="section section-lg bg-default text-center">
+        <div class="container222">
+            {% for data in bourses %}
+            <h4 class="wow fadeIn" style="color:#0080ff;">{{ data.libelle }}</h4>
+            <div class="activite">
+                {% if data.image_des %}
+                <img src="{{ data.image_des.url }}" alt="{{ data.libelle }}">
+                {% endif %}
+                
+                <p>{{ data.description|safe }}</p>
+                <small>Créé le : {{ data.created }}</small>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock main %}
+
+        

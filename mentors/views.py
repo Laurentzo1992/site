@@ -517,8 +517,8 @@ def projet(request):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def bourse_opportunite(request):
-    # projets = Projets.objects.all()
-    context = {}
+    bourses = Bourse_Opportinute.objects.all().order_by('-created')
+    context = {'bourses':bourses}
     return render(request, 'mentors/bourse_opportunite.html', context)
 
 

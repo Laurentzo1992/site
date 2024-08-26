@@ -668,3 +668,16 @@ class MailsPersonnalisee(models.Model):
     def __str__(self):
         return self.intituler
 
+
+
+class Bourse_Opportinute(models.Model):
+    libelle = models.CharField(max_length=200, verbose_name="Titre")
+    #description = models.HTMLField(blank=True, null=True, verbose_name="Description")
+    description = tinymce_models.HTMLField(blank=True, null=True, verbose_name="Description")
+    image_des = models.FileField(upload_to='Fichiers/', null=True, blank=True, verbose_name="Image Descriptive")
+    created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    
+    
+    def __str__(self):
+        return self.libelle
