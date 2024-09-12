@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+        <h4>Listes des activités</h4>
+    </div>
+    <div class="card-body">
+      <ul class="list-group">
+          {% for activite in activites %}
+          <li class="list-group-item  mt-4">
+            <img class="img-activite img-responsive img-rounded" src="{{ activite.image.url }}" alt=""/>
+            <h3 class="list-group-item-heading">
+              {{activite.titre}}
+              <span class="badge badge-{% if activite.etat == 'en_instance'  %}primary{% elif activite.etat == 'en_cours' %}success{% elif activite.etat == 'cloture' %}info{% elif activite.etat == 'annuler' %}danger{% endif %} pull-right"> {{ activite.get_etat_display }} </span>
+            </h3>
+            <p class="list-group-item-text lead">
+              {{activite.description}}
+              <br />
+              <div ><small>{{activite.debut}} - {{activite.fin}}</small></a>
+            </p>
+            <div class="btn-toolbar pull-right" role="toolbar" aria-label="">
+              <a href="{% url 'edit_mentore_activite' activite.id %}" class="btn btn-info"><i class="fa fa-pencil"></i>&nbsp;Modifier</a>
+              <a href="{% url 'annule_mentore_activite' activite.id %}" class="btn btn-warning ml-2"><i class="fa fa-ban"></i>&nbsp;Annuler</a>
+              <a href="{% url 'delete_mentore_activite' activite.id %}" class="btn btn-danger ml-2"><i class="fa fa-trash"></i>&nbsp;Supprimer</a>
+            </div>
+          </li>
+          <hr style="border: solid 5px black;">
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock main %}

@@ -39,4 +39,10 @@ urlpatterns = [
     path('fermer_mentorat/fermer/<int:mentorat_id>/', views.fermer_mentorat, name='fermer_mentorat'),
     path('complete_profile', views.complete_profile, name='complete_profile'),
     path('mails_personnalisee/', views.mails_personnalisee, name='mails_personnalisee'),
+    
+    path('mentore-activites/', mentore_activites, name="mentore_activites"),
+    path("add-mentore-activite/", mentore_activites, name="add_mentore_activite"),
+    path("edit-mentore-activite/<id>", mentore_activites, name="edit_mentore_activite"),
+    path("delete-mentore-activite/<id>", mentore_activites, name="delete_mentore_activite"),
+    path("annule-mentore-activite/<id>", mentore_activites, name="annule_mentore_activite"),
 ]

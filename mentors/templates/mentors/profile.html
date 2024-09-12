@@ -78,6 +78,10 @@
                                                 <a href="{% url 'get_all_even' %}" class="btn btn-primary" style="background-color:#0080ff; color:white">Evenements</a>
                                               </div>
                                               <div class="about mb-2">
+                                                {% if mentors_group %}<a href="{% url 'add_mentore_activite' %}" class="btn btn-success"><i class="fa fa-plus-circle"></i></a> {% endif %}
+                                                <a href="{% url 'mentore_activites' %}" class="btn btn-primary" style="background-color:#0080ff; color:white">Activités</a>
+                                              </div>
+                                              <div class="about mb-2">
                                                 {% if mentors_group %}<a href="{% url 'add_forum' %}" class="btn btn-success"><i class="fa fa-plus-circle"></i></a> {% endif %}
                                                 <a href="{% url 'get_all_forum' %}" class="btn btn-primary" style="background-color:#0080ff; color:white">Forum</a>
                                               </div>

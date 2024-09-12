@@ -681,3 +681,21 @@ class Bourse_Opportinute(models.Model):
     
     def __str__(self):
         return self.libelle
+    
+class ActiviteMentorat(models.Model):
+        
+    ETAT = (
+        ('en_instance', ('En instance')),
+        ('en_cours', ('En cours')),
+        ('cloture', ('Cloturé')),
+        ('annuler', ('Annulé')),
+    )
+    titre = models.CharField(max_length=150)
+    description = models.TextField()
+    mentorat = models.ForeignKey(Mentorat, on_delete=models.CASCADE, blank=True, null=True)
+    image = models.FileField(upload_to='images_activites/', null=True, blank=True, verbose_name="Image")
+    debut = models.DateField(auto_now=False, auto_now_add=False)
+    fin = models.DateField(auto_now=False, auto_now_add=False)
+    etat = models.CharField(max_length=32, choices=ETAT, blank=True, null=True, default='en_instance')
+    created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)

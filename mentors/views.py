@@ -686,14 +686,13 @@ def newletter(request):
                 mail_person_newletter = MailsPersonnalisee.objects.filter(intituler='newsletter_abonnement').first()
                 objet_abonnement = mail_person_newletter.objet if mail_person_newletter else 'Confirmation abonnement'
                 message_abonnement = mail_person_newletter.message if mail_person_newletter else 'Vous êtes maintenant abonné à notre newsletter.'
-                mail = send_mail(
+                send_mail(
                     objet_abonnement,
                     message_abonnement,
                     settings.DEFAULT_FROM_EMAIL,
                     [post_useremail],
                     fail_silently=False,
                 )
-                print(mail)
                 messages.success(request, 'Abonnement réussi')
                 return redirect('home')
         else:
@@ -968,3 +967,62 @@ def mails_personnalisee(request):
     context = {"mails": mails}
     return render(request, 'mentors/dashboard/mails_personnaliser.html', context)
 
+
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def mentore_activites(request, id=0):
+    if 'add' in request.path:
+        if request.method == "POST":
+            form = ActiviteMentoratForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                # activite = form.save()
+                # mentorat = Mentorat.objects.filter(mentor = request.user.profiles).first()
+                # ActiviteMentorat.objects.filter(id=activite.id).update(mentorat=mentorat)
+                messages.success(request, 'Activité ajoutée avec succès')
+                return redirect('mentore_activites')
+            return render(request,'mentors/add_activites_mentorat.html',{'form':form})
+        form = ActiviteMentoratForm()
+        return render(request,'mentors/add_activites_mentorat.html',{'form':form})
+    elif 'edit' in request.path:
+        activite = get_object_or_404(ActiviteMentorat, id=id)
+        if request.method == "POST":
+            form = ActiviteMentoratForm(request.POST, request.FILES, instance=activite)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Activité modifiée avec succès')
+                return redirect('mentore_activites')
+            return render(request,'mentors/add_activites_mentorat.html',{'form':form})
+        form = ActiviteMentoratForm(instance=activite)
+        return render(request,'mentors/add_activites_mentorat.html',{'form':form})
+    elif 'delete' in request.path:
+        activite = get_object_or_404(ActiviteMentorat, id=id)
+        activite.delete()
+        messages.success(request, 'Activité supprimée avec succès')
+        return redirect('mentore_activites')
+    elif 'annule' in request.path:
+        activite = ActiviteMentorat.objects.filter(id=id).update(etat='annuler')
+        messages.success(request, 'Activité supprimée avec succès')
+        return redirect('mentore_activites')
+    # mentorat = Mentorat.objects.filter(mentor=request.user.profiles).first() if Mentorat.objects.filter(mentor=request.user.profiles).first() else Mentorat.objects.filter(demandeur=request.user.profiles).first()
+    # activites = ActiviteMentorat.objects.filter(mentorat=mentorat)
+    activites = ActiviteMentorat.objects.all()
+    factory_activite(activites)
+    activites = ActiviteMentorat.objects.all()
+    context = {"activites": activites}
+    return render(request, 'mentors/activites_mentorat.html', context)
+
+def factory_activite(activites):
+    today = timezone.now().date()
+    
+    for activite in activites:
+        if activite.debut <= today <= activite.fin and activite.etat != 'annuler':
+            # Si la date actuelle est comprise entre la date de début et la date de fin
+            if activite.etat != 'en_cours':  # Mettre à jour seulement si nécessaire
+                activite.etat = 'en_cours'
+                activite.save()
+        elif today > activite.fin and  activite.etat != 'annuler':
+            # Si la date actuelle est après la date de fin
+            if activite.etat != 'cloture':  # Mettre à jour seulement si nécessaire
+                activite.etat = 'cloture'
+                activite.save()

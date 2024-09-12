@@ -153,3 +153,17 @@ class MentoratFrmerForm(forms.ModelForm):
 
 
  
+class ActiviteMentoratForm(forms.ModelForm):
+    class Meta:
+        model = ActiviteMentorat
+        fields = ['titre', 'description','image', 'debut', 'fin', 'etat']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4, 'cols': 80}),
+            'debut': forms.DateInput(attrs={'type': 'date'}),
+            'fin': forms.DateInput(attrs={'type': 'date'}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control'})
