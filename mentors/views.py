@@ -128,6 +128,7 @@ def createuser(request):
                 else: 
                     group_name = 'utilisateurs'
                     Mentore.objects.create(profile=profile)
+                    Mentorat.objects.create(demandeur=profile, statut=Mentorat_Statut.objects.filter(id=1).first())
                 if group_name: 
                     group, created = Group.objects.get_or_create(name=group_name)
                     user.groups.add(group)
@@ -822,13 +823,13 @@ def complete_profile(request):
         
         objet_inscription = mail_welcome.objet if mail_welcome else "Bienvenue sur OSER"
         message_inscription = mail_welcome.message if mail_welcome else "Bienvenue sur OSER"
-        send_mail(
-            objet_inscription,
-            message_inscription,
-            settings.DEFAULT_FROM_EMAIL,
-            [request.user.email],
-            fail_silently=False,
-        )
+        # send_mail(
+        #     objet_inscription,
+        #     message_inscription,
+        #     settings.DEFAULT_FROM_EMAIL,
+        #     [request.user.email],
+        #     fail_silently=False,
+        # )
 
         return redirect('Mentors')
 
