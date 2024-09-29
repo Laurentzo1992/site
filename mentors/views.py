@@ -763,6 +763,14 @@ def complete_profile(request):
         user_act.objectif = request.POST.get('objectif')
         user_act.attente = request.POST.get('attente')
         user_act.village = request.POST.get('village')
+        user_act.confirm_experience_mentore = request.POST.get('confirm_experience_mentore')
+        user_act.profile_mentorat = request.POST.get('profile_mentorat')
+        user_act.objectif_terme = request.POST.get('objectif_terme')
+        user_act.confirm_mentore = request.POST.get('confirm_mentore')
+        user_act.poste_mentor = request.POST.get('poste_mentor')
+        user_act.secteur_mentor = request.POST.get('secteur_mentor')
+        user_act.confirm_experience_mentor = request.POST.get('confirm_experience_mentor')
+        user_act.confirm_formation_mentore = request.POST.get('confirm_formation_mentore')
         
 
         # Récupérer les IDs des clés étrangères
@@ -859,7 +867,9 @@ def complete_profile(request):
         "provinces":provinces,
         "statuts":statuts,
     }
-    return render(request, 'mentors/complete_profile.html', context)
+    if request.user.groups.filter(name='mentors').exists():
+        return render(request, 'mentors/complete_profile_mentor.html', context)
+    return render(request, 'mentors/complete_profile_mentore.html', context)
 
 
 
@@ -976,10 +986,9 @@ def mentore_activites(request, id=0):
         if request.method == "POST":
             form = ActiviteMentoratForm(request.POST, request.FILES)
             if form.is_valid():
-                form.save()
-                # activite = form.save()
-                # mentorat = Mentorat.objects.filter(mentor = request.user.profiles).first()
-                # ActiviteMentorat.objects.filter(id=activite.id).update(mentorat=mentorat)
+                activite = form.save()
+                mentorat = Mentorat.objects.filter(mentor = request.user.profiles).first()
+                ActiviteMentorat.objects.filter(id=activite.id).update(mentorat=mentorat)
                 messages.success(request, 'Activité ajoutée avec succès')
                 return redirect('mentore_activites')
             return render(request,'mentors/add_activites_mentorat.html',{'form':form})
@@ -990,7 +999,9 @@ def mentore_activites(request, id=0):
         if request.method == "POST":
             form = ActiviteMentoratForm(request.POST, request.FILES, instance=activite)
             if form.is_valid():
-                form.save()
+                activite = form.save()
+                if request.user.is_admin:
+                    ActiviteMentorat.objects.filter(id=id).update(is_commun=True)
                 messages.success(request, 'Activité modifiée avec succès')
                 return redirect('mentore_activites')
             return render(request,'mentors/add_activites_mentorat.html',{'form':form})
@@ -1007,9 +1018,14 @@ def mentore_activites(request, id=0):
         return redirect('mentore_activites')
     # mentorat = Mentorat.objects.filter(mentor=request.user.profiles).first() if Mentorat.objects.filter(mentor=request.user.profiles).first() else Mentorat.objects.filter(demandeur=request.user.profiles).first()
     # activites = ActiviteMentorat.objects.filter(mentorat=mentorat)
-    activites = ActiviteMentorat.objects.all()
+    activites = []
+    if request.user.is_admin:
+        activites = ActiviteMentorat.objects.all()
+    elif request.user.groups.filter(name='mentors').exists() or request.user.groups.filter(name='utilisateurs').exists():
+        activites = ActiviteMentorat.objects.filter(mentorat = request.user.profiles.mentorat)
+    else:
+        activites = ActiviteMentorat.objects.filter(is_commun = True)
     factory_activite(activites)
-    activites = ActiviteMentorat.objects.all()
     context = {"activites": activites}
     return render(request, 'mentors/activites_mentorat.html', context)
 
