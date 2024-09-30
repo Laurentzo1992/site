@@ -283,6 +283,7 @@ class Profiles(models.Model):
     confirm_experience_mentore = models.CharField(max_length=200, blank=True, null=True)
     profile_mentorat = models.TextField(blank=True,null=True)
     objectif_terme = models.TextField(blank=True,null=True)
+    objectif = models.TextField(blank=True,null=True)
     confirm_mentore = models.CharField(max_length=200, blank=True, null=True)
     poste_mentor = models.TextField(blank=True,null=True)
     secteur_mentor = models.TextField(blank=True,null=True)

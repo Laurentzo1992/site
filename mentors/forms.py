@@ -79,7 +79,7 @@ class UserProfileForm(forms.ModelForm):
         model = Profiles
         fields = [
             'telephone', 'niveau', 'commune', 'village', 'domaine',
-            'etablissement', 'profile', 'type_mentorat',
+            'etablissement', 'profile', 'objectif', 'type_mentorat',
             'photo', 'ojectif_academique', 'cannaux', 'frequesce',
             'connaissance', 'attente'
         ]
