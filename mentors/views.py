@@ -758,44 +758,44 @@ def complete_profile(request):
     user_act = request.user.profiles
 
     if request.method == "POST":
-        user_act.telephone = request.POST.get('telephone')
-        user_act.profile = request.POST.get('profile')
-        user_act.objectif = request.POST.get('objectif')
-        user_act.attente = request.POST.get('attente')
-        user_act.village = request.POST.get('village')
-        user_act.confirm_experience_mentore = request.POST.get('confirm_experience_mentore')
-        user_act.profile_mentorat = request.POST.get('profile_mentorat')
-        user_act.objectif_terme = request.POST.get('objectif_terme')
-        user_act.confirm_mentore = request.POST.get('confirm_mentore')
-        user_act.poste_mentor = request.POST.get('poste_mentor')
-        user_act.secteur_mentor = request.POST.get('secteur_mentor')
-        user_act.confirm_experience_mentor = request.POST.get('confirm_experience_mentor')
-        user_act.confirm_formation_mentore = request.POST.get('confirm_formation_mentore')
+        user_act.telephone = request.POST.get('telephone') if request.POST.get('telephone') else None
+        user_act.profile = request.POST.get('profile') if request.POST.get('profile') else None
+        user_act.objectif = request.POST.get('objectif')if request.POST.get('objectif') else None
+        user_act.attente = request.POST.get('attente')  if request.POST.get('attente') else None
+        user_act.village = request.POST.get('village') if request.POST.get('village') else None
+        user_act.confirm_experience_mentore = request.POST.get('confirm_experience_mentore') if request.POST.get('confirm_experience_mentore') else None
+        user_act.profile_mentorat = request.POST.get('profile_mentorat') if request.POST.get('profile_mentorat') else None
+        user_act.objectif_terme = request.POST.get('objectif_terme') if request.POST.get('confirm_mentore') else None
+        user_act.confirm_mentore = request.POST.get('confirm_mentore') if request.POST.get('confirm_mentore') else None
+        user_act.poste_mentor = request.POST.get('poste_mentor') if request.POST.get('poste_mentor') else None
+        user_act.secteur_mentor = request.POST.get('secteur_mentor') if request.POST.get('secteur_mentor') else None
+        user_act.confirm_experience_mentor = request.POST.get('confirm_experience_mentor') if request.POST.get('confirm_experience_mentor') else None
+        user_act.confirm_formation_mentore = request.POST.get('confirm_formation_mentore') if request.POST.get('confirm_formation_mentore') else None
         
 
         # Récupérer les IDs des clés étrangères
-        niveau_id = int(request.POST.get('niveau'))
-        commune_id = int(request.POST.get('commune'))
-        domaine_id = int(request.POST.get('domaine'))
-        etablissement_id = int(request.POST.get('etablissement'))
-        type_mentorat_id = int(request.POST.get('type_mentorat'))
-        connaissance_id = int(request.POST.get('connaissance'))
-        frequesce_id = int(request.POST.get('frequesce'))
-        cannau_id = int(request.POST.get('cannau'))
-        ojectif_academique_id = int(request.POST.get('ojectif_academique'))
+        niveau_id = int(request.POST.get('niveau')) if request.POST.get('niveau') else None
+        commune_id = int(request.POST.get('commune')) if request.POST.get('commune') else None
+        domaine_id = int(request.POST.get('domaine')) if request.POST.get('domaine') else None
+        etablissement_id = int(request.POST.get('etablissement')) if request.POST.get('etablissement') else None
+        type_mentorat_id = int(request.POST.get('type_mentorat')) if request.POST.get('type_mentorat') else None
+        connaissance_id = int(request.POST.get('connaissance')) if request.POST.get('connaissance') else None
+        frequesce_id = int(request.POST.get('frequesce')) if request.POST.get('frequesce') else None
+        cannau_id = int(request.POST.get('cannau')) if request.POST.get('cannau') else None
+        ojectif_academique_id = int(request.POST.get('ojectif_academique')) if request.POST.get('ojectif_academique') else None
 
         # Vérifier si les clés étrangères existent dans la base de données
         try:
-            commune = Communes.objects.get(id=commune_id)
-            domaine = CategorieFormation.objects.get(id=domaine_id)
-            etablissement = Etablissement.objects.get(id=etablissement_id)
-            type_mentorat = Typementorat.objects.get(id=type_mentorat_id)
-            niveau = Niveau_formation.objects.get(id=niveau_id)
+            commune = Communes.objects.get(id=commune_id) if commune_id else None
+            domaine = CategorieFormation.objects.get(id=domaine_id) if domaine_id  else None
+            etablissement = Etablissement.objects.get(id=etablissement_id) if etablissement_id  else None
+            type_mentorat = Typementorat.objects.get(id=type_mentorat_id) if type_mentorat_id  else None
+            niveau = Niveau_formation.objects.get(id=niveau_id) if niveau_id  else None
             
-            connaissance = Cannaux_Connaissance.objects.get(id=connaissance_id)
-            frequesce = Frequence_Echange.objects.get(id=frequesce_id)
-            cannau = Cannaux_Communication.objects.get(id=cannau_id)
-            ojectif_academique = Objectif_Accademique.objects.get(id=ojectif_academique_id)
+            connaissance = Cannaux_Connaissance.objects.get(id=connaissance_id) if connaissance_id  else None
+            frequesce = Frequence_Echange.objects.get(id=frequesce_id) if frequesce_id  else None
+            cannau = Cannaux_Communication.objects.get(id=cannau_id) if cannau_id  else None
+            ojectif_academique = Objectif_Accademique.objects.get(id=ojectif_academique_id) if ojectif_academique_id  else None
         except (Communes.DoesNotExist, 
                 CategorieFormation.DoesNotExist, 
                 Etablissement.DoesNotExist, 
