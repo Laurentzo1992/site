@@ -7,10 +7,7 @@ class ProfileCompletionMiddleware(MiddlewareMixin):
         if request.user.is_authenticated and not request.user.is_superuser:
             user_profile = request.user.profiles
             required_fields = [
-                'telephone', 'niveau', 'commune', 'village', 'domaine', 
-                'etablissement', 'profile', 'objectif', 'type_mentorat', 
-                'ojectif_academique', 'cannaux', 'frequesce', 'connaissance', 
-                'attente'
+                'telephone', 'niveau', 'commune'
             ]
             missing_fields = [field for field in required_fields if not getattr(user_profile, field)]
 

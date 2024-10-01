@@ -91,16 +91,16 @@ DATABASES = {
 
 
 
-"""DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'oser',
-        'USER': 'ubuntu',
-        'PASSWORD': 'pago@2023',
-        'HOST': '94.23.165.51',
-        'PORT': '5432',
-    }
-}"""
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'oser',
+#         'USER': 'ubuntu',
+#         'PASSWORD': 'pago@2023',
+#         'HOST': '94.23.165.51',
+#         'PORT': '5432',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

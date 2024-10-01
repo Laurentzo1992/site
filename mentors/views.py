@@ -1000,7 +1000,7 @@ def mentore_activites(request, id=0):
             form = ActiviteMentoratForm(request.POST, request.FILES, instance=activite)
             if form.is_valid():
                 activite = form.save()
-                if request.user.is_admin:
+                if request.user.is_superuser:
                     ActiviteMentorat.objects.filter(id=id).update(is_commun=True)
                 messages.success(request, 'Activité modifiée avec succès')
                 return redirect('mentore_activites')
@@ -1019,12 +1019,10 @@ def mentore_activites(request, id=0):
     # mentorat = Mentorat.objects.filter(mentor=request.user.profiles).first() if Mentorat.objects.filter(mentor=request.user.profiles).first() else Mentorat.objects.filter(demandeur=request.user.profiles).first()
     # activites = ActiviteMentorat.objects.filter(mentorat=mentorat)
     activites = []
-    if request.user.is_admin:
-        activites = ActiviteMentorat.objects.all()
-    elif request.user.groups.filter(name='mentors').exists() or request.user.groups.filter(name='utilisateurs').exists():
-        activites = ActiviteMentorat.objects.filter(mentorat = request.user.profiles.mentorat)
-    else:
-        activites = ActiviteMentorat.objects.filter(is_commun = True)
+    # if request.user.is_superuser:
+    activites = ActiviteMentorat.objects.all()
+    # else:
+    #     activites = ActiviteMentorat.objects.filter(mentorat = request.user.profiles.dem)
     factory_activite(activites)
     context = {"activites": activites}
     return render(request, 'mentors/activites_mentorat.html', context)
