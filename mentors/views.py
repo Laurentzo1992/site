@@ -19,6 +19,9 @@ from django.contrib.sessions.models import Session
 from django.utils import timezone
 from django.core.mail import send_mail, BadHeaderError
 from django.db.models import Count
+from django.utils.translation import gettext as _
+
+
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def home(request):
@@ -100,10 +103,10 @@ def createuser(request):
         try:
             can_be_mentor = int(request.POST.get('mentor'))
             if not 0<=can_be_mentor<=1:
-                messages.error(request, "Vous n'avez pas choisie d'etre mentor ou mentoré")
+                messages.error(request, _("Vous n'avez pas choisie d'etre mentor ou mentoré"))
                 return redirect('login')
         except Exception as e:
-            messages.error(request, "Vous n'avez pas choisie d'etre mentor ou mentoré")
+            messages.error(request, _("Vous n'avez pas choisie d'etre mentor ou mentoré"))
             return redirect('login')
         
         if password == password2:

@@ -226,8 +226,8 @@ TINYMCE_JS_URL = os.path.join(BASE_DIR, "website/static/tinymce/js/tinymce/tinym
 
 
 UNFOLD = {
-    "SITE_TITLE": 'FASO MENTORAT',
-    "SITE_HEADER": 'FASO MENTORAT',
+    "SITE_TITLE": 'ECLAIR',
+    "SITE_HEADER": 'ECLAIR',
     "SITE_URL": "/",
     # "SITE_ICON": lambda request: static("icon.svg"),  # both modes, optimise for 32px height
     "SITE_ICON": {

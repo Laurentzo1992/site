@@ -46,14 +46,14 @@
       <!-- A Few Words About Me-->
       {% block content %}
       
-      <section class="section section-lg">
+      <section class="section section-lg bg-default">
         <div class="container">
             <div class="row row-50 justify-content-center justify-content-lg-between">
                 <div class="col-12">
                     <h1 class="h-custom-1 f1" style="color:#0080ff;">ECLAIR ? </h1>
                 </div>
                 <div class="col-12 col-md-6 mb-4 mb-md-0">
-                    <p style="text-align: justify;">{{debut.about1}}.</p>
+                    <p style="text-align: justify;">{{debut.about1|safe}}.</p>
                     <a class="btn" href="{% url 'about' %}"><span style="color:#0080ff;">Lire plus</span></a>
                 </div>
                 <div class="col-12 col-md-6" data-wow-delay=".4s">
