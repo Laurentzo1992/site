@@ -692,6 +692,7 @@ def newletter(request):
                     message_abonnement,
                     settings.DEFAULT_FROM_EMAIL,
                     [post_useremail],
+                    html_message=message_abonnement,
                     fail_silently=False,
                 )
                 messages.success(request, 'Abonnement réussi')
@@ -740,6 +741,7 @@ def adesion(request):
                     'Votre demande pour nous rejoindre à été bien pris en compte.',
                     settings.DEFAULT_FROM_EMAIL,
                     [email],
+                    html_message='Votre demande pour nous rejoindre à été bien pris en compte.',
                     fail_silently=False,
                 )
                 messages.success(request, 'Demande reussi!')
@@ -831,13 +833,14 @@ def complete_profile(request):
         
         objet_inscription = mail_welcome.objet if mail_welcome else "Bienvenue sur OSER"
         message_inscription = mail_welcome.message if mail_welcome else "Bienvenue sur OSER"
-        # send_mail(
-        #     objet_inscription,
-        #     message_inscription,
-        #     settings.DEFAULT_FROM_EMAIL,
-        #     [request.user.email],
-        #     fail_silently=False,
-        # )
+        send_mail(
+            objet_inscription,
+             message_inscription,
+             settings.DEFAULT_FROM_EMAIL,
+             [request.user.email],
+             html_message=message_inscription,
+             fail_silently=False,
+         )
 
         return redirect('Mentors')
 

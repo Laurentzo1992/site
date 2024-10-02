@@ -39,7 +39,7 @@
                                                             <tr>
                                                                 <td>{{mail.intituler}}</td>
                                                                 <td>{{mail.objet}}</td>
-                                                                <td>{{mail.message}}</td>
+                                                                <td>{{mail.message|safe}}</td>
                                                                 <td><a type="button" class="btn btn-warning" data-toggle="modal" data-target="#mailModal{{mail.id}}"><i class="fa fa-eye"></i></a></td>
                                                             </tr>
                                                             {% include "mentors/dashboard/mail_detail.html" %}

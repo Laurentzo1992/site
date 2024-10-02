@@ -50,7 +50,7 @@
         <div class="container">
             <div class="row row-50 justify-content-center justify-content-lg-between">
                 <div class="col-12">
-                    <h1 class="h-custom-1 f1" style="color:#0080ff;">Faso Mentorat ? </h1>
+                    <h1 class="h-custom-1 f1" style="color:#0080ff;">ECLAIR ? </h1>
                 </div>
                 <div class="col-12 col-md-6 mb-4 mb-md-0">
                     <p style="text-align: justify;">{{debut.about1}}.</p>
@@ -96,22 +96,56 @@
 
        <!-- Activité -->
 
-      <section class="section section-lg bg-default text-center">
-        <div class="container222">
-            <h6 class="wow fadeIn" style="color:#0080ff;">Nos Activités </h6>
-            {% for activite in activites %}
-            <div class="activite">
-                {% if activite.image_des %}
-                <img src="{{ activite.image_des.url }}" alt="{{ activite.titre }}">
-                {% endif %}
-                <h4>{{ activite.titre }}</h4>
-                <p>{{ activite.description|safe }}</p>
-                <small>Créé le : {{ activite.created }}</small>
+       <section class="section section-lg bg-default text-center">
+        <div class="container">
+            <h6 class="wow fadeIn" style="color:#0080ff;">Nos Activités</h6>
+            <div class="row">
+                {% for activite in activites %}
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        {% if activite.image_des %}
+                        <img src="{{ activite.image_des.url }}" alt="{{ activite.titre }}" class="card-img-top">
+                        {% endif %}
+                        <div class="card-body">
+                            <h4 class="card-title">{{ activite.titre }}</h4>
+                            <p class="card-text">
+                                {% if activite.description|length > 100 %}
+                                {{ activite.description|truncatechars_html:200|safe }}...
+                                {% else %}
+                                {{ activite.description|safe}}
+                                {% endif %}
+                            </p>
+                            <a href="#" class="btn btn-primary read-more-btn" data-toggle="modal" data-target="#activiteModal{{ activite.id }}">Lire plus</a>
+                            <small class="text-muted">Créé le : {{ activite.created }}</small>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Modal for Lire plus -->
+                <div class="modal fade" id="activiteModal{{ activite.id }}" tabindex="-1" role="dialog" aria-labelledby="activiteModalLabel{{ activite.id }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="activiteModalLabel{{ activite.id }}">{{ activite.titre }}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <img src="{{ activite.image_des.url }}" alt="{{ activite.titre }}" class="img-fluid mb-3">
+                                <p>{{ activite.description|safe }}</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
-      </section>
-
+    </section>
+    
 
       <!-- Temoignage -->
        
