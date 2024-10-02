@@ -40,9 +40,9 @@ urlpatterns = [
     path('complete_profile', views.complete_profile, name='complete_profile'),
     path('mails_personnalisee/', views.mails_personnalisee, name='mails_personnalisee'),
     
-    path('mentore-activites/', mentore_activites, name="mentore_activites"),
-    path("add-mentore-activite/", mentore_activites, name="add_mentore_activite"),
-    path("edit-mentore-activite/<id>", mentore_activites, name="edit_mentore_activite"),
-    path("delete-mentore-activite/<id>", mentore_activites, name="delete_mentore_activite"),
-    path("annule-mentore-activite/<id>", mentore_activites, name="annule_mentore_activite"),
+    path('mentore_activites/', mentore_activites, name='mentore_activites'),
+    path('add_mentore_activite/', mentore_activites, name='add_mentore_activite'),
+    path('edit_mentore_activite/<id>', mentore_activites, name='edit_mentore_activite'),
+    path('delete_mentore_activite/<id>', mentore_activites, name='delete_mentore_activite'),
+    path('annule_mentore_activite/<id>', mentore_activites, name='annule_mentore_activite'),
 ]

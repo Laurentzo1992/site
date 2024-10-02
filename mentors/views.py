@@ -987,7 +987,7 @@ def mails_personnalisee(request):
 
 @login_required
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-def mentore_activites(request, id=0):
+def mentore_activites(request, id):
     if 'add' in request.path:
         if request.method == "POST":
             form = ActiviteMentoratForm(request.POST, request.FILES)
