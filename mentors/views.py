@@ -27,7 +27,7 @@ from django.utils.translation import gettext as _
 def home(request):
     mentors = User.objects.filter(groups__name='mentors').count()
     mentores = User.objects.filter(groups__name='utilisateurs').count()
-    politiques = Politique_Securite.objects.all().order_by('-id')
+    politiques = Politique_Securite.objects.all().order_by('id')
     temoignages = Temoignage.objects.all()
     partenariats = Partenaire.objects.all().order_by('-created')
     debut = Presentation.objects.all().first()
@@ -987,7 +987,7 @@ def mails_personnalisee(request):
 
 @login_required
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-def mentore_activites(request, id):
+def mentore_activites(request, id=0):
     if 'add' in request.path:
         if request.method == "POST":
             form = ActiviteMentoratForm(request.POST, request.FILES)
