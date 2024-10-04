@@ -985,53 +985,77 @@ def mails_personnalisee(request):
     return render(request, 'mentors/dashboard/mails_personnaliser.html', context)
 
 
-@login_required
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-def mentore_activites(request, id=0):
-    if 'add' in request.path:
-        if request.method == "POST":
-            form = ActiviteMentoratForm(request.POST, request.FILES)
-            if form.is_valid():
-                activite = form.save()
-                mentorat = Mentorat.objects.filter(mentor = request.user.profiles).first()
-                ActiviteMentorat.objects.filter(id=activite.id).update(mentorat=mentorat)
-                messages.success(request, 'Activité ajoutée avec succès')
-                return redirect('mentore_activites')
-            return render(request,'mentors/add_activites_mentorat.html',{'form':form})
-        form = ActiviteMentoratForm()
-        return render(request,'mentors/add_activites_mentorat.html',{'form':form})
-    elif 'edit' in request.path:
-        activite = get_object_or_404(ActiviteMentorat, id=id)
-        if request.method == "POST":
-            form = ActiviteMentoratForm(request.POST, request.FILES, instance=activite)
-            if form.is_valid():
-                activite = form.save()
-                if request.user.is_superuser:
-                    ActiviteMentorat.objects.filter(id=id).update(is_commun=True)
-                messages.success(request, 'Activité modifiée avec succès')
-                return redirect('mentore_activites')
-            return render(request,'mentors/add_activites_mentorat.html',{'form':form})
-        form = ActiviteMentoratForm(instance=activite)
-        return render(request,'mentors/add_activites_mentorat.html',{'form':form})
-    elif 'delete' in request.path:
-        activite = get_object_or_404(ActiviteMentorat, id=id)
-        activite.delete()
-        messages.success(request, 'Activité supprimée avec succès')
-        return redirect('mentore_activites')
-    elif 'annule' in request.path:
-        activite = ActiviteMentorat.objects.filter(id=id).update(etat='annuler')
-        messages.success(request, 'Activité supprimée avec succès')
-        return redirect('mentore_activites')
-    # mentorat = Mentorat.objects.filter(mentor=request.user.profiles).first() if Mentorat.objects.filter(mentor=request.user.profiles).first() else Mentorat.objects.filter(demandeur=request.user.profiles).first()
-    # activites = ActiviteMentorat.objects.filter(mentorat=mentorat)
-    activites = []
-    # if request.user.is_superuser:
-    activites = ActiviteMentorat.objects.all()
-    # else:
-    #     activites = ActiviteMentorat.objects.filter(mentorat = request.user.profiles.dem)
-    factory_activite(activites)
+
+def mentore_activites(request):
+    if request.user.is_superuser:
+        activites = ActiviteMentorat.objects.all()
+    else:
+        # Filter by mentor first, then by demandeur if not a mentor
+        activites = ActiviteMentorat.objects.filter(mentorat__mentor=request.user.profiles) or \
+                    ActiviteMentorat.objects.filter(mentorat__demandeur=request.user.profiles)
     context = {"activites": activites}
     return render(request, 'mentors/activites_mentorat.html', context)
+
+
+
+def add_activite(request):
+    if request.method == "POST":
+        form = ActiviteMentoratForm(request.POST, request.FILES)
+        if form.is_valid():
+            activite = form.save()
+            mentorat = Mentorat.objects.filter(mentor=request.user.profiles).first()
+            ActiviteMentorat.objects.filter(id=activite.id).update(mentorat=mentorat)
+            messages.success(request, 'Activité ajoutée avec succès')
+            return redirect('mentore_activites')
+        return render(request, 'mentors/add_activites_mentorat.html', {'form': form})
+    form = ActiviteMentoratForm()
+    return render(request, 'mentors/add_activites_mentorat.html', {'form': form})
+
+
+
+def edit_activite(request, id):
+    activite = get_object_or_404(ActiviteMentorat, id=id)
+    if request.method == "POST":
+        form = ActiviteMentoratForm(request.POST, request.FILES, instance=activite)
+        if form.is_valid():
+            activite = form.save()
+            if request.user.is_superuser:
+                ActiviteMentorat.objects.filter(id=id).update(is_commun=True)
+            messages.success(request, 'Activité modifiée avec succès')
+            return redirect('mentore_activites')
+        return render(request, 'mentors/edit_activites_mentorat.html', {'form': form})
+
+    form = ActiviteMentoratForm(instance=activite)
+    return render(request, 'mentors/edit_activites_mentorat.html', {'form': form})
+
+
+
+def delete_activite(request, id):
+    activite = get_object_or_404(ActiviteMentorat, id=id)
+    activite.delete()
+    messages.success(request, 'Activité supprimée avec succès')
+    return redirect('mentore_activites')
+
+
+
+def annule_mentore_activite(request, id):
+    ActiviteMentorat.objects.filter(id=id).update(etat='annuler')
+    messages.success(request, 'Activité annulée avec succès')
+    return redirect('mentore_activites')
+
+def valid_mentore_activite(request, id):
+    ActiviteMentorat.objects.filter(id=id).update(etat='en_cours')
+    messages.success(request, 'Activité annulée avec succès')
+    return redirect('mentore_activites')
+
+
+def clos_mentore_activite(request, id):
+    ActiviteMentorat.objects.filter(id=id).update(etat='cloture')
+    messages.success(request, 'Activité annulée avec succès')
+    return redirect('mentore_activites')
+
+
+
 
 def factory_activite(activites):
     today = timezone.now().date()

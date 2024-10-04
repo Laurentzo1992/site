@@ -23,8 +23,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" integrity="sha256-Uv9BNBucvCPipKQ2NS9wYpJmi8DTOEfTA/nH2aoJALw=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
     <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
-
-    
   </head>
   <body>
 
@@ -40,8 +38,6 @@
       </div>
     </div>
   
-  
-
     <div class="preloader">
       <div class="preloader-logo"><a class="brand" href="{% url 'home' %}"><img class="brand-logo-dark" src="{% static 'media/images/logo-default-245x50.png' %}" alt="" width="245" height="50"/><img class="brand-logo-light" src="{% static 'media/images/logo-default-245x50.png' %}" alt="" width="245" height="50"/></a>
       </div>
@@ -104,20 +100,19 @@
                               <i class="fa fa-pencil" style="color:#0080ff; font-size:13px;"></i> &nbsp; ECLAIR 
                             </button>
                             <ul class="dropdown-menu">
-                              <li class="dropdown-item"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'Mentors' %}"><i class="fa fa-users" style="color:#0080ff; font-size:13px;"> </i>&nbsp; MENTORAT </a>
+                              {% comment %} <li class="dropdown-item"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'Mentors' %}"><i class="fa fa-users" style="color:#0080ff; font-size:13px;"> </i>&nbsp; MENTORAT </a>
+                              </li> {% endcomment %}
+                              <li class="rd-nav-item" id="users"><a style="color:#000000; font-size:13px;" href="{% url 'user_profile' %}"><i class="fa fa-users" style="color:#0080ff; font-size:13px;"></i> &nbsp; MON ESPACE</a>
                               </li>
                               <li class="dropdown-item"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'orientation' %}"><i class="fa fa-book" style="color:#0080ff; font-size:13px;"></i> &nbsp; ORIENTATION</a>
                               </li>
+                              
                             </ul>
                           </div>
                         </li>
                         {% endif %}
                     {% if not user.is_authenticated %}
                     <li class="rd-nav-item" style="color:#0080ff;"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'login' %}"><i class="fa fa-unlock" style="color:#0080ff; font-size:13px;"></i> CONNEXION</a>
-                    </li>
-                    {% endif %}
-                    {% if user.is_authenticated %}
-                    <li class="rd-nav-item" id="users"><a style="color:#000000; font-size:13px;" href="{% url 'user_profile' %}"><i class="fa fa-users" style="color:#0080ff; font-size:13px;"></i> &nbsp; MON ESPACE</a>
                     </li>
                     {% endif %}
                     <li class="rd-nav-item" style="color:#0080ff;"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'bourse_opportunite' %}"><i class="fa fa-money" style="color:#0080ff; font-size:13px;"></i> BOURSES & OPPORTUNITES</a>

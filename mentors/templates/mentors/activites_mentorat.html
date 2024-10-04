@@ -1,16 +1,21 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block main %}
 <div class="container">
   <div class="card">
     <div class="card-header">
-        <h4>Listes des activités</h4>
+        <h4>Tâches</h4>
     </div>
     <div class="card-body">
       <ul class="list-group">
           {% for activite in activites %}
           <li class="list-group-item  mt-4">
+            {% if activite.image %}
             <img class="img-activite img-responsive img-rounded" src="{{ activite.image.url }}" alt=""/>
+            {% else %}
+            <img class="img-activite img-responsive img-rounded" src="https://static.vecteezy.com/ti/vecteur-libre/p1/23472838-une-homme-effectue-taches-completer-affectations-a-le-fin-liste-de-cas-ou-taches-affaires-projet-mise-en-oeuvre-le-homme-detient-une-crayon-et-des-marques-le-termine-articles-de-le-tache-vecteur-illustration-vectoriel.jpg" alt=""/>
+            {% endif %}
             <h3 class="list-group-item-heading">
               {{activite.titre}}
               <span class="badge badge-{% if activite.etat == 'en_instance'  %}primary{% elif activite.etat == 'en_cours' %}success{% elif activite.etat == 'cloture' %}info{% elif activite.etat == 'annuler' %}danger{% endif %} pull-right"> {{ activite.get_etat_display }} </span>
@@ -18,12 +23,14 @@
             <p class="list-group-item-text lead">
               {{activite.description}}
               <br />
-              <div ><small>{{activite.debut}} - {{activite.fin}}</small></a>
+              <div ><small> à faire avant entre{{activite.debut}} et le {{activite.fin}}</small></a>
             </p>
             <div class="btn-toolbar pull-right" role="toolbar" aria-label="">
-              <a href="{% url 'edit_mentore_activite' activite.id %}" class="btn btn-info"><i class="fa fa-pencil"></i>&nbsp;Modifier</a>
-              <a href="{% url 'annule_mentore_activite' activite.id %}" class="btn btn-warning ml-2"><i class="fa fa-ban"></i>&nbsp;Annuler</a>
-              <a href="{% url 'delete_mentore_activite' activite.id %}" class="btn btn-danger ml-2"><i class="fa fa-trash"></i>&nbsp;Supprimer</a>
+              <a href="{% url 'edit_mentore_activite' activite.id %}" class="btn btn-info"><i class="fa fa-pencil"></i>&nbsp;Mise à jour</a> &nbsp;
+              <a href="{% url 'annule_mentore_activite' activite.id %}" class="btn btn-warning ml-2"><i class="fa fa-ban"></i>&nbsp;Annuler</a> &nbsp;
+              <a href="{% url 'valid_mentore_activite' activite.id %}" class="btn btn-success ml-2"><i class="fa fa-check"></i>&nbsp;Fait</a> &nbsp;
+              <a href="{% url 'clos_mentore_activite' activite.id %}" class="btn btn-secondary ml-2"><i class="fa fa-hand-grab-o"></i>&nbsp;Valider</a> &nbsp;
+              <a href="{% url 'delete_mentore_activite' activite.id %}" class="btn btn-danger ml-2"><i class="fa fa-trash"></i>&nbsp;Supprimer</a> &nbsp;
             </div>
           </li>
           <hr style="border: solid 5px black;">
@@ -32,4 +39,28 @@
     </div>
   </div>
 </div>
+
+
+
+{% for message in messages %}
+      <script src="{% static 'js/sweetalert.min.js' %}"></script>
+      {% if message.tags == 'error' %}
+      <script>
+          var m = "{{ message }}";
+          swal("Réfusé!", m, "error");
+      </script>
+      {% elif message.tags == 'success' %}
+      <script>
+          var m = "{{ message }}";
+          swal("Bienvenue!", m, "success");
+      </script>
+      {% elif message.tags == 'warning' %}
+      <script>
+          var m = "{{ message }}";
+          swal("A bientôt!", m, "warning");
+      </script>
+      {% endif %}
+
+      {% endfor%}
+
 {% endblock main %}

@@ -701,7 +701,7 @@ class ActiviteMentorat(models.Model):
     titre = models.CharField(max_length=150)
     description = models.TextField()
     mentorat = models.ForeignKey(Mentorat, on_delete=models.CASCADE, blank=True, null=True)
-    image = models.FileField(upload_to='images_activites/', null=True, blank=True, verbose_name="Image")
+    image = models.FileField(upload_to='images_activites/', null=True, blank=True, verbose_name="Fichier joint")
     debut = models.DateField(auto_now=False, auto_now_add=False)
     fin = models.DateField(auto_now=False, auto_now_add=False)
     etat = models.CharField(max_length=32, choices=ETAT, blank=True, null=True, default='en_instance')

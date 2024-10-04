@@ -40,9 +40,11 @@ urlpatterns = [
     path('complete_profile', views.complete_profile, name='complete_profile'),
     path('mails_personnalisee/', views.mails_personnalisee, name='mails_personnalisee'),
     
-    path('mentore_activites/', mentore_activites, name='mentore_activites'),
-    path('add_mentore_activite/', mentore_activites, name='add_mentore_activite'),
-    path('edit_mentore_activite/<id>', mentore_activites, name='edit_mentore_activite'),
-    path('delete_mentore_activite/<id>', mentore_activites, name='delete_mentore_activite'),
-    path('annule_mentore_activite/<id>', mentore_activites, name='annule_mentore_activite'),
+    path('mentore_activites/', views.mentore_activites, name='mentore_activites'),
+    path('add_mentore_activite/', views.add_activite, name='add_mentore_activite'),
+    path('edit_mentore_activite/<id>', views.edit_activite, name='edit_mentore_activite'),
+    path('delete_mentore_activite/<id>', views.delete_activite, name='delete_mentore_activite'),
+    path('annule_mentore_activite/<id>', views.annule_mentore_activite, name='annule_mentore_activite'),
+    path('clos_mentore_activite/<id>', views.clos_mentore_activite, name='clos_mentore_activite'),
+    path('valid_mentore_activite/<id>', views.valid_mentore_activite, name='valid_mentore_activite'),
 ]
