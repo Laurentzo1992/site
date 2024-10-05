@@ -402,7 +402,7 @@ class Mentorat(models.Model):
     
     
     def __str__(self):
-        return f'Mentorat from {self.demandeur} with {self.mentor} (Status: {self.statut})'
+        return f'Mentorat Entre {self.demandeur} et {self.mentor} (Status: {self.statut})'
 
    
 

@@ -26,11 +26,17 @@
               <div ><small> à faire avant entre{{activite.debut}} et le {{activite.fin}}</small></a>
             </p>
             <div class="btn-toolbar pull-right" role="toolbar" aria-label="">
+              {% if 'mentors' in user_groups %}
               <a href="{% url 'edit_mentore_activite' activite.id %}" class="btn btn-info"><i class="fa fa-pencil"></i>&nbsp;Mise à jour</a> &nbsp;
-              <a href="{% url 'annule_mentore_activite' activite.id %}" class="btn btn-warning ml-2"><i class="fa fa-ban"></i>&nbsp;Annuler</a> &nbsp;
-              <a href="{% url 'valid_mentore_activite' activite.id %}" class="btn btn-success ml-2"><i class="fa fa-check"></i>&nbsp;Fait</a> &nbsp;
-              <a href="{% url 'clos_mentore_activite' activite.id %}" class="btn btn-secondary ml-2"><i class="fa fa-hand-grab-o"></i>&nbsp;Valider</a> &nbsp;
               <a href="{% url 'delete_mentore_activite' activite.id %}" class="btn btn-danger ml-2"><i class="fa fa-trash"></i>&nbsp;Supprimer</a> &nbsp;
+              <a href="{% url 'annule_mentore_activite' activite.id %}" class="btn btn-warning ml-2"><i class="fa fa-ban"></i>&nbsp;Annuler</a> &nbsp;
+              <a href="{% url 'clos_mentore_activite' activite.id %}" class="btn btn-secondary ml-2"><i class="fa fa-hand-grab-o"></i>&nbsp;Valider</a> &nbsp;
+              {% endif %}
+              {% if 'utilisateurs' in user_groups %}
+              <a href="{% url 'valid_mentore_activite' activite.id %}" class="btn btn-success ml-2"><i class="fa fa-check"></i>&nbsp;Fait</a> &nbsp;
+              {% endif %}
+              
+              
             </div>
           </li>
           <hr style="border: solid 5px black;">

@@ -76,9 +76,17 @@ def boad(request):
     # Nombre d'utilisateurs connectés
     nombre_utilisateurs_connectes = utilisateurs_connectes.count()
 
-    demandes_mentorats = Mentorat.objects.all().order_by('-created')
-
-    context = {"users_profiles":users_profiles,
+    demandes_mentorats = Mentorat.objects.all().order_by('-id')
+    
+    sessions = demandes_mentorats.filter(statut__statut='valide')
+    # Retrieve the activities for each session
+    activities_by_session = {}
+    for session in sessions:
+        activities = ActiviteMentorat.objects.filter(mentorat=session)
+        activities_by_session[session.id] = activities
+    
+    context = {
+               "users_profiles":users_profiles,
                "mentorslists":mentorslists,
                "utilisateurs_connectes":utilisateurs_connectes,
                "nombre_utilisateurs_connectes":nombre_utilisateurs_connectes,
@@ -87,6 +95,8 @@ def boad(request):
                "users":users,
                "demandes":demandes,
                "demandes_mentorats":demandes_mentorats,
+               "sessions":sessions,
+               "activities_by_session": activities_by_session
                }
     return render(request, 'mentors/dashboard/boad.html', context)
 
@@ -986,18 +996,30 @@ def mails_personnalisee(request):
 
 
 
+
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def mentore_activites(request):
-    if request.user.is_superuser:
+    user = request.user
+    user_groups = user.groups.values_list('name', flat=True)
+    
+    if user.is_superuser:
         activites = ActiviteMentorat.objects.all()
     else:
-        # Filter by mentor first, then by demandeur if not a mentor
         activites = ActiviteMentorat.objects.filter(mentorat__mentor=request.user.profiles) or \
                     ActiviteMentorat.objects.filter(mentorat__demandeur=request.user.profiles)
-    context = {"activites": activites}
+                    
+    context = {
+        "activites": activites,
+        "user_groups": user_groups,
+    }
+    
     return render(request, 'mentors/activites_mentorat.html', context)
 
 
 
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def add_activite(request):
     if request.method == "POST":
         form = ActiviteMentoratForm(request.POST, request.FILES)
@@ -1013,6 +1035,9 @@ def add_activite(request):
 
 
 
+
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def edit_activite(request, id):
     activite = get_object_or_404(ActiviteMentorat, id=id)
     if request.method == "POST":
@@ -1030,6 +1055,9 @@ def edit_activite(request, id):
 
 
 
+
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def delete_activite(request, id):
     activite = get_object_or_404(ActiviteMentorat, id=id)
     activite.delete()
@@ -1038,17 +1066,29 @@ def delete_activite(request, id):
 
 
 
+
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def annule_mentore_activite(request, id):
     ActiviteMentorat.objects.filter(id=id).update(etat='annuler')
     messages.success(request, 'Activité annulée avec succès')
     return redirect('mentore_activites')
 
+
+
+
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def valid_mentore_activite(request, id):
     ActiviteMentorat.objects.filter(id=id).update(etat='en_cours')
     messages.success(request, 'Activité annulée avec succès')
     return redirect('mentore_activites')
 
 
+
+
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def clos_mentore_activite(request, id):
     ActiviteMentorat.objects.filter(id=id).update(etat='cloture')
     messages.success(request, 'Activité annulée avec succès')
@@ -1057,6 +1097,8 @@ def clos_mentore_activite(request, id):
 
 
 
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def factory_activite(activites):
     today = timezone.now().date()
     
@@ -1071,3 +1113,6 @@ def factory_activite(activites):
             if activite.etat != 'cloture':  # Mettre à jour seulement si nécessaire
                 activite.etat = 'cloture'
                 activite.save()
+                
+                
+                
