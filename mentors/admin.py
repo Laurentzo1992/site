@@ -22,6 +22,8 @@ admin.site.register(Typementorat)
 admin.site.register(Niveau_formation)
 admin.site.register(Slideimage)
 admin.site.register(Profiles)
+admin.site.register(Mentorat)
+
 
 @admin.register(Presentation)
 class PresentationAdmin(ModelAdmin):

@@ -933,6 +933,7 @@ def valider_mentorat(request, mentorat_id):
         form = MentoratValidationForm(request.POST, instance=mentorat)
         if form.is_valid():
             mentorat = form.save(commit=False)
+            
             # Mise à jour du statut et assignation du mentor
             mentorat_statut, created = Mentorat_Statut.objects.get_or_create(statut='valide')
             mentorat.statut = mentorat_statut
@@ -940,28 +941,114 @@ def valider_mentorat(request, mentorat_id):
             mentorat.date_debut = form.cleaned_data['date_debut']
             mentorat.date_fin = form.cleaned_data['date_fin']
             mentorat.save()
-            objet = "Demande valider"
-            message_mentor = f""" Vous avez demander en tant que mentor de {mentorat.demandeur.user.first_name} {mentorat.demandeur.user.last_name} et Nous avons valider cette demande donc vous etes a present son mentor"""
-            message_mentore = f""" Votre demande de mentorat a ete validez avec succes a present Mr(Mme) {mentorat.mentor.user.first_name} {mentorat.mentor.user.last_name} est votre mentor"""
+
+            # Vérification si le demandeur et le mentor ont des profils complets
+            demandeur_profile = mentorat.demandeur
+            mentor_profile = mentorat.mentor
+
+            # Extraction sécurisée des données de profil du demandeur
+            niveau = demandeur_profile.niveau.libelle if demandeur_profile.niveau else "Niveau non spécifié"
+            objectif = demandeur_profile.objectif if demandeur_profile.objectif else "Objectif non spécifié"
+            telephone = demandeur_profile.telephone if demandeur_profile.telephone else "Téléphone non spécifié"
+
+            # Extraction des données du mentor
+            poste_mentor = mentor_profile.poste_mentor if mentor_profile.poste_mentor else "Poste non spécifié"
+            experience_mentor = mentor_profile.confirm_experience_mentor if mentor_profile.confirm_experience_mentor else "Expérience non spécifiée"
+            telephone_mentor = mentor_profile.telephone if mentor_profile.telephone else "Téléphone non spécifié"
+
+            # Préparation des emails
+            objet = "Votre Jumelage de Mentorat est prêt !"
+            
+            message_mentor = f"""
+            Chère/Cher {request.user},
+            Nous avons le plaisir de vous annoncer que votre jumelage avec votre mentoré a été finalisé.
+            Vous allez accompagner {demandeur_profile.user.first_name} {demandeur_profile.user.last_name} dans son parcours académique et professionnel,
+            et nous sommes convaincus que votre expertise sera d'une grande valeur.
+            
+            Détails de votre Mentoré :
+            Nom : {demandeur_profile.user.last_name} {demandeur_profile.user.first_name}
+            Études/Parcours : {niveau}
+            Objectifs : {objectif}
+            Contact : {demandeur_profile.user.email}, {telephone}
+            Nous vous encourageons à prendre contact avec votre mentoré pour organiser votre première rencontre.
+            Voici un modèle de message que vous pouvez utiliser :
+            Bonjour [Nom du Mentoré], 
+            Je m'appelle [Votre Nom] et je suis ravi(e) d'être jumelé(e) avec vous dans le cadre du programme de mentorat d'OSER. J'aimerais organiser notre première rencontre pour discuter de vos objectifs et de la manière dont nous pourrions travailler ensemble. Pouvez-vous me faire part de vos disponibilités pour une première discussion ? 
+            Merci beaucoup et à bientôt, 
+            [Votre Nom]
+            Un coup de pouce pour commencer ?
+            Lors de votre première rencontre, prenez le temps de vous présenter et d'écouter les objectifs de votre mentoré. Voici quelques sujets à aborder :
+            ●	Les objectifs personnels et professionnels du mentoré
+            ●	Les attentes pour le mentorat
+            ●	Le calendrier et la fréquence des rencontres
+            ●	La méthode de communication préférée (email, téléphone, visioconférence)
+            ●	etc…
+            Vous trouverez des outils dans un espace pour vous aider.
+            Allez oop, c’est à vous de jouer!
+            Avec nos meilleures salutations,
+            L’équipe de oser
+
+            """
+            
+            message_mentore = f"""
+            Chère/Cher {demandeur_profile.user.first_name},
+            Nous sommes ravis de vous informer que votre jumelage avec votre mentor a été finalisé !
+            Vous êtes maintenant prêt(e) à commencer cette excitante aventure de mentorat avec {mentor_profile.user.first_name} {mentor_profile.user.last_name}.
+            
+            Détails de votre Mentor :
+            Nom : {mentor_profile.user.first_name} {mentor_profile.user.last_name}
+            Poste : {poste_mentor}
+            Expérience : {experience_mentor}
+            Contact : {mentor_profile.user.email}, {telephone_mentor}
+            
+            Nous vous encourageons à prendre contact avec votre mentor dès que possible pour organiser votre première rencontre. Vous pouvez utiliser le modèle de message ci-dessous pour initier la conversation.
+            Modèle de Message : 
+
+            Bonjour [Nom du Mentor],
+
+            Je m'appelle [Votre Nom] et je suis ravi(e) d'être jumelé(e) avec vous dans le cadre du programme de mentorat d'OSER. J'aimerais organiser notre première rencontre pour discuter de mes objectifs et de la manière dont nous pourrions travailler ensemble.
+
+            Pouvez-vous me faire part de vos disponibilités pour une première discussion ?
+
+            Merci beaucoup et à bientôt,
+
+            [Votre Nom]
+            Un coup de pouce pour commencer ?
+            Lors de votre première rencontre, prenez le temps de vous présenter et de partager vos objectifs. Voici quelques sujets à aborder :
+            ●	Vos objectifs personnels et professionnels
+            ●	Vos attentes pour le mentorat
+            ●	Le calendrier et la fréquence des rencontres
+            ●	La méthode de communication préférée (email, téléphone, visioconférence…)
+            ●	etc…
+            Vous trouverez des outils dans un espace personnel pour vous aider.
+            Allez oop, c’est à vous de jouer!
+            Avec nos meilleures salutations,
+            L’équipe de oser
+
+            """
+            
+            # Envoi des emails
             send_mail(
                 objet,
                 message_mentor,
                 settings.DEFAULT_FROM_EMAIL,
-                [mentorat.mentor.user.email],
+                [mentor_profile.user.email],
                 fail_silently=False,
             )
             send_mail(
                 objet,
                 message_mentore,
                 settings.DEFAULT_FROM_EMAIL,
-                [mentorat.demandeur.user.email],
+                [demandeur_profile.user.email],
                 fail_silently=False,
             )
-            messages.success(request, 'Session validé')
-            return redirect('boad')  # Remplacez 'home' par le nom de la vue à rediriger
+            messages.success(request, 'Le mentorat a été validé avec succès.')
+            return redirect('boad')  # Redirection vers la vue appropriée après validation
     else:
         form = MentoratValidationForm(instance=mentorat)
+    
     return render(request, 'mentors/valid_ment.html', {'form': form, 'mentorat': mentorat})
+
 
 
 
