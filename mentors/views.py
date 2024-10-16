@@ -1183,7 +1183,7 @@ def delete_activite(request, id):
 @login_required
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def annule_mentore_activite(request, id):
-    ActiviteMentorat.objects.filter(id=id).update(etat='annuler')
+    ActiviteMentorat.objects.filter(id=id).update(etat='en_instance')
     messages.success(request, 'Activité annulée avec succès')
     return redirect('mentore_activites')
 

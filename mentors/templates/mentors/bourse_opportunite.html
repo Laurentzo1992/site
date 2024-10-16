@@ -39,7 +39,9 @@
                                 </button>
                             </div>
                             <div class="modal-body">
+                                {% if data.image_des %}
                                 <img src="{{ data.image_des.url }}" alt="{{ data.titre }}" class="img-fluid mb-3">
+                                {% endif %}
                                 <p>{{ data.description|safe }}</p>
                             </div>
                             <div class="modal-footer">
