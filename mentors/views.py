@@ -999,7 +999,7 @@ def valider_mentorat(request, mentorat_id):
             ●	La méthode de communication préférée (email, téléphone, visioconférence)
             ●	etc…
             Vous trouverez des outils dans un espace pour vous aider.
-            Allez oop, c’est à vous de jouer!
+            llez oop, c’est à vous de jouer!A
             Avec nos meilleures salutations,
             L’équipe de oser
 
