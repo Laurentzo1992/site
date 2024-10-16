@@ -1194,7 +1194,7 @@ def annule_mentore_activite(request, id):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def valid_mentore_activite(request, id):
     ActiviteMentorat.objects.filter(id=id).update(etat='en_cours')
-    messages.success(request, 'Activité annulée avec succès')
+    messages.success(request, 'Activité valide avec succès')
     return redirect('mentore_activites')
 
 
@@ -1204,7 +1204,7 @@ def valid_mentore_activite(request, id):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def clos_mentore_activite(request, id):
     ActiviteMentorat.objects.filter(id=id).update(etat='cloture')
-    messages.success(request, 'Activité annulée avec succès')
+    messages.success(request, 'Activité clos avec succès')
     return redirect('mentore_activites')
 
 
