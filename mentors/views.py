@@ -967,17 +967,32 @@ def valider_mentorat(request, mentorat_id):
             
             Détails de votre Mentoré :
             Nom : {demandeur_profile.user.last_name} {demandeur_profile.user.first_name}
+            
             Études/Parcours : {niveau}
+            
             Objectifs : {objectif}
+            
             Contact : {demandeur_profile.user.email}, {telephone}
-            Nous vous encourageons à prendre contact avec votre mentoré pour organiser votre première rencontre.
+            
+            Periode : Du {mentorat.date_debut} au {mentorat.date_fin}
+            
+            Nous vous encourageons à prendre contact avec votre mentoré 
+            pour organiser votre première rencontre.
             Voici un modèle de message que vous pouvez utiliser :
             Bonjour [Nom du Mentoré], 
-            Je m'appelle [Votre Nom] et je suis ravi(e) d'être jumelé(e) avec vous dans le cadre du programme de mentorat d'OSER. J'aimerais organiser notre première rencontre pour discuter de vos objectifs et de la manière dont nous pourrions travailler ensemble. Pouvez-vous me faire part de vos disponibilités pour une première discussion ? 
+            Je m'appelle [Votre Nom] et je suis ravi(e) d'être jumelé(e)
+            avec vous dans le cadre du programme de mentorat d'OSER.
+            J'aimerais organiser notre première rencontre
+            pour discuter de vos objectifs et de la manière
+            dont nous pourrions travailler ensemble.
+            Pouvez-vous me faire part de vos disponibilités
+            pour une première discussion ? 
             Merci beaucoup et à bientôt, 
             [Votre Nom]
             Un coup de pouce pour commencer ?
-            Lors de votre première rencontre, prenez le temps de vous présenter et d'écouter les objectifs de votre mentoré. Voici quelques sujets à aborder :
+            Lors de votre première rencontre, prenez le temps de vous 
+            présenter et d'écouter les objectifs de votre mentoré.
+            Voici quelques sujets à aborder :
             ●	Les objectifs personnels et professionnels du mentoré
             ●	Les attentes pour le mentorat
             ●	Le calendrier et la fréquence des rencontres
@@ -997,16 +1012,26 @@ def valider_mentorat(request, mentorat_id):
             
             Détails de votre Mentor :
             Nom : {mentor_profile.user.first_name} {mentor_profile.user.last_name}
+            
             Poste : {poste_mentor}
+            
             Expérience : {experience_mentor}
+            
             Contact : {mentor_profile.user.email}, {telephone_mentor}
             
-            Nous vous encourageons à prendre contact avec votre mentor dès que possible pour organiser votre première rencontre. Vous pouvez utiliser le modèle de message ci-dessous pour initier la conversation.
+            Periode : Du {mentorat.date_debut} au {mentorat.date_fin}
+            Nous vous encourageons à prendre contact avec votre mentor 
+            dès que possible pour organiser votre première rencontre.
+            Vous pouvez utiliser le modèle de message ci-dessous
+            pour initier la conversation.
             Modèle de Message : 
 
             Bonjour [Nom du Mentor],
 
-            Je m'appelle [Votre Nom] et je suis ravi(e) d'être jumelé(e) avec vous dans le cadre du programme de mentorat d'OSER. J'aimerais organiser notre première rencontre pour discuter de mes objectifs et de la manière dont nous pourrions travailler ensemble.
+            Je m'appelle [Votre Nom] et je suis ravi(e) d'être
+            jumelé(e) avec vous dans le cadre du programme de mentorat d'OSER.
+            J'aimerais organiser notre première rencontre pour discuter
+            de mes objectifs et de la manière dont nous pourrions travailler ensemble.
 
             Pouvez-vous me faire part de vos disponibilités pour une première discussion ?
 
@@ -1014,7 +1039,8 @@ def valider_mentorat(request, mentorat_id):
 
             [Votre Nom]
             Un coup de pouce pour commencer ?
-            Lors de votre première rencontre, prenez le temps de vous présenter et de partager vos objectifs. Voici quelques sujets à aborder :
+            Lors de votre première rencontre, prenez le temps de vous
+            présenter et de partager vos objectifs. Voici quelques sujets à aborder :
             ●	Vos objectifs personnels et professionnels
             ●	Vos attentes pour le mentorat
             ●	Le calendrier et la fréquence des rencontres
