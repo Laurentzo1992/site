@@ -13,13 +13,13 @@ from datetime import date
 from .forms import *
 from django.core.paginator import Paginator
 from django.urls import reverse
-from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.sessions.models import Session
 from django.utils import timezone
 from django.core.mail import send_mail, BadHeaderError
 from django.db.models import Count
 from django.utils.translation import gettext as _
+from django.utils.html import format_html
 
 
 
@@ -926,6 +926,7 @@ def demande_ment(request):
 
 
 
+
 @login_required
 def valider_mentorat(request, mentorat_id):
     mentorat = get_object_or_404(Mentorat, id=mentorat_id)
@@ -958,122 +959,93 @@ def valider_mentorat(request, mentorat_id):
 
             # Préparation des emails
             objet = "Votre Jumelage de Mentorat est prêt !"
-            
-            message_mentor = f"""
-            Chère/Cher {request.user},
-            Nous avons le plaisir de vous annoncer que votre jumelage avec votre mentoré a été finalisé.
-            Vous allez accompagner {demandeur_profile.user.first_name} {demandeur_profile.user.last_name} dans son parcours académique et professionnel,
-            et nous sommes convaincus que votre expertise sera d'une grande valeur.
-            
-            Détails de votre Mentoré :
-            Nom : {demandeur_profile.user.last_name} {demandeur_profile.user.first_name}
-            
-            Études/Parcours : {niveau}
-            
-            Objectifs : {objectif}
-            
-            Contact : {demandeur_profile.user.email}, {telephone}
-            
-            Periode : Du {mentorat.date_debut} au {mentorat.date_fin}
-            
-            Nous vous encourageons à prendre contact avec votre mentoré 
-            pour organiser votre première rencontre.
-            Voici un modèle de message que vous pouvez utiliser :
-            Bonjour [Nom du Mentoré], 
-            Je m'appelle [Votre Nom] et je suis ravi(e) d'être jumelé(e)
-            avec vous dans le cadre du programme de mentorat d'OSER.
-            J'aimerais organiser notre première rencontre
-            pour discuter de vos objectifs et de la manière
-            dont nous pourrions travailler ensemble.
-            Pouvez-vous me faire part de vos disponibilités
-            pour une première discussion ? 
-            Merci beaucoup et à bientôt, 
-            [Votre Nom]
-            Un coup de pouce pour commencer ?
-            Lors de votre première rencontre, prenez le temps de vous 
-            présenter et d'écouter les objectifs de votre mentoré.
-            Voici quelques sujets à aborder :
-            ●	Les objectifs personnels et professionnels du mentoré
-            ●	Les attentes pour le mentorat
-            ●	Le calendrier et la fréquence des rencontres
-            ●	La méthode de communication préférée (email, téléphone, visioconférence)
-            ●	etc…
-            Vous trouverez des outils dans un espace pour vous aider.
-            llez oop, c’est à vous de jouer!A
-            Avec nos meilleures salutations,
+
+            # Format HTML avec justification
+            message_mentor_html = format_html(f"""
+            <div style="text-align: justify;">
+            Chère/Cher {mentor_profile.user.first_name},<br><br>
+            Nous avons le plaisir de vous annoncer que votre jumelage avec votre mentoré a été finalisé.<br>
+            Vous allez accompagner {demandeur_profile.user.first_name} {demandeur_profile.user.last_name} dans son parcours académique et professionnel, 
+            et nous sommes convaincus que votre expertise sera d'une grande valeur.<br><br>
+
+            <b>Détails de votre Mentoré :</b><br>
+            Nom : {demandeur_profile.user.last_name} {demandeur_profile.user.first_name}<br>
+            Études/Parcours : {niveau}<br>
+            Objectifs : {objectif}<br>
+            Contact : {demandeur_profile.user.email}, {telephone}<br>
+            Période : Du {mentorat.date_debut} au {mentorat.date_fin}<br><br>
+
+            Nous vous encourageons à prendre contact avec votre mentoré pour organiser votre première rencontre. Voici un modèle de message que vous pouvez utiliser :<br><br>
+
+            Bonjour [Nom du Mentoré],<br><br>
+
+            Je m'appelle [Votre Nom] et je suis ravi(e) d'être jumelé(e) avec vous dans le cadre du programme de mentorat d'OSER. J'aimerais organiser notre première rencontre 
+            pour discuter de vos objectifs et de la manière dont nous pourrions travailler ensemble.<br>
+            Pouvez-vous me faire part de vos disponibilités pour une première discussion ?<br><br>
+
+            Merci beaucoup et à bientôt,<br>
+            [Votre Nom]<br><br>
+
+            Avec nos meilleures salutations,<br>
             L’équipe de oser
+            </div>
+            """)
 
-            """
-            
-            message_mentore = f"""
-            Chère/Cher {demandeur_profile.user.first_name},
-            Nous sommes ravis de vous informer que votre jumelage avec votre mentor a été finalisé !
-            Vous êtes maintenant prêt(e) à commencer cette excitante aventure de mentorat avec {mentor_profile.user.first_name} {mentor_profile.user.last_name}.
-            
-            Détails de votre Mentor :
-            Nom : {mentor_profile.user.first_name} {mentor_profile.user.last_name}
-            
-            Poste : {poste_mentor}
-            
-            Expérience : {experience_mentor}
-            
-            Contact : {mentor_profile.user.email}, {telephone_mentor}
-            
-            Periode : Du {mentorat.date_debut} au {mentorat.date_fin}
-            Nous vous encourageons à prendre contact avec votre mentor 
-            dès que possible pour organiser votre première rencontre.
-            Vous pouvez utiliser le modèle de message ci-dessous
-            pour initier la conversation.
-            Modèle de Message : 
+            message_mentore_html = format_html(f"""
+            <div style="text-align: justify;">
+            Chère/Cher {demandeur_profile.user.first_name},<br><br>
+            Nous sommes ravis de vous informer que votre jumelage avec votre mentor a été finalisé !<br>
+            Vous êtes maintenant prêt(e) à commencer cette excitante aventure de mentorat avec {mentor_profile.user.first_name} {mentor_profile.user.last_name}.<br><br>
 
-            Bonjour [Nom du Mentor],
+            <b>Détails de votre Mentor :</b><br>
+            Nom : {mentor_profile.user.first_name} {mentor_profile.user.last_name}<br>
+            Poste : {poste_mentor}<br>
+            Expérience : {experience_mentor}<br>
+            Contact : {mentor_profile.user.email}, {telephone_mentor}<br>
+            Période : Du {mentorat.date_debut} au {mentorat.date_fin}<br><br>
 
-            Je m'appelle [Votre Nom] et je suis ravi(e) d'être
-            jumelé(e) avec vous dans le cadre du programme de mentorat d'OSER.
-            J'aimerais organiser notre première rencontre pour discuter
-            de mes objectifs et de la manière dont nous pourrions travailler ensemble.
+            Nous vous encourageons à prendre contact avec votre mentor dès que possible pour organiser votre première rencontre.<br>
+            Vous pouvez utiliser le modèle de message ci-dessous pour initier la conversation.<br><br>
 
-            Pouvez-vous me faire part de vos disponibilités pour une première discussion ?
+            Bonjour [Nom du Mentor],<br><br>
 
-            Merci beaucoup et à bientôt,
+            Je m'appelle [Votre Nom] et je suis ravi(e) d'être jumelé(e) avec vous dans le cadre du programme de mentorat d'OSER.<br>
+            J'aimerais organiser notre première rencontre pour discuter de mes objectifs et de la manière dont nous pourrions travailler ensemble.<br>
+            Pouvez-vous me faire part de vos disponibilités pour une première discussion ?<br><br>
 
-            [Votre Nom]
-            Un coup de pouce pour commencer ?
-            Lors de votre première rencontre, prenez le temps de vous
-            présenter et de partager vos objectifs. Voici quelques sujets à aborder :
-            ●	Vos objectifs personnels et professionnels
-            ●	Vos attentes pour le mentorat
-            ●	Le calendrier et la fréquence des rencontres
-            ●	La méthode de communication préférée (email, téléphone, visioconférence…)
-            ●	etc…
-            Vous trouverez des outils dans un espace personnel pour vous aider.
-            Allez oop, c’est à vous de jouer!
-            Avec nos meilleures salutations,
+            Merci beaucoup et à bientôt,<br>
+            [Votre Nom]<br><br>
+
+            Avec nos meilleures salutations,<br>
             L’équipe de oser
+            </div>
+            """)
 
-            """
-            
-            # Envoi des emails
+            # Envoi des emails avec HTML
             send_mail(
                 objet,
-                message_mentor,
+                '',  # Le texte brut peut être vide si vous avez un message HTML
                 settings.DEFAULT_FROM_EMAIL,
                 [mentor_profile.user.email],
                 fail_silently=False,
+                html_message=message_mentor_html
             )
             send_mail(
                 objet,
-                message_mentore,
+                '',  # Le texte brut peut être vide si vous avez un message HTML
                 settings.DEFAULT_FROM_EMAIL,
                 [demandeur_profile.user.email],
                 fail_silently=False,
+                html_message=message_mentore_html
             )
+
             messages.success(request, 'Le mentorat a été validé avec succès.')
             return redirect('boad')  # Redirection vers la vue appropriée après validation
     else:
         form = MentoratValidationForm(instance=mentorat)
     
     return render(request, 'mentors/valid_ment.html', {'form': form, 'mentorat': mentorat})
+
 
 
 
