@@ -254,30 +254,29 @@ def editprofile(request, id):
         user_act.attente = request.POST.get('attente')
         user_act.village = request.POST.get('village')
         
-
-        # Récupérer les IDs des clés étrangères
-        niveau_id = int(request.POST.get('niveau'))
-        commune_id = int(request.POST.get('commune'))
-        domaine_id = int(request.POST.get('domaine'))
-        etablissement_id = int(request.POST.get('etablissement'))
-        type_mentorat_id = int(request.POST.get('type_mentorat'))
-        connaissance_id = int(request.POST.get('connaissance'))
-        frequesce_id = int(request.POST.get('frequesce'))
-        cannau_id = int(request.POST.get('cannau'))
-        ojectif_academique_id = int(request.POST.get('ojectif_academique'))
+        # Récupérer les IDs des clés étrangères (avec gestion des valeurs vides)
+        niveau_id = request.POST.get('niveau')
+        commune_id = request.POST.get('commune')
+        domaine_id = request.POST.get('domaine')
+        etablissement_id = request.POST.get('etablissement')
+        type_mentorat_id = request.POST.get('type_mentorat')
+        connaissance_id = request.POST.get('connaissance')
+        frequesce_id = request.POST.get('frequesce')
+        cannau_id = request.POST.get('cannau')
+        ojectif_academique_id = request.POST.get('ojectif_academique')
 
         # Vérifier si les clés étrangères existent dans la base de données
         try:
-            commune = Communes.objects.get(id=commune_id)
-            domaine = CategorieFormation.objects.get(id=domaine_id)
-            etablissement = Etablissement.objects.get(id=etablissement_id)
-            type_mentorat = Typementorat.objects.get(id=type_mentorat_id)
-            niveau = Niveau_formation.objects.get(id=niveau_id)
+            commune = Communes.objects.get(id=int(commune_id)) if commune_id else None
+            domaine = CategorieFormation.objects.get(id=int(domaine_id)) if domaine_id else None
+            etablissement = Etablissement.objects.get(id=int(etablissement_id)) if etablissement_id else None
+            type_mentorat = Typementorat.objects.get(id=int(type_mentorat_id)) if type_mentorat_id else None
+            niveau = Niveau_formation.objects.get(id=int(niveau_id)) if niveau_id else None
             
-            connaissance = Cannaux_Connaissance.objects.get(id=connaissance_id)
-            frequesce = Frequence_Echange.objects.get(id=frequesce_id)
-            cannau = Cannaux_Communication.objects.get(id=cannau_id)
-            ojectif_academique = Objectif_Accademique.objects.get(id=ojectif_academique_id)
+            connaissance = Cannaux_Connaissance.objects.get(id=int(connaissance_id)) if connaissance_id else None
+            frequesce = Frequence_Echange.objects.get(id=int(frequesce_id)) if frequesce_id else None
+            cannau = Cannaux_Communication.objects.get(id=int(cannau_id)) if cannau_id else None
+            ojectif_academique = Objectif_Accademique.objects.get(id=int(ojectif_academique_id)) if ojectif_academique_id else None
         except (Communes.DoesNotExist, 
                 CategorieFormation.DoesNotExist, 
                 Etablissement.DoesNotExist, 
@@ -291,17 +290,17 @@ def editprofile(request, id):
             # Gérer le cas où une des clés étrangères n'existe pas
             return HttpResponseBadRequest("Une ou plusieurs clés étrangères sont invalides")
 
-        # Associer les objets aux clés étrangères
-        user_act.commune = commune
-        user_act.domaine = domaine
-        user_act.etablissement = etablissement
-        user_act.type_mentorat = type_mentorat
-        user_act.niveau = niveau
+        # Associer les objets aux clés étrangères s'ils existent
+        if commune: user_act.commune = commune
+        if domaine: user_act.domaine = domaine
+        if etablissement: user_act.etablissement = etablissement
+        if type_mentorat: user_act.type_mentorat = type_mentorat
+        if niveau: user_act.niveau = niveau
         
-        user_act.connaissance = connaissance
-        user_act.frequesce = frequesce
-        user_act.cannaux = cannau
-        user_act.ojectif_academique = ojectif_academique
+        if connaissance: user_act.connaissance = connaissance
+        if frequesce: user_act.frequesce = frequesce
+        if cannau: user_act.cannaux = cannau
+        if ojectif_academique: user_act.ojectif_academique = ojectif_academique
         
         # Sauvegarder le profil
         user_act.save()
@@ -321,20 +320,21 @@ def editprofile(request, id):
     connaissances= Cannaux_Connaissance.objects.all()
 
     context = {
-        "connaissances":connaissances,
-        "frequesces":frequesces,
-        "cannaux":cannaux,
-        "ojectifs":ojectifs,
+        "connaissances": connaissances,
+        "frequesces": frequesces,
+        "cannaux": cannaux,
+        "ojectifs": ojectifs,
         "niveaux": niveaux,
         "types": types,
         "user_act": user_act,
         "communes": communes,
         "domaines": domaines,
         "etablissements": etablissements,
-        "provinces":provinces,
-        "statuts":statuts,
+        "provinces": provinces,
+        "statuts": statuts,
     }
     return render(request, 'mentors/editprofile.html', context)
+
 
 
 
