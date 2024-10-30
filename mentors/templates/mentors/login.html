@@ -25,10 +25,10 @@
                 </div>
               <form method="post" action="{% url 'login_user' %}">
                 {% csrf_token %}
-                  <div class="form-floating mb-3">
-                    <input type="text" name="username" class="form-control" id="floatingInput" required>
-                    <label for="floatingInput">Nom utilisateur ou Email</label>
-                  </div>
+                <div class="form-floating mb-3">
+                  <input type="text" name="username" class="form-control" id="floatingInput" required oninput="validateUsername(this)">
+                  <label for="floatingInput">Nom utilisateur ou Email</label>
+                </div>
                   <div class="form-floating position-relative">
                     <input type="password" name="password" class="form-control" id="floatingPassword" required>
                     <label for="floatingPassword">Mot de passe</label>
@@ -57,6 +57,12 @@
 </section>
 
 <script>
+
+  function validateUsername(input) {
+    // Autorise uniquement les minuscules et les chiffres, empêche les espaces et caractères spéciaux
+    input.value = input.value.replace(/[^a-z0-9]/g, '');
+  }
+
   function togglePasswordVisibility() {
     const passwordInput = document.getElementById('floatingPassword');
     const toggleIcon = document.getElementById('togglePassword');
