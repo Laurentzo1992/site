@@ -208,17 +208,20 @@ TINYMCE_DEFAULT_CONFIG = {
     'width': 1200,
     'selector': 'textarea',
     'theme': 'silver',
-    'plugins': 'link',
+    'plugins': 'link image',
+    'images_file_types': 'jpg,svg,webp'
 }
 
-TINYMCE_JS_URL = os.path.join(BASE_DIR, "website/static/tinymce/js/tinymce/tinymce.min.js")
+
+#TINYMCE_JS_URL = os.path.join(BASE_DIR, "website/static/tinymce/js/tinymce/tinymce.min.js")
+
 
 
 # Production mode
 
 # TINYMCE_JS_URL = os.path.join(BASE_DIR, "static/tinymce/js/tinymce/tinymce.min.js")
-
-
+TINYMCE_JS_URL = 'https://cdn.tiny.cloud/1/n5qu4r62gjp1qb6xssmi5fox13hr8nwaq4dcf2sc969zf3bs/tinymce/7/tinymce.min.js'
+TINYMCE_COMPRESSOR = False
 
 
 

@@ -708,3 +708,37 @@ class ActiviteMentorat(models.Model):
     is_commun = models.BooleanField(default=False)
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
     modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    
+    
+    
+    
+class Emailing(models.Model):
+    objet = models.CharField( max_length=200)
+    contenu = tinymce_models.HTMLField(blank=True, null=True, verbose_name="Contenu")
+    created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    modified = models.DateField(blank=True, null=True, auto_created=True, auto_now=True)
+    
+    def __str__(self):
+        return self.objet
+    
+
+@receiver(post_save, sender=Emailing)
+def send_email_on_creation(sender, instance, **kwargs):
+    if kwargs['created']:
+        # Récupération des emails de NewsletterEmail
+        newsletter_emails = set(NewletterEmail.objects.values_list('useremail', flat=True))
+        
+        # Ajout des emails de User qui ne sont pas dans newsletter_emails
+        user_emails = set(User.objects.exclude(email__in=newsletter_emails).values_list('email', flat=True))
+        
+        # Liste finale des destinataires
+        all_recipients = list(newsletter_emails | user_emails)
+        
+        # Envoi de l'email
+        send_mail(
+            subject=instance.objet,
+            message=instance.contenu,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=all_recipients,
+            fail_silently=False,
+        )

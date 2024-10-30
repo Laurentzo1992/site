@@ -1,53 +1,30 @@
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel"> <i class="fa fa-book" aria-hidden="true"></i> Charte</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                    <i class="fa fa-book" aria-hidden="true"></i> Charte
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">● <strong>Engagement envers le Mentor :</strong> Le mentoré s'engage à participer activement au programme de mentorat et à travailler en collaboration avec le mentor.</p>
+                <p class="mb-3">● <strong>Communication Ouverte :</strong> Le mentoré s'engage à communiquer ouvertement ses objectifs, ses préoccupations et ses besoins au mentor.</p>
+                <p class="mb-3">● <strong>Respect des Règles du Programme :</strong> Le mentoré respecte les règles et les protocoles établis par le programme de mentorat.</p>
+                <p class="mb-3">● <strong>Responsabilité Personnelle :</strong> Le mentoré prend la responsabilité de son propre développement et met en œuvre les actions convenues avec le mentor.</p>
+                <p class="mb-3">● <strong>Écoute et Réflexion :</strong> Le mentoré pratique une écoute active, réfléchit aux conseils du mentor et met en œuvre les actions recommandées.</p>
+                <p class="mb-3">● <strong>Feedback Constructif :</strong> Le mentoré fournit un feedback constructif au mentor pour améliorer la qualité de la relation de mentorat.</p>
+                <p class="mb-3">● <strong>Respect et Prévention du Harcèlement :</strong> Le mentoré s'engage à respecter les principes de non-harcèlement, y compris le harcèlement sexuel. La prévention du harcèlement est essentielle pour créer un environnement sûr et respectueux. Tout comportement inapproprié, discriminatoire ou offensant ne sera pas toléré.</p>
+            </div>
+            <div class="modal-footer">
+                <form method="post" action="{% url 'Mentors' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="choix" value="2">
+                    <p>En signant cette charte, le mentor et le mentoré acceptent de respecter les engagements énoncés ci-dessus et de travailler ensemble pour une relation de mentorat réussie.</p>
+                    <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Refuser</button>
+                    <button type="submit" class="btn btn-success">Accepter</button>
+                </form>
+            </div>
         </div>
-        <div class="modal-body">
-          ● Engagement envers le Mentoré : Le mentor s'engage à soutenir
-          activement le mentoré dans l'atteinte de ses objectifs académiques et
-          professionnels.
-          ● Confidentialité : Le mentor respecte la confidentialité des informations
-          partagées par le mentoré,y compris les images et ne divulgue pas
-          d'informations sensibles sans consentement.
-          ● Respect et Prévention du Harcèlement : Le mentor s'engage à respecter
-          les principes de non-harcèlement y compris le harcèlement sexuel .La
-          prévention du harcèlement sexuel est essentielle pour créer un
-          environnement sûr et respectueux.Tout comportement inapproprié,
-          discriminatoire ou offensant ne sera pas toléré.
-          ● Disponibilité et Communication : Le mentor s'engage à être disponible
-          pour des rencontres régulières selon le plan établi, et à maintenir une
-          communication ouverte et constructive.
-          ● Partage d'Expérience : Le mentor partage son expérience
-          professionnelle, ses connaissances et ses compétences pour aider le
-          mentoré dans son développement personnel et professionnel.
-          ● Écoute Active : Le mentor pratique une écoute active, encourage la
-          réflexion du mentoré et offre des conseils pertinents en fonction des
-          besoins.
-          ● Objectivité : Le mentor s'efforce de rester objectif et de fournir des
-          conseils basés sur l'expérience et l'expertise, tout en respectant les
-          valeurs et les objectifs du mentoré.
-          ● Orientation Professionnelle : Le mentor aide le mentoré à explorer des
-          options de carrière, à développer des compétences professionnelles et à
-          atteindre ses objectifs.
-          ● Auto-Évaluation Continue : Le mentor s'engage à s'auto-évaluer
-          régulièrement pour améliorer ses compétences en mentorat et à solliciter
-          des retours du mentoré.
-          
-        </div>
-        <div class="modal-footer">
-          <form method="post" action="{% url 'Mentors' %}">
-            {% csrf_token %}
-            <input type="hidden" name="choix" value="1">
-            <p>En signant cette charte, le mentor et le mentoré acceptent de respecter les engagements
-              énoncés ci-dessus et de travailler ensemble pour une relation de mentorat réussie.</p>
-            <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Refuser</button>
-            <button type="submit" class="btn btn-success">Accepter</button>
-        </form>
-        </div>
-      </div>
     </div>
-  </div>
-  
+</div>

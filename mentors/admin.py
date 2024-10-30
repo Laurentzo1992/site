@@ -4,6 +4,12 @@ from unfold.admin import ModelAdmin
 from tinymce.widgets import TinyMCE
 
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.core.mail import send_mail
+from django.db import models
+
+
 admin.site.register(Regions)
 admin.site.register(Provinces)
 admin.site.register(Communes)
@@ -25,6 +31,19 @@ admin.site.register(Profiles)
 admin.site.register(Mentorat)
 
 
+
+
+
+@admin.register(Emailing)
+class EmailingAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
+    }
+
+
+    
+    
+    
 @admin.register(Presentation)
 class PresentationAdmin(ModelAdmin):
     formfield_overrides = {
