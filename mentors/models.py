@@ -713,7 +713,7 @@ class ActiviteMentorat(models.Model):
     
     
 class Emailing(models.Model):
-    objet = models.CharField( max_length=200)
+    objet = models.CharField(max_length=200)
     contenu = tinymce_models.HTMLField(blank=True, null=True, verbose_name="Contenu")
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
     modified = models.DateField(blank=True, null=True, auto_created=True, auto_now=True)
