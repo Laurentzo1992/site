@@ -21,6 +21,9 @@ from django.db.models import Count
 from django.utils.translation import gettext as _
 from django.utils.html import format_html
 
+from django.urls import reverse_lazy
+from django.contrib.auth.views import PasswordResetView
+from django.contrib.messages.views import SuccessMessageMixin
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -204,6 +207,16 @@ def logout_user(request):
     logout(request)
     return redirect('home')
 
+
+
+
+
+class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
+    template_name = 'mentors/password_reset.html'
+    email_template_name = 'mentors/password_reset_email.html'
+    subject_template_name = 'mentors/password_reset_subject.txt'
+    success_message = "Nous vous avons envoye par e-mail des instructions pour définir votre mot de passe"
+    success_url = reverse_lazy('home')
 
 
 @login_required

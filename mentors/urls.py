@@ -1,6 +1,8 @@
 from django.urls import path, include
 from  . import views
 from mentors.views import *
+from mentors.views import ResetPasswordView
+from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
@@ -12,6 +14,16 @@ urlpatterns = [
     path('createuser/', views.createuser, name='createuser'),
     path('login_user/', views.login_user, name='login_user'),
     path('logout_user/', views.logout_user, name='logout_user'),
+    path('password-reset/', ResetPasswordView.as_view(), name='password_reset'),
+    
+    path('password-reset-confirm/<uidb64>/<token>/',
+         auth_views.PasswordResetConfirmView.as_view(template_name='mentors/password_reset_confirm.html'),
+         name='password_reset_confirm'),
+    
+    path('password-reset-complete/',
+         auth_views.PasswordResetCompleteView.as_view(template_name='mentors/password_reset_complete.html'),
+         name='password_reset_complete'),
+    
     path('about/', views.about, name='about'),
     path('bourse-opportunite/', views.bourse_opportunite, name='bourse_opportunite'),
     path('projet/', views.projet, name='projet'),
@@ -48,3 +60,7 @@ urlpatterns = [
     path('clos_mentore_activite/<id>', views.clos_mentore_activite, name='clos_mentore_activite'),
     path('valid_mentore_activite/<id>', views.valid_mentore_activite, name='valid_mentore_activite'),
 ]
+
+
+
+

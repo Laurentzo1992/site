@@ -4,6 +4,10 @@
 
 <div class="auth-wrapper d-flex no-block justify-content-center align-items-center">
     <div class="auth-box">
+        <div id="emailError" class="text-danger" style="font-size: 1.9rem; display: none;">
+            Les adresses email ne correspondent pas.
+        </div>
+        
         <div>
             <!-- Form -->
             <form class="form-horizontal m-t-20" action="{% url 'createuser' %}" method="post">
@@ -31,7 +35,7 @@
                             <div class="input-group-prepend mx-1">
                                 <span class="input-group-text" style="background-color:#0080ff;" id="basic-addon1"><i class="fa fa-envelope text-primary"></i></span>
                             </div>
-                            <input type="email" class="form-control form-control-lg" name="email" placeholder="Addresse email " aria-label="Username" aria-describedby="basic-addon1" required>
+                            <input type="email" class="form-control form-control-lg" name="email" id="email" placeholder="Addresse email " aria-label="Username" aria-describedby="basic-addon1" required>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -39,9 +43,9 @@
                         <!-- username -->
                         <div class="input-group mb-3">
                             <div class="input-group-prepend mx-1">
-                                <span class="input-group-text" style="background-color:#0080ff;" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
+                                <span class="input-group-text" style="background-color:#0080ff;" id="basic-addon1"><i class="fa fa-envelope text-primary"></i></span>
                             </div>
-                            <input type="text" class="form-control form-control-lg" name="username" placeholder="Nom d'utilisateur" aria-label="Username" aria-describedby="basic-addon1" required oninput="validateUsername(this)">
+                            <input type="email" class="form-control form-control-lg" name="username" id="confirmEmail" placeholder="confirmer l'email" aria-label="Username" aria-describedby="basic-addon1" required oninput="validateUsername(this)">
                         </div>
                         <!-- password -->
 
@@ -70,7 +74,7 @@
                     <div class="col-12">
                         <div class="form-group">
                             <div class="p-t-20 mt-3">
-                                <button class="btn btn-block text-white" style="background-color:#0080ff;" type="submit">S'Inscrire</button>
+                                <button class="btn btn-block text-white" style="background-color:#0080ff;" type="submit" id="valid" disabled>S'Inscrire</button>
                             </div>
                         </div>
                     </div>
@@ -80,12 +84,31 @@
     </div>
 </div>
 
-<script>
 
-    function validateUsername(input) {
-        // Autorise uniquement les minuscules et les chiffres, empêche les espaces et caractères spéciaux
-        input.value = input.value.replace(/[^a-z0-9]/g, '');
-      }
+
+
+<script>
+    document.getElementById('confirmEmail').addEventListener('input', function () {
+        const email = document.getElementById('email').value.trim();
+        const confirmEmail = document.getElementById('confirmEmail').value.trim();
+        const errorDiv = document.getElementById('emailError');
+        const submitButton = document.getElementById('valid');
+    
+        if (email === confirmEmail && email !== "") {
+            // Les adresses email correspondent
+            errorDiv.style.display = 'none'; // Cacher le message d'erreur
+            submitButton.disabled = false; // Activer le bouton
+        } else {
+            // Les adresses email ne correspondent pas
+            errorDiv.style.display = 'block'; // Afficher le message d'erreur
+            errorDiv.textContent = 'Les adresses email ne correspondent pas.';
+            submitButton.disabled = true; // Désactiver le bouton
+        }
+    });
+</script>
+
+
+<script>
 
     function PasswordVisibility(inputId,iconId) {
       const passwordInput = document.getElementById(inputId);

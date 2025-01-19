@@ -110,7 +110,6 @@ class MentoratValidationForm(forms.ModelForm):
     date_debut = forms.DateField(required=True, widget=forms.TextInput(attrs={'type': 'date'}))
     date_fin = forms.DateField(required=True, widget=forms.TextInput(attrs={'type': 'date'}))
 
-
     class Meta:
         model = Mentorat
         fields = ['date_debut', 'date_fin', 'mentor', 'demandeur']
@@ -122,11 +121,25 @@ class MentoratValidationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(MentoratValidationForm, self).__init__(*args, **kwargs)
+
+        # Si une instance est présente, filtrer le queryset pour le demandeur
         if self.instance.pk:
             self.fields['demandeur'].queryset = Profiles.objects.filter(pk=self.instance.demandeur.pk)
             self.fields['demandeur'].initial = self.instance.demandeur
+
+        # Filtrer les mentors par groupe
         mentor_group = Group.objects.get(name='mentors')
         self.fields['mentor'].queryset = Profiles.objects.filter(user__groups=mentor_group)
+
+        # Personnaliser l'affichage des mentors
+        self.fields['mentor'].label_from_instance = lambda obj: (
+            f"{obj.user.username} - {obj.user.first_name} {obj.user.last_name} - {obj.user.email}"
+        )
+
+        # Personnaliser l'affichage des demandeurs si nécessaire
+        self.fields['demandeur'].label_from_instance = lambda obj: (
+            f"{obj.user.username} - {obj.user.first_name} {obj.user.last_name} - {obj.user.email}"
+        )
 
     def clean_demandeur(self):
         instance = getattr(self, 'instance', None)
@@ -134,6 +147,7 @@ class MentoratValidationForm(forms.ModelForm):
             return instance.demandeur
         else:
             return self.cleaned_data['demandeur']
+
 
 
 
