@@ -22,7 +22,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
+ADMIN_ENABLED = True
 # Application definition
 
 INSTALLED_APPS = [
@@ -96,7 +96,7 @@ DATABASES = {
          'NAME': 'eclair_bd',
          'USER': 'ubuntu',
          'PASSWORD': 'pago@2023',
-         'HOST': '94.23.165.51',
+         'HOST': '178.32.42.24',
          'PORT': '5432',
      }
  }
@@ -173,7 +173,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'infos@oser-bf.org'
 EMAIL_HOST_PASSWORD = 'oser-bf2024'
 DEFAULT_FROM_EMAIL = 'infos@oser-bf.org'
-
 
 
 
@@ -257,3 +256,13 @@ UNFOLD = {
 }
 
 
+""" CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'Strict'
+SESSION_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_SSL_REDIRECT = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_HSTS_SECONDS = 300
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True """

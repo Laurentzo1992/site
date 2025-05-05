@@ -10,6 +10,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from tinymce.models import HTMLField
 from tinymce import models as tinymce_models
+from datetime import date
 
 class Regions(models.Model):
     numero = models.CharField(max_length=1000, blank=True, null=True, verbose_name="Numero d'ordre")
@@ -273,6 +274,7 @@ class Niveau_formation(models.Model):
 class Profiles(models.Model):
     user = models.OneToOneField(User, blank=True, null=True, on_delete=models.CASCADE)
     telephone = models.CharField(max_length=20, blank=True, null=True, verbose_name='Téléphone')
+    date_naissance = models.DateField(blank=True, null=True)
     niveau = models.ForeignKey(Niveau_formation, blank=True, null=True, on_delete=models.CASCADE)
     can_be_mentor = models.BooleanField(default=False, verbose_name="Peut etre mentor?")
     commune = models.ForeignKey(Communes, blank=True, null=True, on_delete=models.CASCADE)
@@ -682,6 +684,7 @@ class Bourse_Opportinute(models.Model):
     libelle = models.CharField(max_length=200, verbose_name="Titre", default="Bourse et opportunité")
     #description = models.HTMLField(blank=True, null=True, verbose_name="Description")
     description = tinymce_models.HTMLField(blank=True, null=True, verbose_name="Description")
+    date_limite = models.DateField(null=True, blank=True)
     image_des = models.FileField(upload_to='Fichiers/', null=True, blank=True, verbose_name="Image Descriptive")
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
     modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
@@ -689,6 +692,13 @@ class Bourse_Opportinute(models.Model):
     
     def __str__(self):
         return self.libelle
+    
+
+    @classmethod
+    def bourses_expirees(cls):
+        """Renvoie les bourses dont la date limite est atteinte ou dépassée."""
+        return cls.objects.filter(date_limite__lte=date.today())
+
     
 class ActiviteMentorat(models.Model):
         

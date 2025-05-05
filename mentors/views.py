@@ -82,6 +82,12 @@ def boad(request):
     demandes_mentorats = Mentorat.objects.all().order_by('-id')
     
     sessions = demandes_mentorats.filter(statut__statut='valide')
+    
+    # Listes des demandeurs sans mentors
+    # demandeurs_sans_mentor = Profiles.objects.filter(demandes_mentorat__mentor__isnull=True).distinct()
+    demandeurs_sans_mentor = Mentorat.objects.filter(mentor__isnull=True)
+
+
     # Retrieve the activities for each session
     activities_by_session = {}
     for session in sessions:
@@ -99,7 +105,8 @@ def boad(request):
                "demandes":demandes,
                "demandes_mentorats":demandes_mentorats,
                "sessions":sessions,
-               "activities_by_session": activities_by_session
+               "activities_by_session": activities_by_session,
+               "demandeurs_sans_mentor":demandeurs_sans_mentor
                }
     return render(request, 'mentors/dashboard/boad.html', context)
 
@@ -544,7 +551,7 @@ def projet(request):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def bourse_opportunite(request):
-    bourses = Bourse_Opportinute.objects.all().order_by('-created')
+    bourses = Bourse_Opportinute.bourses_expirees()
     context = {'bourses':bourses}
     return render(request, 'mentors/bourse_opportunite.html', context)
 

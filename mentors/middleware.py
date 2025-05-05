@@ -12,7 +12,6 @@ class ProfileCompletionMiddleware(MiddlewareMixin):
             missing_fields = [field for field in required_fields if not getattr(user_profile, field)]
 
             if missing_fields:
-                 # Remplacez 'complete_profile' par le nom de votre vue
                 if request.path not in [reverse('complete_profile')]:
                     # Redirigez vers la vue de complétion du profil
                     return redirect('complete_profile')

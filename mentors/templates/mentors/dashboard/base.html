@@ -1,23 +1,382 @@
 {% load static %}
-
 <!DOCTYPE html>
-<html dir="ltr" lang="en">
-
+<html lang="fr">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="dashboard/images/favicon.png">
-    <title>Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Mentora</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --info: #4895ef;
+            --warning: #f72585;
+            --danger: #e63946;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #e9ecef;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background-color: #fff;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem 0;
+            position: fixed;
+            width: 240px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            padding: 0 1.5rem;
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-link.active {
+            color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+            border-left: 4px solid var(--primary);
+        }
+
+        .nav-link:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            grid-column: 2;
+            padding: 1.5rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-bar {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        .bg-primary { background-color: var(--primary); }
+        .bg-secondary { background-color: var(--secondary); }
+        .bg-success { background-color: var(--success); }
+        .bg-info { background-color: var(--info); }
+        .bg-warning { background-color: var(--warning); }
+        .bg-danger { background-color: var(--danger); }
+
+        .stat-title {
+            font-size: 1rem;
+            color: #777;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Main Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #ddd;
+            color: #555;
+        }
+
+        .btn-outline:hover {
+            background-color: #f5f5f5;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            font-weight: 500;
+            color: #777;
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #fafafa;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background-color: rgba(76, 201, 240, 0.1);
+            color: var(--success);
+        }
+
+        .status-pending {
+            background-color: rgba(247, 37, 133, 0.1);
+            color: var(--warning);
+        }
+
+        .status-rejected {
+            background-color: rgba(230, 57, 70, 0.1);
+            color: var(--danger);
+        }
+
+        .avatar-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #fff;
+            margin-left: -10px;
+        }
+
+        .avatar:first-child {
+            margin-left: 0;
+        }
+
+        /* User Activity Chart */
+        .chart-container {
+            height: 300px;
+            margin-top: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .main-content {
+                grid-column: 1;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .search-bar {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link href="{% static "dashboard/css/float-chart.css" %}" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="dashboard/css/float-chart.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link href="dashboard/css/style.min.css" rel="stylesheet">
-    <link href="dashboard/css/custom.css" rel="stylesheet">
+    <link href="{% static "dashboard/css/style.min.css" %}" rel="stylesheet">
+    <link href="{% static "dashboard/css/custom.css" %}" rel="stylesheet">
    
     <link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'dashboard/css/animation.css' %}" rel="stylesheet"/>
@@ -44,75 +403,92 @@
     <link href="{% static 'dashboard/css/float-chart.css' %}" rel="stylesheet"/>
     <link href="{% static 'dashboard/css/style.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'dashboard/css/custom.css' %}" rel="stylesheet"/>
-     <!-- Datatable export data lib css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" rel="stylesheet"/>
     <link href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.css" rel="stylesheet"/>
-
-   
-    
 </head>
-
 <body>
-    <!-- ============================================================== -->
-    <!-- Preloader - style you can find in spinners.css -->
-    <!-- ============================================================== -->
-    <div class="preloader">
-        <div class="lds-ripple">
-            <div class="lds-pos"></div>
-            <div class="lds-pos"></div>
-        </div>
-    </div>
-    <!-- ============================================================== -->
-    <!-- Main wrapper - style you can find in pages.scss -->
-    <!-- ============================================================== -->
-    <div id="main-wrapper">
-        <!-- ============================================================== -->
-        <!-- Topbar header - style you can find in pages.scss -->
-        <!-- ============================================================== -->
-        <header class="topbar" data-navbarbg="skin5">
-            <nav class="navbar fixed-top top-navbar navbar-expand-md navbar-dark">
-                <div class="navbar-header" data-logobg="skin5">
-                    <!-- This is for the sidebar toggle which is visible on mobile only -->
-                    <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i class="ti-menu ti-close"></i></a>
-                    <!-- ============================================================== -->
-                    <!-- Logo -->
-                    <!-- ============================================================== -->
-                    <a class="navbar-brand" href="{% url 'home' %}">
-                        <!-- Logo icon -->
-                        <b class="logo-icon p-l-10">
-                            <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
-                            <!-- Dark Logo icon -->
-                            <img src="{% static 'media/images/logo-default-245x50.png' %}" alt="homepage" class="light-logo" />
-                        </b>
-                    
-                    </a>
-                </div>
-            </nav>
-        </header>
-      
-        <aside class="left-sidebar" data-sidebarbg="skin5">
-            <!-- Sidebar scroll-->
-            <div class="scroll-sidebar">
-                <!-- Sidebar navigation-->
-                <nav class="sidebar-nav">
-                    <ul id="sidebarnav" class="p-t-30 p-y-5">
-                        <li class="sidebar-item active"> <a class=" sidebar-link waves-effect waves-dark " href="{% url 'boad' %}" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span class="hide-menu">Dashboard</span></a></li>
-                        </li>
-                        <li class="sidebar-item"> <a class=" sidebar-link waves-effect waves-dark" href="{% url 'mails_personnalisee' %}" aria-expanded="false"><i class="fa fa-comments"></i><span class="hide-menu">Mails Personnalisés</span></a></li>
-                        </li>
-                    </ul>
-                    <ul id="sidebarnav" class="p-t-30">
-                    </ul>
-                </nav>
-                <!-- End Sidebar navigation -->
+    <div class="dashboard">
+        <!-- Sidebar -->
+         {% block boad %}
+        <aside class="sidebar">
+            <div class="logo">
+                <a class="navbar-brand" href="{% url 'home' %}">
+                    <!-- Logo icon -->
+                    <b class="logo-icon p-l-10">
+                        <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
+                        <!-- Dark Logo icon -->
+                        <img src="{% static 'media/images/logo-default-245x50.png' %}" alt="homepage" class="light-logo" />
+                    </b>
+                
+                </a>
             </div>
-            <!-- End Sidebar scroll-->
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="{% url 'boad' %}" class="nav-link active">
+                        <i class="fas fa-tachometer-alt"></i> Tableau de bord
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'mails_personnalisee' %}" class="nav-link">
+                        <i class="fas fa-comments"></i> Mails Personnalisés
+                    </a>
+                </li>
+            </ul>
         </aside>
-        {% block 'content' %}
+        {% endblock boad %}
+        <!-- Main Content -->
+        <main class="main-content">
+            {% block boad_head %}
+            <div class="header">
+                <h1>Tableau de bord</h1>
+                <div class="user-profile">
+                    <span>{{ request.user }}</span>
+                </div>
+            </div>
+            {% endblock boad_head %}
+            <!-- Stats Cards -->
+             {% block card %}
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon bg-primary">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-title">Total Utilisateurs</div>
+                    <div class="stat-value">{{ users }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-success">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="stat-title">Mentors</div>
+                    <div class="stat-value">{{ mentors }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-info">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="stat-title">Mentorés</div>
+                    <div class="stat-value">{{ mentores }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-warning">
+                        <i class="fas fa-user-clock"></i>
+                    </div>
+                    <div class="stat-title">En ligne</div>
+                    <div class="stat-value">{{ nombre_utilisateurs_connectes }}</div>
+                </div>
+            </div>
+            {% endblock card %}
+            {% block 'content' %}
         
-        {% endblock 'content' %}
+            {% endblock 'content' %}
+
+        </main>
     </div>
-    <script src="{% static 'dashboard/js/jquery.min.js' %}"></script>
+
+    
+        <script src="{% static 'dashboard/js/jquery.min.js' %}"></script>
         <script src="{% static 'dashboard/js/popper.min.js' %}"></script>
         <script src="{% static 'dashboard/js/bootstrap.min.js' %}"></script>
 
@@ -151,94 +527,140 @@
         <script src="{% static 'dashboard/js/toastr.min.js' %}"></script>
         <script src="{% static 'dashboard/js/select2.min.js' %}"></script>
         <script src="{% static 'dashboard/js/jquery.inputmask.bundle.min.js' %}"></script>
+    <!-- Charts JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- Datatable export data lib js-->
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.dataTables.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
 
-        <!-- Datatable export data lib js-->
-        <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
-        <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
-        <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.dataTables.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-        <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
-       
-        
-       
-       
-        
-        
+    <script>
+        // Données pour le graphique de distribution par niveau
+        const levelData = {
+            labels: {{ levels|safe }},
+            datasets: [{
+                label: 'Utilisateurs par niveau',
+                data: {{ counts|safe }},
+                backgroundColor: [
+                    '#4361ee',
+                    '#3f37c9',
+                    '#4cc9f0',
+                    '#4895ef',
+                    '#f72585',
+                    '#e63946'
+                ],
+                borderWidth: 0
+            }]
+        };
 
-        <script>
-            $('#zero_config').DataTable({
-                scrollCollapse: true,
-                pagingType: "simple_numbers",
-                lengthMenu:[5,10,15,20,25],
-                pageLength: 3
-            });
-            
-        </script>
-
-        <script>
-            $('#profile').DataTable({
-                scrollCollapse: true,
-                pagingType: "simple_numbers",
-                lengthMenu:[5,10,15,20,25],
-                pageLength: 3
-            });
-        </script>
-
-        <script>
-            $('#demande').DataTable({
-                scrollCollapse: true,
-                pagingType: "simple_numbers",
-                lengthMenu:[5,10,15,20,25],
-                pageLength: 3
-            });
-        </script>
-        <script>
-            $('#mentorat').DataTable({
-                scrollCollapse: true,
-                pagingType: "simple_numbers",
-                lengthMenu:[5,10,15,20,25],
-                pageLength: 3,
-                layout: {
-                topStart: {
-                    buttons: ['copyHtml5', 'excelHtml5', 'pdfHtml5']
+        // Créer le graphique
+        const levelChart = new Chart(
+            document.getElementById('levelChart'),
+            {
+                type: 'doughnut',
+                data: levelData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
                 }
             }
-            });
-        </script>
+        );
+    </script>
 
-        <script>
-            $('#mails').DataTable({
-                scrollCollapse: true,
-                pagingType: "simple_numbers",
-                lengthMenu:[5,10,15,20,25],
-                pageLength: 10
-            });
-            
-        </script>
+
+    <script>
+        $('#zero_config').DataTable({
+            scrollCollapse: true,
+            pagingType: "simple_numbers",
+            lengthMenu:[5,10,15,20,25],
+            pageLength: 10
+        });
         
-        {% for message in messages %}
-      <script src="{% static 'js/sweetalert.min.js' %}"></script>
-      {% if message.tags == 'error' %}
-      <script>
-          var m = "{{ message }}";
-          swal("Réfusé!", m, "error");
-      </script>
-      {% elif message.tags == 'success' %}
-      <script>
-          var m = "{{ message }}";
-          swal("Bienvenue!", m, "success");
-      </script>
-      {% elif message.tags == 'warning' %}
-      <script>
-          var m = "{{ message }}";
-          swal("A bientôt!", m, "warning");
-      </script>
-      {% endif %}
+    </script>
 
-      {% endfor%}
+    <script>
+        $('#profile').DataTable({
+            scrollCollapse: true,
+            pagingType: "simple_numbers",
+            lengthMenu:[5,10,15,20,25],
+            pageLength: 10
+        });
+    </script>
+
+    <script>
+        $('#demande').DataTable({
+            scrollCollapse: true,
+            pagingType: "simple_numbers",
+            lengthMenu:[5,10,15,20,25],
+            pageLength: 10
+        });
+    </script>
+
+    <script>
+        $('#session').DataTable({
+            scrollCollapse: true,
+            pagingType: "simple_numbers",
+            lengthMenu:[5,10,15,20,25],
+            pageLength: 10,
+        });
+    </script>
+    <script>
+        $('#mentorat').DataTable({
+            scrollCollapse: true,
+            pagingType: "simple_numbers",
+            lengthMenu:[5,10,15,20,25],
+            pageLength: 10,
+        });
+    </script>
+
+    <script>
+        $('#sans_mentors').DataTable({
+            scrollCollapse: true,
+            pagingType: "simple_numbers",
+            lengthMenu:[5,10,15,20,25],
+            pageLength: 10,
+        });
+    </script>
+
+    <script>
+        $('#mails').DataTable({
+            scrollCollapse: true,
+            pagingType: "simple_numbers",
+            lengthMenu:[5,10,15,20,25],
+            pageLength: 10
+        });
+        
+    </script>
+    
+    {% for message in messages %}
+  <script src="{% static 'js/sweetalert.min.js' %}"></script>
+  {% if message.tags == 'error' %}
+  <script>
+      var m = "{{ message }}";
+      swal("Réfusé!", m, "error");
+  </script>
+  {% elif message.tags == 'success' %}
+  <script>
+      var m = "{{ message }}";
+      swal("Bienvenue!", m, "success");
+  </script>
+  {% elif message.tags == 'warning' %}
+  <script>
+      var m = "{{ message }}";
+      swal("A bientôt!", m, "warning");
+  </script>
+  {% endif %}
+
+  {% endfor%}
 
 </body>
-
 </html>

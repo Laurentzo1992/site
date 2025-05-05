@@ -1,139 +1,101 @@
-
-  <!-- Modal -->
-  <div class="modal fade" id="userModal{{data.user.id}}" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="userModalLabel">{{data.user.last_name}} {{data.user.first_name}}</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+<!-- Modal -->
+<div class="modal fade" id="userModal{{ data.user.id|default_if_none:"" }}" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="userModalLabel">
+          {{ data.user.last_name|default_if_none:"" }} {{ data.user.first_name|default_if_none:"" }}
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {% comment %} Informations personnelles {% endcomment %}
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Prénom</label>
+          <div class="col-sm-10">{{ data.user.first_name|default_if_none:"" }}</div>
         </div>
-        <div class="modal-body">
-                <div class="form-group row">
-                  <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Prénom</label>
-                  <div class="col-sm-10">
-                    {{data.user.first_name}}
-                  </div>
-                </div>
-                <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Nom</label>
-                    <div class="col-sm-10">
-                      {{data.user.last_name}}
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Téléphone</label>
-                    <div class="col-sm-10">
-                      {{data.telephone}}
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Email</label>
-                    <div class="col-sm-10">
-                      {{data.user.email}}
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Niveau</label>
-                    <div class="col-sm-10">
-                      {{data.niveau}}
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Village</label>
-                    <div class="col-sm-10">
-                      {{data.village}}
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Commune</label>
-                    <div class="col-sm-10">
-                      {{data.commune}}
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Domaine</label>
-                    <div class="col-sm-10">
-                      {{data.domaine}}
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Etablissement</label>
-                    <div class="col-sm-10">
-                      {{data.etablissement}}
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Profile</label>
-                    <div class="col-sm-10">
-                      {{data.profile}}
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Objectif</label>
-                    <div class="col-sm-10">
-                      {{data.objectif}}
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Type de Mentorat</label>
-                    <div class="col-sm-10">
-                      {{data.type_mentorat}}
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Mentor</label>
-                    <div class="col-sm-10">
-                      {{data.mentor}}
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Ojectif Accademique</label>
-                    <div class="col-sm-10">
-                      {{data.ojectif_academique}}
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Canal de communication souhaité</label>
-                    <div class="col-sm-10">
-                      {{data.cannaux}}
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Fréquence d'échange</label>
-                    <div class="col-sm-10">
-                      {{data.frequesce}}
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Comment avez vous connu OSER</label>
-                    <div class="col-sm-10">
-                      {{data.connaissance}}
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Vos attentes</label>
-                    <div class="col-sm-10">
-                      {{data.attente}}
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Temps de connexion</label>
-                    <div class="col-sm-10">
-                      {{data.total_time_on_platform}}
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">Dernière connexion</label>
-                    <div class="col-sm-10">
-                      {{data.last_login}}
-                    </div>
-                  </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Nom</label>
+          <div class="col-sm-10">{{ data.user.last_name|default_if_none:"" }}</div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Téléphone</label>
+          <div class="col-sm-10">{{ data.telephone|default_if_none:"" }}</div>
         </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Email</label>
+          <div class="col-sm-10">{{ data.user.email|default_if_none:"" }}</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Niveau</label>
+          <div class="col-sm-10">{{ data.niveau|default_if_none:"" }}</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Village</label>
+          <div class="col-sm-10">{{ data.village|default_if_none:"" }}</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Commune</label>
+          <div class="col-sm-10">{{ data.commune|default_if_none:"" }}</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Domaine</label>
+          <div class="col-sm-10">{{ data.domaine|default_if_none:"" }}</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Etablissement</label>
+          <div class="col-sm-10">{{ data.etablissement|default_if_none:"" }}</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Profile</label>
+          <div class="col-sm-10">{{ data.profile|default_if_none:"" }}</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Objectif</label>
+          <div class="col-sm-10">{{ data.objectif|default_if_none:"" }}</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Type de Mentorat</label>
+          <div class="col-sm-10">{{ data.type_mentorat|default_if_none:"" }}</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Mentor</label>
+          <div class="col-sm-10">{{ data.mentor|default_if_none:"" }}</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Objectif Académique</label>
+          <div class="col-sm-10">{{ data.ojectif_academique|default_if_none:"" }}</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Canal de communication souhaité</label>
+          <div class="col-sm-10">{{ data.cannaux|default_if_none:"" }}</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Fréquence d'échange</label>
+          <div class="col-sm-10">{{ data.frequesce|default_if_none:"" }}</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Comment avez-vous connu OSER</label>
+          <div class="col-sm-10">{{ data.connaissance|default_if_none:"" }}</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Vos attentes</label>
+          <div class="col-sm-10">{{ data.attente|default_if_none:"" }}</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Temps de connexion</label>
+          <div class="col-sm-10">{{ data.total_time_on_platform|default_if_none:"" }}</div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label col-form-label-sm">Dernière connexion</label>
+          <div class="col-sm-10">{{ data.last_login|default_if_none:"" }}</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
       </div>
     </div>
   </div>
+</div>
