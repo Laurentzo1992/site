@@ -28,12 +28,13 @@
         body {
             background-color: #f5f7fa;
             color: #333;
+            overflow-x: hidden;
         }
 
         .dashboard {
-            display: grid;
-            grid-template-columns: 240px 1fr;
+            display: flex;
             min-height: 100vh;
+            position: relative;
         }
 
         /* Sidebar */
@@ -41,10 +42,16 @@
             background-color: #fff;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
             padding: 1.5rem 0;
-            position: fixed;
             width: 240px;
             height: 100vh;
             overflow-y: auto;
+            position: fixed;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-240px);
         }
 
         .logo {
@@ -57,6 +64,7 @@
 
         .logo img {
             height: 40px;
+            max-width: 100%;
         }
 
         .nav-menu {
@@ -92,10 +100,34 @@
             font-size: 1.2rem;
         }
 
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
         /* Main Content */
         .main-content {
-            grid-column: 2;
+            flex: 1;
             padding: 1.5rem;
+            margin-left: 240px;
+            transition: margin-left 0.3s ease;
+            width: calc(100% - 240px);
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+            width: 100%;
         }
 
         .header {
@@ -103,11 +135,14 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .search-bar {
             position: relative;
             width: 300px;
+            max-width: 100%;
         }
 
         .search-bar input {
@@ -142,7 +177,7 @@
         /* Stats Cards */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -212,6 +247,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .card-title {
@@ -224,6 +261,7 @@
         .card-actions {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -261,17 +299,21 @@
         /* Tables */
         .table-container {
             overflow-x: auto;
+            width: 100%;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 600px; /* Ensures table won't get too squished */
         }
 
         th, td {
             padding: 0.75rem 1rem;
             text-align: left;
             border-bottom: 1px solid #eee;
+            white-space: nowrap;
         }
 
         th {
@@ -330,24 +372,73 @@
         .chart-container {
             height: 300px;
             margin-top: 1rem;
+            width: 100%;
         }
 
-        /* Responsive */
-        @media (max-width: 992px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            
-            .sidebar {
-                display: none;
-            }
-            
-            .main-content {
-                grid-column: 1;
-            }
-            
+        /* DataTables Customization */
+        .dataTables_wrapper .dataTables_length, 
+        .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 15px;
+        }
+
+        .dataTables_wrapper .dataTables_length select {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-left: 5px;
+        }
+
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_paginate {
+            margin-top: 15px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 5px 10px;
+            margin: 0 2px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background-color: var(--primary);
+            color: white !important;
+            border: 1px solid var(--primary);
+        }
+
+        /* Responsive Media Queries */
+        @media (max-width: 1200px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-240px);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar.active + .main-content {
+                margin-left: 0;
             }
         }
 
@@ -359,17 +450,50 @@
             .header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 1rem;
             }
             
             .search-bar {
                 width: 100%;
+            }
+
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .card-actions {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: flex-start;
             }
         }
 
         @media (max-width: 576px) {
             .stats-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            th, td {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.9rem;
+            }
+
+            .dataTables_wrapper .dataTables_length, 
+            .dataTables_wrapper .dataTables_filter {
+                width: 100%;
+                text-align: left;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .dataTables_wrapper .dataTables_filter input {
+                margin-left: 0;
+                margin-top: 5px;
+                width: 100%;
             }
         }
     </style>
@@ -408,10 +532,15 @@
     <link href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.css" rel="stylesheet"/>
 </head>
 <body>
+    <!-- Mobile Menu Toggle Button -->
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
     <div class="dashboard">
         <!-- Sidebar -->
-         {% block boad %}
-        <aside class="sidebar">
+        {% block boad %}
+        <aside class="sidebar" id="sidebar">
             <div class="logo">
                 <a class="navbar-brand" href="{% url 'home' %}">
                     <!-- Logo icon -->
@@ -420,7 +549,6 @@
                         <!-- Dark Logo icon -->
                         <img src="{% static 'media/images/logo-default-245x50.png' %}" alt="homepage" class="light-logo" />
                     </b>
-                
                 </a>
             </div>
             <ul class="nav-menu">
@@ -437,8 +565,9 @@
             </ul>
         </aside>
         {% endblock boad %}
+        
         <!-- Main Content -->
-        <main class="main-content">
+        <main class="main-content" id="mainContent">
             {% block boad_head %}
             <div class="header">
                 <h1>Tableau de bord</h1>
@@ -447,8 +576,9 @@
                 </div>
             </div>
             {% endblock boad_head %}
+            
             <!-- Stats Cards -->
-             {% block card %}
+            {% block card %}
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon bg-primary">
@@ -480,53 +610,47 @@
                 </div>
             </div>
             {% endblock card %}
+            
             {% block 'content' %}
         
             {% endblock 'content' %}
-
         </main>
     </div>
 
-    
-        <script src="{% static 'dashboard/js/jquery.min.js' %}"></script>
-        <script src="{% static 'dashboard/js/popper.min.js' %}"></script>
-        <script src="{% static 'dashboard/js/bootstrap.min.js' %}"></script>
-
-        <script src="{% static 'dashboard/js/perfect-scrollbar.jquery.min.js' %}"></script>
-        <script src="{% static 'dashboard/js/sparkline.js' %}"></script>
-        <script src="{% static 'dashboard/js/waves.js' %}"></script>
-        <script src="{% static 'dashboard/js/sidebarmenu.js' %}"></script>
-        <script src="{% static 'dashboard/js/custom.min.js' %}"></script>
-
-        <script src="{% static 'dashboard/js/excanvas.js' %}"></script>
-        <script src="{% static 'dashboard/js/jquery.flot.js' %}"></script>
-        <script src="{% static 'dashboard/js/jquery.flot.pie.js' %}"></script>
-        <script src="{% static 'dashboard/js/jquery.flot.time.js' %}"></script>
-        <script src="{% static 'dashboard/js/jquery.flot.time.js' %}"></script>
-        <script src="{% static 'dashboard/js/jquery.flot.stack.js' %}"></script>
-        <script src="{% static 'dashboard/js/jquery.flot.crosshair.js' %}"></script>
-        <script src="{% static 'dashboard/js/jquery.flot.tooltip.min.js' %}"></script>
-        <script src="{% static 'dashboard/js/moment.min.js' %}"></script>
-        <script src="{% static 'dashboard/js/chart-page-init.js' %}"></script>
-        <script src="{% static 'dashboard/js/app-style-switcher.js' %}"></script>
-        <script src="{% static 'dashboard/js/bootstrap-datepicker.min.js' %}"></script>
-        <script src="{% static 'dashboard/js/datatable-checkbox-init.js' %}"></script>
-        <script src="{% static 'dashboard/js/datatables.min.js' %}"></script>
-        <script src="{% static 'dashboard/js/jquery.dataTables.min.js' %}"></script>
-        <script src="{% static 'dashboard/js/dataTables.bootstrap4.min.js' %}"></script>
-        
-    
-        <script src="{% static 'dashboard/js/jquery.charts-sparkline.js' %}"></script>
-        <script src="{% static 'dashboard/js/jquery.magnific-popup.min.js' %}"></script>
-        <script src="{% static 'dashboard/js/jquery-asColor.min.js' %}"></script>
-        <script src="{% static 'dashboard/js/jquery-asGradient.js' %}"></script>
-        <script src="{% static 'dashboard/js/jquery-asColorPicker.min.js' %}"></script>
-        <script src="{% static 'dashboard/js/jquery.minicolors.min.js' %}"></script>
-        <script src="{% static 'dashboard/js/jquery.multicheck.js' %}"></script>
-        <script src="{% static 'dashboard/js/jquery.validate.min.js' %}"></script>
-        <script src="{% static 'dashboard/js/toastr.min.js' %}"></script>
-        <script src="{% static 'dashboard/js/select2.min.js' %}"></script>
-        <script src="{% static 'dashboard/js/jquery.inputmask.bundle.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/jquery.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/popper.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/perfect-scrollbar.jquery.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/sparkline.js' %}"></script>
+    <script src="{% static 'dashboard/js/waves.js' %}"></script>
+    <script src="{% static 'dashboard/js/sidebarmenu.js' %}"></script>
+    <script src="{% static 'dashboard/js/custom.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/excanvas.js' %}"></script>
+    <script src="{% static 'dashboard/js/jquery.flot.js' %}"></script>
+    <script src="{% static 'dashboard/js/jquery.flot.pie.js' %}"></script>
+    <script src="{% static 'dashboard/js/jquery.flot.time.js' %}"></script>
+    <script src="{% static 'dashboard/js/jquery.flot.stack.js' %}"></script>
+    <script src="{% static 'dashboard/js/jquery.flot.crosshair.js' %}"></script>
+    <script src="{% static 'dashboard/js/jquery.flot.tooltip.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/moment.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/chart-page-init.js' %}"></script>
+    <script src="{% static 'dashboard/js/app-style-switcher.js' %}"></script>
+    <script src="{% static 'dashboard/js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/datatable-checkbox-init.js' %}"></script>
+    <script src="{% static 'dashboard/js/datatables.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/jquery.charts-sparkline.js' %}"></script>
+    <script src="{% static 'dashboard/js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/jquery-asColor.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/jquery-asGradient.js' %}"></script>
+    <script src="{% static 'dashboard/js/jquery-asColorPicker.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/jquery.minicolors.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/jquery.multicheck.js' %}"></script>
+    <script src="{% static 'dashboard/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/toastr.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/select2.min.js' %}"></script>
+    <script src="{% static 'dashboard/js/jquery.inputmask.bundle.min.js' %}"></script>
     <!-- Charts JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <!-- Datatable export data lib js-->
@@ -538,129 +662,129 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
 
+    <!-- Toggle Menu Script -->
     <script>
-        // Données pour le graphique de distribution par niveau
-        const levelData = {
-            labels: {{ levels|safe }},
-            datasets: [{
-                label: 'Utilisateurs par niveau',
-                data: {{ counts|safe }},
-                backgroundColor: [
-                    '#4361ee',
-                    '#3f37c9',
-                    '#4cc9f0',
-                    '#4895ef',
-                    '#f72585',
-                    '#e63946'
-                ],
-                borderWidth: 0
-            }]
-        };
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            
+            // Toggle sidebar on menu button click
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                mainContent.classList.toggle('expanded');
+            });
+            
+            // Close sidebar when clicking outside on small screens
+            document.addEventListener('click', function(event) {
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickOnMenuToggle = menuToggle.contains(event.target);
+                
+                if (window.innerWidth < 992 && !isClickInsideSidebar && !isClickOnMenuToggle && sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 992) {
+                    sidebar.classList.remove('active');
+                    mainContent.classList.remove('expanded');
+                }
+            });
+        });
+    </script>
 
-        // Créer le graphique
-        const levelChart = new Chart(
-            document.getElementById('levelChart'),
-            {
-                type: 'doughnut',
-                data: levelData,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
+    <!-- DataTables Initialization -->
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTables with responsive options
+            $('#zero_config').DataTable({
+                responsive: true,
+                scrollCollapse: true,
+                pagingType: "simple_numbers",
+                lengthMenu:[5,10,15,20,25],
+                pageLength: 10,
+                language: {
+                    search: "Rechercher:",
+                    lengthMenu: "Afficher _MENU_ entrées",
+                    info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                    paginate: {
+                        next: "<i class='fas fa-chevron-right'></i>",
+                        previous: "<i class='fas fa-chevron-left'></i>"
                     }
                 }
-            }
-        );
-    </script>
-
-
-    <script>
-        $('#zero_config').DataTable({
-            scrollCollapse: true,
-            pagingType: "simple_numbers",
-            lengthMenu:[5,10,15,20,25],
-            pageLength: 10
+            });
+            
+            $('#profile').DataTable({
+                responsive: true,
+                scrollCollapse: true,
+                pagingType: "simple_numbers",
+                lengthMenu:[5,10,15,20,25],
+                pageLength: 10
+            });
+            
+            $('#demande').DataTable({
+                responsive: true,
+                scrollCollapse: true,
+                pagingType: "simple_numbers",
+                lengthMenu:[5,10,15,20,25],
+                pageLength: 10
+            });
+            
+            $('#session').DataTable({
+                responsive: true,
+                scrollCollapse: true,
+                pagingType: "simple_numbers",
+                lengthMenu:[5,10,15,20,25],
+                pageLength: 10
+            });
+            
+            $('#mentorat').DataTable({
+                responsive: true,
+                scrollCollapse: true,
+                pagingType: "simple_numbers",
+                lengthMenu:[5,10,15,20,25],
+                pageLength: 10
+            });
+            
+            $('#sans_mentors').DataTable({
+                responsive: true,
+                scrollCollapse: true,
+                pagingType: "simple_numbers",
+                lengthMenu:[5,10,15,20,25],
+                pageLength: 10
+            });
+            
+            $('#mails').DataTable({
+                responsive: true,
+                scrollCollapse: true,
+                pagingType: "simple_numbers",
+                lengthMenu:[5,10,15,20,25],
+                pageLength: 10
+            });
         });
-        
-    </script>
-
-    <script>
-        $('#profile').DataTable({
-            scrollCollapse: true,
-            pagingType: "simple_numbers",
-            lengthMenu:[5,10,15,20,25],
-            pageLength: 10
-        });
-    </script>
-
-    <script>
-        $('#demande').DataTable({
-            scrollCollapse: true,
-            pagingType: "simple_numbers",
-            lengthMenu:[5,10,15,20,25],
-            pageLength: 10
-        });
-    </script>
-
-    <script>
-        $('#session').DataTable({
-            scrollCollapse: true,
-            pagingType: "simple_numbers",
-            lengthMenu:[5,10,15,20,25],
-            pageLength: 10,
-        });
-    </script>
-    <script>
-        $('#mentorat').DataTable({
-            scrollCollapse: true,
-            pagingType: "simple_numbers",
-            lengthMenu:[5,10,15,20,25],
-            pageLength: 10,
-        });
-    </script>
-
-    <script>
-        $('#sans_mentors').DataTable({
-            scrollCollapse: true,
-            pagingType: "simple_numbers",
-            lengthMenu:[5,10,15,20,25],
-            pageLength: 10,
-        });
-    </script>
-
-    <script>
-        $('#mails').DataTable({
-            scrollCollapse: true,
-            pagingType: "simple_numbers",
-            lengthMenu:[5,10,15,20,25],
-            pageLength: 10
-        });
-        
     </script>
     
+    <!-- SweetAlert Messages -->
     {% for message in messages %}
-  <script src="{% static 'js/sweetalert.min.js' %}"></script>
-  {% if message.tags == 'error' %}
-  <script>
-      var m = "{{ message }}";
-      swal("Réfusé!", m, "error");
-  </script>
-  {% elif message.tags == 'success' %}
-  <script>
-      var m = "{{ message }}";
-      swal("Bienvenue!", m, "success");
-  </script>
-  {% elif message.tags == 'warning' %}
-  <script>
-      var m = "{{ message }}";
-      swal("A bientôt!", m, "warning");
-  </script>
-  {% endif %}
-
-  {% endfor%}
-
+    <script src="{% static 'js/sweetalert.min.js' %}"></script>
+    {% if message.tags == 'error' %}
+    <script>
+        var m = "{{ message }}";
+        swal("Réfusé!", m, "error");
+    </script>
+    {% elif message.tags == 'success' %}
+    <script>
+        var m = "{{ message }}";
+        swal("Bienvenue!", m, "success");
+    </script>
+    {% elif message.tags == 'warning' %}
+    <script>
+        var m = "{{ message }}";
+        swal("A bientôt!", m, "warning");
+    </script>
+    {% endif %}
+    {% endfor %}
 </body>
 </html>

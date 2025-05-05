@@ -23,20 +23,106 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" integrity="sha256-Uv9BNBucvCPipKQ2NS9wYpJmi8DTOEfTA/nH2aoJALw=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
     <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
+    <style>
+      .navbar-custom {
+        background-color: #ffffff;
+        border-bottom: 3px solid #0080ff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+      
+      .nav-link {
+        color: #000000 !important;
+        font-size: 14px;
+        padding: 15px 15px;
+        transition: all 0.3s;
+      }
+      
+      .nav-link:hover {
+        color: #0080ff !important;
+        background-color: #f8f9fa;
+      }
+      
+      .dropdown-menu {
+        border-radius: 0;
+        border-top: 3px solid #0080ff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+      
+      .dropdown-item {
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+      
+      .dropdown-item:hover {
+        background-color: #f1f9ff;
+      }
+      
+      .navbar-toggler {
+        border: none;
+      }
+      
+      .icon-blue {
+        color: #0080ff;
+        margin-right: 6px;
+      }
+      
+      .btn-connexion {
+        background-color: #0080ff;
+        color: white !important;
+        border-radius: 30px;
+        padding: 8px 20px !important;
+      }
+      
+      .btn-connexion:hover {
+        background-color: #0066cc;
+        color: white !important;
+      }
+      
+      .top-bar {
+        background-color: #0080ff;
+        color: #ffffff;
+        font-size: 13px;
+        padding: 10px 0;
+      }
+      
+      .top-bar a {
+        color: #ffffff;
+        text-decoration: none;
+      }
+      
+      .top-bar a:hover {
+        text-decoration: underline;
+      }
+      
+      .social-icon {
+        font-size: 18px;
+        margin: 0 5px;
+        transition: all 0.3s;
+      }
+      
+      .social-icon:hover {
+        transform: translateY(-3px);
+      }
+    </style>
   </head>
   <body>
-
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center p-2 mt-5 mt-md-0" style="background-color:#0080ff;">
-      <p class="mb-2 mb-md-0">
-          <a class="text-bold" style="color:#ffffff; font-size:13px;" href="tel:+22654542526">Appelez nous au +226 05 10 23 23 | infos@oser-bf.org</a>
-      </p>
-      <div class="d-flex flex-row">
-          <a class="mx-2" style="color:#ffffff" href="https://www.youtube.com/@Organisationoser"><i class="fa fa-youtube"></i></a>
-          <a class="mx-2" style="color:#ffffff" href="https://wa.me/22605102323"><i class="fa fa-whatsapp"></i></a>
-          <a class="mx-2" style="color:#ffffff" href="https://www.facebook.com/profile.php?id=61557960605598"><i class="fa fa-facebook"></i></a>
-          <a class="mx-2" style="color:#ffffff" href="https://www.linkedin.com/company/organisation-pour-la-solidarit%C3%A9-l-education-et-la-r%C3%A9ussite-oser/"><i class="fa fa-linkedin"></i></a>
+    <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+      <div class="mb-2 mb-md-0">
+        <a href="tel:+22605102323"><i class="fas fa-phone-alt me-1"></i> +226 05 10 23 23</a>
+        <span class="mx-2">|</span>
+        <a href="mailto:infos@oser-bf.org"><i class="fas fa-envelope me-1"></i> infos@oser-bf.org</a>
+      </div>
+      <div>
+        <a href="https://www.youtube.com/@Organisationoser" class="social-icon" target="_blank"><i class="fab fa-youtube"></i></a>
+        <a href="https://wa.me/22605102323" class="social-icon" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://www.facebook.com/profile.php?id=61557960605598" class="social-icon" target="_blank"><i class="fab fa-facebook"></i></a>
+        <a href="https://www.linkedin.com/company/organisation-pour-la-solidarit%C3%A9-l-education-et-la-r%C3%A9ussite-oser/" class="social-icon" target="_blank"><i class="fab fa-linkedin"></i></a>
       </div>
     </div>
+  </div>
+
   
     <div class="preloader">
       <div class="preloader-logo"><a class="brand" href="{% url 'home' %}"><img class="brand-logo-dark" src="{% static 'media/images/logo-default-245x50.png' %}" alt="" width="245" height="50"/><img class="brand-logo-light" src="{% static 'media/images/logo-default-245x50.png' %}" alt="" width="245" height="50"/></a>
@@ -91,32 +177,18 @@
                           </ul>
                         </div>
                       </li>
-                        {% if user.is_authenticated %}
-                        
-                       <!-- Default dropstart button -->
-                        <li class="rd-nav-item">
-                          <div class="btn-group dropdown" id="dropdown">
-                            <button type="button" style="color:#000000; font-size:13px;" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                              <i class="fa fa-pencil" style="color:#0080ff; font-size:13px;"></i> &nbsp; ECLAIR 
-                            </button>
-                            <ul class="dropdown-menu">
-                              {% comment %} <li class="dropdown-item"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'Mentors' %}"><i class="fa fa-users" style="color:#0080ff; font-size:13px;"> </i>&nbsp; MENTORAT </a>
-                              </li> {% endcomment %}
-                              <li class="rd-nav-item" id="users"><a style="color:#000000; font-size:13px;" href="{% url 'user_profile' %}"><i class="fa fa-users" style="color:#0080ff; font-size:13px;"></i> &nbsp; MON ESPACE</a>
-                              </li>
-                              <li class="dropdown-item"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'orientation' %}"><i class="fa fa-book" style="color:#0080ff; font-size:13px;"></i> &nbsp; ORIENTATION</a>
-                              </li>
-                              
-                            </ul>
-                          </div>
-                        </li>
-                        {% endif %}
-                    
-                    <li class="rd-nav-item" style="color:#0080ff;"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'bourse_opportunite' %}"><i class="fa fa-money" style="color:#0080ff; font-size:13px;"></i> BOURSES & OPPORTUNITES</a>
-                    </li>
+                        <!-- Programmes Dropdown (nouveau) -->
+                      <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="programsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          <i class="fas fa-graduation-cap icon-blue"></i> PROGRAMMES
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="programsDropdown">
+                          <li><a class="dropdown-item" href="{% url 'user_profile' %}"><i class="fas fa-cloud" style="color:#0080ff;"></i> MON ESPACE</a></li>
+                          <li><a class="dropdown-item" href="{% url 'orientation' %}"><i class="fas fa-compass icon-blue" style="color:#0080ff;"></i> ORIENTATION</a></li>
+                          <li><a class="dropdown-item" href="{% url 'bourse_opportunite' %}"><i class="fas fa-book" style="color:#0080ff;"></i> BOURSES & OPPORTUNITÉS</a></li>
+                        </ul>
+                      </li>
                     <li class="rd-nav-item" id="faq"><a class="" style="color:#000000; font-size:13px;" href="{% url 'faq' %}"><i class="fa fa-question" style="color:#0080ff; font-size:13px;"></i> &nbsp; FAQ</a>
-                    </li>
-                    <li class="rd-nav-item" id="search"><a class="" style="color:#000000; font-size:13px;" href="{% url 'search' %}"><i class="fa fa-search" style="color:#0080ff; font-size:13px;"></i></a>
                     </li>
                     {% if not user.is_authenticated %}
                     <li class="rd-nav-item" style="color:#0080ff;"><a class="" style="color:#000000; font-size:13px; font-size:13px;" href="{% url 'login' %}"><i class="fa fa-unlock" style="color:#0080ff; font-size:13px;"></i> CONNEXION</a>
@@ -137,9 +209,9 @@
       
       
         {% endblock main %}
-  {% include "mentors/chart_mentor.html" %}
-  {% include "mentors/chart_mentore.html" %}
-     <!-- Page Footer-->
+        {% include "mentors/chart_mentor.html" %}
+        {% include "mentors/chart_mentore.html" %}
+          <!-- Page Footer-->
 
      <footer class="section footer-classic" style="background: linear-gradient(90deg, #F2CF05, #0080ff);">
         <div class="footer-classic-main">
