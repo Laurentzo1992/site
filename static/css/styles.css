@@ -57,8 +57,7 @@ body {
             padding: 0;
         }
         .container {
-            background-color: rgba(255, 255, 255, 0.8); /* Ajoute une couleur de fond semi-transparente pour améliorer la lisibilité du contenu */
-            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
             border-radius: 10px;
         }
 

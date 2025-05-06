@@ -9,7 +9,6 @@ from django.contrib.auth.models import User
 from mentors.models import *
 from django.contrib.auth.models import Group
 from datetime import datetime, timedelta
-from datetime import date
 from .forms import *
 from django.core.paginator import Paginator
 from django.urls import reverse
@@ -17,6 +16,8 @@ from django.conf import settings
 from django.contrib.sessions.models import Session
 from django.utils import timezone
 from django.core.mail import send_mail, BadHeaderError
+from django.core.exceptions import ValidationError
+
 from django.db.models import Count
 from django.utils.translation import gettext as _
 from django.utils.html import format_html
@@ -230,10 +231,6 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user_profile(request):
     user_profile = Profiles.objects.get(user=request.user)
-    # Accéder au mentor de l'utilisateur connecté
-    # mentor = user_profile.mentor
-    # Récupérer la liste des mentors
-    # mentors = User.objects.filter(groups__name='mentors')
     # Vérifier si l'utilisateur appartient au groupe 'mentors'
     mentors_group = request.user.groups.filter(name='mentors').exists()
     # Vérifier si l'utilisateur appartient au groupe 'utilisateurs'
@@ -563,50 +560,6 @@ def Mentors(request):
 
 
 
-# @login_required
-# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-# def Mentors(request):
-#     if request.method == 'POST':
-#         choix = request.POST.get('choix')
-#         user = request.user
-#         # Vérifier si l'utilisateur est déjà dans le groupe "utilisateurs"
-#         if user.groups.filter(name='utilisateurs').exists():
-#             messages.error(request, 'Vous êtes déja un mentoré')
-#             return redirect('Mentors')
-    
-#         # Vérifier la valeur de l'input 'choix' et attribuer le groupe approprié
-#         if choix == '1':
-#             group_name = 'mentors'  
-#         elif choix == '2':
-#             group_name = 'utilisateurs'  
-#         else:
-#             group_name = '' 
-#         # Récupérer ou créer le groupe
-#         if group_name:  # S'assurer que le nom du groupe est défini
-#             group, created = Group.objects.get_or_create(name=group_name)
-#             # Ajouter l'utilisateur au groupe
-#             user.groups.add(group)
-#             return HttpResponseRedirect(reverse('user_profile'))
-#         else:
-#             return render(request, 'mentors/Mentors.html', {'error_message': 'Le choix n\'est pas valide'})
-#     else:
-#         # Récupérer le groupe "mentors"
-#         mentors_group = Group.objects.get(name='mentors')
-#         # Récupérer les utilisateurs qui sont dans le groupe "mentors"
-#         mentors_users = mentors_group.user_set.all()
-#         # Maintenant, vous pouvez récupérer les profils associés à ces utilisateurs
-#         mentors_profiles = Profiles.objects.filter(user__in=mentors_users)
-#         # Vérifier si l'utilisateur appartient au groupe 'mentors'
-#         mentors_group = request.user.groups.filter(name='mentors').exists()
-#         # Vérifier si l'utilisateur appartient au groupe 'utilisateurs'
-#         user_group = request.user.groups.filter(name='utilisateurs').exists()
-#         context = {'mentors_profiles': mentors_profiles, 'mentors_group': mentors_group, "user_group": user_group}
-#         return render(request, 'mentors/Mentors.html', context)
-
-
-
-
-
 
 
 @login_required
@@ -756,32 +709,44 @@ def storie(request):
 
 
 
+
 def adesion(request):
     if request.method == 'POST':
         email = request.POST.get('email')
+        nom_complet = request.POST.get('nom_complet')
+        competence = request.POST.get('competence')
         tel = request.POST.get('tel')
         motivation = request.POST.get('raison')
+
         if email and tel and motivation:
-            # Vérifier si l'email existe déjà
             if Adession.objects.filter(email=email).exists():
-                messages.warning(request, 'demande déja fait.')
+                messages.warning(request, 'Demande déjà faite.')
                 return redirect('joint_us')
-            else:
-                adde = Adession.objects.create(email=email, tel=tel, motivation=motivation)
-                adde.save()
+
+            try:
                 send_mail(
-                    'Confirmation de votre demaande',
-                    'Votre demande pour nous rejoindre à été bien pris en compte.',
+                    'Confirmation de votre demande',
+                    'Votre demande pour nous rejoindre a été bien prise en compte.',
                     settings.DEFAULT_FROM_EMAIL,
                     [email],
-                    html_message='Votre demande pour nous rejoindre à été bien pris en compte.',
+                    html_message='Votre demande pour nous rejoindre a été bien prise en compte.',
                     fail_silently=False,
                 )
-                messages.success(request, 'Demande reussi!')
-                return redirect('joint_us')
+                # Si l'envoi réussit, on enregistre
+                Adession.objects.create(
+                    nom_complet=nom_complet,
+                    competence=competence,
+                    email=email,
+                    tel=tel,
+                    motivation=motivation
+                )
+                messages.success(request, 'Demande réussie!')
+            except (BadHeaderError, Exception) as e:
+                messages.error(request, "L'envoi de l'e-mail a échoué. Demande non enregistrée.")
         else:
-            messages.error(request, 'Échec , veuillez vérifier')
+            messages.error(request, 'Échec, veuillez vérifier les champs.')
     return redirect('joint_us')
+
 
 
 
@@ -1221,3 +1186,7 @@ def factory_activite(activites):
                 
                 
                 
+
+#@login_required
+def agir(request):
+    return render(request, 'mentors/agir.html')

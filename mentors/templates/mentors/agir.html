@@ -1,0 +1,402 @@
+{% extends "base.html" %}
+
+
+{% block main %}
+    <style>
+        :root {
+            --primary-blue: #1e3a8a;
+            --light-blue: #3b82f6;
+            --accent-yellow: #fbbf24;
+            --text-dark: #1f2937;
+            --text-light: #f3f4f6;
+            --bg-white: #ffffff;
+            --bg-light: #f9fafb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+            border-bottom: 3px solid var(--light-blue);
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-weight: 600;
+            position: relative;
+            transition: all 0.3s ease;
+            background-color: var(--bg-white);
+            margin: 0 0.25rem;
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+
+        .tab.active {
+            background-color: var(--light-blue);
+            color: var(--text-light);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 2rem 0;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background-color: var(--bg-white);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            color: var(--primary-blue);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .card-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 4px;
+            background-color: var(--accent-yellow);
+            border-radius: 2px;
+        }
+
+        .card-content {
+            flex-grow: 1;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-blue);
+            color: var(--text-light);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: var(--light-blue);
+        }
+
+        .btn-accent {
+            background-color: var(--accent-yellow);
+            color: var(--text-dark);
+        }
+
+        .btn-accent:hover {
+            background-color: #f59e0b;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--primary-blue);
+        }
+
+        .section-title span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title span::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+            height: 10px;
+            width: 100%;
+            background-color: var(--accent-yellow);
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        .event-card {
+            display: flex;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            background-color: var(--bg-white);
+        }
+
+        .event-image {
+            flex: 0 0 35%;
+            background-color: var(--light-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 1.5rem;
+        }
+
+        .event-details {
+            flex: 1;
+            padding: 1.5rem;
+        }
+
+        .event-date {
+            font-size: 0.9rem;
+            color: var(--light-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .event-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .event-description {
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .event-card {
+                flex-direction: column;
+            }
+
+            .event-image {
+                height: 150px;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab {
+                flex: 1 1 calc(50% - 0.5rem);
+                text-align: center;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+
+
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" onclick="openTab(event, 'personTab')">Je suis une personne</div>
+            <div class="tab" onclick="openTab(event, 'structureTab')">Je suis une structure</div>
+            <div class="tab" onclick="openTab(event, 'eventsTab')">Nos événements</div>
+        </div>
+
+        <div id="personTab" class="tab-content active">
+            <h2 class="section-title"><span>Agir comme individu</span></h2>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <h3 class="card-title">Devenir Mentor</h3>
+                    <div class="card-content">
+                        <p>Vous êtes un professionnel et vous souhaitez accompagner un jeune dans son parcours éducatif ou professionnel ? Le mentorat vous permet de partager vos connaissances, d'offrir des conseils et de soutenir les jeunes dans leurs décisions importantes. OSER propose une formation et un suivi pour vous guider dans ce rôle enrichissant.</p>
+                    </div>
+                    <a href="#" class="btn">Je deviens mentor</a>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">OSER autrement</h3>
+                    <div class="card-content">
+                        <p>Chez OSER, nous croyons que chaque action, même petite, a un grand impact. Vous avez la possibilité de contribuer de différentes manières, en fonction de vos compétences, de votre temps et de vos envies. Que vous soyez expert dans un domaine ou simplement motivé à faire une différence, il y a toujours une manière pour vous de participer.</p>
+                    </div>
+                    <a href="#" class="btn">Je passe à l'action</a>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Faire un Don</h3>
+                    <div class="card-content">
+                        <p>Les dons individuels aident OSER à financer des projets d'éducation, de mentorat, et de développement de compétences. Vous pouvez choisir de faire un don ponctuel ou régulier. Chaque contribution compte et vous recevez des nouvelles sur l'impact de votre générosité.</p>
+                    </div>
+                    <a href="#" class="btn btn-accent">Faire un don</a>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Participer aux Événements</h3>
+                    <div class="card-content">
+                        <p>Que ce soit pour assister à une conférence, un webinaire, ou un atelier, OSER offre des opportunités pour enrichir vos connaissances et soutenir ses actions. Vous pouvez également devenir un participant actif en aidant à l'organisation.</p>
+                    </div>
+                    <a href="#" class="btn">Découvrir nos événements</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="structureTab" class="tab-content">
+            <h2 class="section-title"><span>Agir comme structure</span></h2>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <h3 class="card-title">Rejoindre Nos Partenariats</h3>
+                    <div class="card-content">
+                        <p>Nous croyons qu'en travaillant ensemble, nous pouvons offrir aux jeunes des opportunités qui changent leur vie. Nos partenariats avec des entreprises, des institutions et des organisations permettent de créer des projets à fort impact pour l'éducation, l'insertion professionnelle et la réussite des jeunes.</p>
+                    </div>
+                    <a href="#" class="btn">Je prends contact</a>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Sponsoriser un Programme</h3>
+                    <div class="card-content">
+                        <p>En sponsorisant un programme OSER, vous faites bien plus qu'un simple don : vous devenez un acteur direct de la réussite éducative et professionnelle des jeunes. Votre entreprise a l'opportunité de soutenir des initiatives telles que le mentorat, les visites en entreprise, ou encore des formations professionnelles.</p>
+                    </div>
+                    <a href="#" class="btn">Je deviens Sponsor</a>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Offrir des Opportunités Professionnelles</h3>
+                    <div class="card-content">
+                        <p>Proposez des stages, des apprentissages ou des journées de découverte professionnelle pour aider les jeunes à mieux comprendre le monde du travail. Ce geste simple peut transformer leur avenir et enrichir votre vivier de talents.</p>
+                    </div>
+                    <a href="#" class="btn">Proposer une opportunité</a>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Offrir un Soutien Logistique</h3>
+                    <div class="card-content">
+                        <p>En tant qu'organisation, vous pouvez accueillir des événements de OSER dans vos locaux. Ces collaborations permettent de rapprocher les élèves des opportunités d'apprentissage tout en bénéficiant d'un soutien direct d'OSER.</p>
+                    </div>
+                    <a href="#" class="btn">Je prends contact</a>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Proposer un Projet Éducatif</h3>
+                    <div class="card-content">
+                        <p>Vous avez une idée pour enrichir les compétences de vos élèves ou les préparer à leur futur professionnel ? OSER collabore avec les établissements pour développer des projets sur mesure : conférences, ateliers interactifs, ou programmes de mentorat.</p>
+                    </div>
+                    <a href="#" class="btn">S'engager avec OSER</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="eventsTab" class="tab-content">
+            <h2 class="section-title"><span>Nos événements</span></h2>
+            
+            <p class="text-center" style="text-align: center; margin-bottom: 2rem;">
+                Nous organisons régulièrement des événements qui réunissent des professionnels, des jeunes et des décideurs. Ces événements sont l'occasion de créer des synergies, de partager des expériences et de développer des compétences.
+            </p>
+            
+            <div class="event-card">
+                <div class="event-image">Événement</div>
+                <div class="event-details">
+                    <div class="event-date">12 Mai 2025 | Paris</div>
+                    <h3 class="event-title">Conférence: L'avenir de l'éducation</h3>
+                    <p class="event-description">Une journée d'échanges entre professionnels de l'éducation, entreprises et jeunes pour repenser l'éducation de demain.</p>
+                    <a href="#" class="btn">Je m'inscris</a>
+                </div>
+            </div>
+            
+            <div class="event-card">
+                <div class="event-image">Événement</div>
+                <div class="event-details">
+                    <div class="event-date">25 Mai 2025 | En ligne</div>
+                    <h3 class="event-title">Webinaire: Mentorat efficace</h3>
+                    <p class="event-description">Formation en ligne pour tous les futurs mentors souhaitant acquérir les bases d'un accompagnement réussi.</p>
+                    <a href="#" class="btn">Je m'inscris</a>
+                </div>
+            </div>
+            
+            <div class="event-card">
+                <div class="event-image">Événement</div>
+                <div class="event-details">
+                    <div class="event-date">10 Juin 2025 | Lyon</div>
+                    <h3 class="event-title">Atelier: Découverte des métiers du numérique</h3>
+                    <p class="event-description">Une journée dédiée à la découverte des métiers du numérique pour les collégiens et lycéens.</p>
+                    <a href="#" class="btn">Je m'inscris</a>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="#" class="btn btn-accent">Voir tous les événements</a>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            
+            // Hide all tab content
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].className = tabcontent[i].className.replace(" active", "");
+            }
+            
+            // Remove active class from all tabs
+            tablinks = document.getElementsByClassName("tab");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            
+            // Show the current tab and add active class
+            document.getElementById(tabName).className += " active";
+            evt.currentTarget.className += " active";
+        }
+    </script>
+    {% endblock main %}
+
+    

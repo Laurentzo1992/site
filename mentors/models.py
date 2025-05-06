@@ -596,8 +596,7 @@ def send_newsletter_emails(sender, instance, **kwargs):
                 )
                 
                 
-                
-                
+                     
 
 
 class Politique_Securite(models.Model):
@@ -640,8 +639,10 @@ class Activite(models.Model):
     
     
 class Adession(models.Model):
+    nom_complet = models.CharField(max_length=200, null=True, blank=True, verbose_name="Nom complet")
     email = models.EmailField(null=True, blank=True, verbose_name="Email")
     tel = models.CharField(max_length=15, blank=True, null=True, verbose_name="Téléphone")
+    competence = models.TextField(null=True, blank=True, verbose_name="Compétence")
     motivation = models.TextField(null=True, blank=True, verbose_name="Motivation")
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
     modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)

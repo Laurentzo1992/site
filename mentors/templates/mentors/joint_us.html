@@ -8,13 +8,21 @@
             <form method="post" action="{% url 'adesion' %}">
                 {% csrf_token %}
                 <div class="form-group">
+                    <label for="exampleFormControlInput1">Nom complet</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput1" name="nom_complet" required>
+                </div>
+                <div class="form-group">
                 <label for="exampleFormControlInput1">Votre Email</label>
                 <input type="email" class="form-control" id="exampleFormControlInput1" name="email" required>
                 </div>
                 <div class="form-group">
                     <label for="exampleFormControlInput1">Téléphone</label>
                     <input type="tel" class="form-control" id="exampleFormControlInput1" name="tel" required>
-                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">Compétence</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="competence" required></textarea>
+                </div>
                 <div class="form-group">
                 <label for="exampleFormControlTextarea1">Motivation</label>
                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="raison" required></textarea>

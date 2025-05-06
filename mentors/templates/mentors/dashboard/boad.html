@@ -36,8 +36,8 @@
                                                     <tr>
                                                         <td>{{data.user.last_name|default:""}}</td>
                                                         <td>{{data.user.first_name|default:""}}</td>
-                                                        <td>{{data.user.profile|default:""}}</td>
-                                                        <td>{{data.user.domaine|default:""}}</td>
+                                                        <td>{{data.profile|default:""}}</td>
+                                                        <td>{{data.domaine|default:""}}</td>
                                                         <td><a type="button" class="btn btn-primary" data-toggle="modal" data-target="#mentorModal{{data.user.id}}"><i class="fa fa-eye"></i></a></td>
                                                     </tr>
                                                     {% include "mentors/mentordetail.html" %}

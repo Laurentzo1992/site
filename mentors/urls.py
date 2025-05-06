@@ -59,6 +59,9 @@ urlpatterns = [
     path('annule_mentore_activite/<id>', views.annule_mentore_activite, name='annule_mentore_activite'),
     path('clos_mentore_activite/<id>', views.clos_mentore_activite, name='clos_mentore_activite'),
     path('valid_mentore_activite/<id>', views.valid_mentore_activite, name='valid_mentore_activite'),
+    
+    path('agir_avec_nous/', views.agir, name='agir'),
+    
 ]
 
 
