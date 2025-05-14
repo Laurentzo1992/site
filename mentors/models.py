@@ -10,7 +10,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from tinymce.models import HTMLField
 from tinymce import models as tinymce_models
-from datetime import date
+from datetime import timedelta, date
 
 class Regions(models.Model):
     numero = models.CharField(max_length=1000, blank=True, null=True, verbose_name="Numero d'ordre")
@@ -123,15 +123,35 @@ class Forum(models.Model):
         
     def __str__(self):
         return self.titre
+    
+    
+    @classmethod
+    def recents(cls):
+        seven_days_ago = date.today() - timedelta(days=2)
+        return cls.objects.filter(created__gte=seven_days_ago).count()
+
         
         
 class ForumComment(models.Model):
     comment = models.TextField(blank=True, null=True, verbose_name="Commentaire")
     forum = models.ForeignKey(Forum, blank=True, null=True, on_delete=models.CASCADE)
     user_comment = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+    comment_views = models.IntegerField(default=0)
+    comment_likes = models.IntegerField(default=0)
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
     modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
     
+        
+        
+    @classmethod
+    def add_like(cls, comment_id):
+        try:
+            comment = cls.objects.get(pk=comment_id)
+            comment.comment_likes += 1
+            comment.save(update_fields=['comment_likes'])
+            return comment.comment_likes
+        except cls.DoesNotExist:
+            return None
 
     def __str__(self):
         return self.comment 
@@ -753,3 +773,33 @@ def send_email_on_creation(sender, instance, **kwargs):
             recipient_list=all_recipients,
             fail_silently=False,
         )
+
+
+class Even_Souscription(models.Model):
+    
+    CIVILITE_CHOICES = [
+    ('M.', 'Monsieur'),
+    ('Mme', 'Madame'),
+    ('Mlle', 'Mademoiselle'),
+    ]
+    nom = models.CharField(max_length=200, null=True, blank=True, verbose_name="Nom")
+    prenom = models.CharField(max_length=200, null=True, blank=True, verbose_name="Prenom")
+    civilite = models.CharField(
+    max_length=10,
+    choices=CIVILITE_CHOICES,
+    null=True,
+    blank=True,
+    verbose_name="Civilité"
+    )
+    email = models.EmailField(null=True, blank=True, verbose_name="Email")
+    tel = models.CharField(max_length=15, blank=True, null=True, verbose_name="Téléphone")
+    addresse = models.TextField(null=True, blank=True, verbose_name="Compétence")
+    ville = models.TextField(null=True, blank=True, verbose_name="Ville")
+    pays = models.TextField(null=True, blank=True, verbose_name="Pays")
+    societe = models.TextField(null=True, blank=True, verbose_name="Société")
+    fonction_poste = models.TextField(null=True, blank=True, verbose_name="Fonction /Poste")
+    email_pro = models.EmailField(null=True, blank=True, verbose_name="Email professionel")
+    event = models.ForeignKey(Evenement, on_delete=models.CASCADE, null=True, blank=True)
+    created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
+    

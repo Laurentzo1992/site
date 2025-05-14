@@ -1,10 +1,11 @@
 {% extends "base.html" %}
-
+{% load social_share %}
+{% load static %}
 
 {% block main %}
     <style>
         :root {
-            --primary-blue: #1e3a8a;
+            --primary-blue: #3b82f6;
             --light-blue: #3b82f6;
             --accent-yellow: #fbbf24;
             --text-dark: #1f2937;
@@ -190,6 +191,13 @@
             justify-content: center;
             color: var(--text-light);
             font-size: 1.5rem;
+            overflow: hidden;
+        }
+
+        .event-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .event-details {
@@ -212,6 +220,39 @@
             margin-bottom: 1rem;
         }
 
+        .event-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+        }
+        
+        /* Style pour le bouton WhatsApp */
+        .whatsapp-share {
+            display: inline-flex;
+            align-items: center;
+            background-color: #25D366;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        .whatsapp-share:hover {
+            background-color: #128C7E;
+        }
+        
+        .whatsapp-share svg, 
+        .whatsapp-share img {
+            margin-right: 0.5rem;
+            width: 20px;
+            height: 20px;
+        }
+
         @media (max-width: 768px) {
             .card-grid {
                 grid-template-columns: 1fr;
@@ -222,7 +263,20 @@
             }
 
             .event-image {
-                height: 150px;
+                height: 200px;
+                width: 100%;
+            }
+            
+            .event-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .event-actions .btn,
+            .event-actions .whatsapp-share {
+                width: 100%;
+                margin-bottom: 0.5rem;
+                justify-content: center;
             }
 
             .tabs {
@@ -233,6 +287,8 @@
                 flex: 1 1 calc(50% - 0.5rem);
                 text-align: center;
                 margin-bottom: 0.5rem;
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -240,12 +296,40 @@
 
     <div class="container">
         <div class="tabs">
-            <div class="tab active" onclick="openTab(event, 'personTab')">Je suis une personne</div>
+            <div class="tab active" onclick="openTab(event, 'eventsTab')">Nos événements</div>
             <div class="tab" onclick="openTab(event, 'structureTab')">Je suis une structure</div>
-            <div class="tab" onclick="openTab(event, 'eventsTab')">Nos événements</div>
+            <div class="tab" onclick="openTab(event, 'personTab')">Je suis une personne</div>
         </div>
 
-        <div id="personTab" class="tab-content active">
+        <div id="eventsTab" class="tab-content active">
+            <h2 class="section-title"><span>Nos événements</span></h2>
+            
+            <p class="text-center" style="text-align: center; margin-bottom: 2rem;">
+                Nous organisons régulièrement des événements qui réunissent des professionnels, des jeunes et des décideurs. Ces événements sont l'occasion de créer des synergies, de partager des expériences et de développer des compétences.
+            </p>
+            {% for data in evenements %}
+            <div class="event-card">
+                <div class="event-image">
+                    {% if data.image %}
+                    <img src="{{data.image.url}}" alt="Evènement">
+                    {% else %}
+                    Evènement
+                    {% endif %}
+                </div>
+                <div class="event-details">
+                    <div class="event-date">date : {{data.date_even}} crée par {{data.initiateur}}</div>
+                    <h3 class="event-title">{{data.libelle}}</h3>
+                    <p class="event-description">{{data.description}}</p>
+                    <div class="event-actions">
+                        <a href="{% url 'evensouscription' data.id %}" class="btn">Je m'inscris</a>
+                        {% post_to_whatsapp post.get_absolute_url "Partager sur WhatsApp" "whatsapp-share" %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div id="personTab" class="tab-content">
             <h2 class="section-title"><span>Agir comme individu</span></h2>
             
             <div class="card-grid">
@@ -329,52 +413,7 @@
             </div>
         </div>
 
-        <div id="eventsTab" class="tab-content">
-            <h2 class="section-title"><span>Nos événements</span></h2>
-            
-            <p class="text-center" style="text-align: center; margin-bottom: 2rem;">
-                Nous organisons régulièrement des événements qui réunissent des professionnels, des jeunes et des décideurs. Ces événements sont l'occasion de créer des synergies, de partager des expériences et de développer des compétences.
-            </p>
-            
-            <div class="event-card">
-                <div class="event-image">Événement</div>
-                <div class="event-details">
-                    <div class="event-date">12 Mai 2025 | Paris</div>
-                    <h3 class="event-title">Conférence: L'avenir de l'éducation</h3>
-                    <p class="event-description">Une journée d'échanges entre professionnels de l'éducation, entreprises et jeunes pour repenser l'éducation de demain.</p>
-                    <a href="#" class="btn">Je m'inscris</a>
-                </div>
-            </div>
-            
-            <div class="event-card">
-                <div class="event-image">Événement</div>
-                <div class="event-details">
-                    <div class="event-date">25 Mai 2025 | En ligne</div>
-                    <h3 class="event-title">Webinaire: Mentorat efficace</h3>
-                    <p class="event-description">Formation en ligne pour tous les futurs mentors souhaitant acquérir les bases d'un accompagnement réussi.</p>
-                    <a href="#" class="btn">Je m'inscris</a>
-                </div>
-            </div>
-            
-            <div class="event-card">
-                <div class="event-image">Événement</div>
-                <div class="event-details">
-                    <div class="event-date">10 Juin 2025 | Lyon</div>
-                    <h3 class="event-title">Atelier: Découverte des métiers du numérique</h3>
-                    <p class="event-description">Une journée dédiée à la découverte des métiers du numérique pour les collégiens et lycéens.</p>
-                    <a href="#" class="btn">Je m'inscris</a>
-                </div>
-            </div>
-            
-            <div style="text-align: center; margin-top: 2rem;">
-                <a href="#" class="btn btn-accent">Voir tous les événements</a>
-            </div>
-        </div>
     </div>
-
-
-
-
 
     <script>
         function openTab(evt, tabName) {
@@ -396,7 +435,20 @@
             document.getElementById(tabName).className += " active";
             evt.currentTarget.className += " active";
         }
+        
+        // Corriger l'affichage du bouton WhatsApp
+        document.addEventListener('DOMContentLoaded', function() {
+            // Chercher tous les boutons WhatsApp générés par le template tag
+            var whatsappButtons = document.querySelectorAll('.whatsapp-share');
+            
+            whatsappButtons.forEach(function(button) {
+                // Ajout d'une icône si nécessaire
+                if (!button.querySelector('img, svg')) {
+                    var icon = document.createElement('span');
+                    icon.innerHTML = '📱';
+                    button.prepend(icon);
+                }
+            });
+        });
     </script>
-    {% endblock main %}
-
-    
+{% endblock main %}

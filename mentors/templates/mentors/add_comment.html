@@ -1,81 +1,537 @@
 {% extends "base.html" %}
 {% load static %}
-
-
+{% load social_share %}
 {% block main %}
-<div class="container-fluid text-center">
-    <div class="card">
-        <div class="card-body">
-            <h1>{{forum.titre}}</h1>
-            <p>{{forum.titre}}</p>
+
+<!-- En-tête de la discussion -->
+<section class="forum-header py-4 bg-gradient-primary">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center text-white">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-center mb-2">
+            <li class="breadcrumb-item"><a href="{% url 'get_all_forum' %}" class="text-white-50">Forums</a></li>
+            <li class="breadcrumb-item active text-white" aria-current="page">Discussion</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contenu principal -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row">
+      <!-- Colonne principale -->
+      <div class="col-lg-8">
+        <!-- Carte de la discussion -->
+        <div class="card border-0 rounded-4 shadow-sm mb-4 forum-detail-card">
+          <div class="card-body p-4">
+            {% if forum.fichier %}
+              <div class="forum-image-container mb-4">
+                <img src="{{ forum.fichier.url }}" class="img-fluid rounded-4" alt="{{ forum.titre }}">
+              </div>
+            {% endif %}
+            
+            <div class="d-flex align-items-center mb-3">
+              <div class="avatar me-3">
+                <div class="avatar-circle bg-primary text-white">
+                  {{ forum.initiateur.first_name|first }}{{ forum.initiateur.last_name|first }}
+                </div>
+              </div>
+              <div>
+                <h6 class="mb-0 fw-bold">{{ forum.initiateur.first_name }} {{ forum.initiateur.last_name }}</h6>
+                <small class="text-muted">Publié le {{ forum.created|date:"d M Y" }}</small>
+              </div>
+              <div class="ms-auto d-flex gap-2">
+                {% post_to_facebook post.get_absolute_url "Partagez sur Facebook" "btn btn-sm btn-outline-primary rounded-pill d-flex align-items-center" %}
+              </div>
+              <div class="ms-auto d-flex gap-2">
+                {% post_to_whatsapp post.get_absolute_url "Partagez sur WhatsApp" "btn btn-sm btn-outline-primary rounded-pill d-flex align-items-center" %}
+              </div>
+            </div>
+            
+            <div class="forum-content">
+              <p class="lead">{{ forum.description }}</p>
+            </div>
+            
+            <div class="forum-stats d-flex flex-wrap gap-3 mt-4 pt-3 border-top">
+              <div class="stat-item d-flex align-items-center">
+                <i class="far fa-comment text-primary me-2"></i>
+                <span>{{ page_obj.paginator.count }} commentaires</span>
+              </div>
+              <div class="stat-item d-flex align-items-center">
+                <i class="far fa-clock text-primary me-2"></i>
+                <span>Activité: {{ forum.created|timesince }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Section des commentaires -->
+        <div class="comments-section mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold m-0">
+              <i class="far fa-comments text-primary me-2"></i>
+              Commentaires ({{ page_obj.paginator.count }})
+            </h4>
+            <div class="dropdown">
+              <button class="btn btn-sm btn-light dropdown-toggle rounded-pill" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-sort me-1"></i> Trier par
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sortDropdown">
+                <li><a class="dropdown-item active" href="#"><i class="fas fa-clock me-2"></i>Plus récents</a></li>
+                <li><a class="dropdown-item" href="#"><i class="fas fa-history me-2"></i>Plus anciens</a></li>
+                <li><a class="dropdown-item" href="#"><i class="fas fa-thumbs-up me-2"></i>Plus populaires</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <!-- Liste des commentaires -->
+          <div class="comments-list">
+            {% for comment in page_obj %}
+              <div class="comment-card position-relative mb-4 animate__animated animate__fadeIn">
+                <div class="card border-0 rounded-4 shadow-sm hover-shadow">
+                  <div class="card-body p-4">
+                    <div class="d-flex">
+                      <div class="avatar me-3">
+                        <div class="avatar-circle bg-{{ comment.user_comment.username|make_list|first|add:comment.user_comment.id }} text-white">
+                          {{ comment.user_comment.username|first|upper }}
+                        </div>
+                      </div>
+                      <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                          <h6 class="fw-bold mb-0">{{ comment.user_comment.username }}</h6>
+                          <div class="d-flex align-items-center">
+                            <span class="text-muted small me-3">{{ comment.created|date:"d M Y" }}</span>
+                            {% if comment.user_comment == request.user %}
+                              <div class="dropdown comment-actions">
+                                <button class="btn btn-sm btn-link text-muted p-0" type="button" id="commentMenu{{ comment.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                  <i class="fas fa-ellipsis-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="commentMenu{{ comment.id }}">
+                                  <li>
+                                    <a class="dropdown-item" href="{% url 'edit_comment' comment.id %}">
+                                      <i class="fas fa-pencil text-warning me-2"></i>Modifier
+                                    </a>
+                                  </li>
+                                  <li><hr class="dropdown-divider"></li>
+                                  <li>
+                                    <button class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ comment.id }}">
+                                      <i class="fas fa-trash-can me-2"></i>Supprimer
+                                    </button>
+                                  </li>
+                                </ul>
+                              </div>
+                              
+                              <!-- Modal de confirmation de suppression -->
+                              <div class="modal fade" id="deleteModal{{ comment.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ comment.id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                  <div class="modal-content rounded-4 border-0">
+                                    <div class="modal-header border-0">
+                                      <h5 class="modal-title" id="deleteModalLabel{{ comment.id }}">Confirmer la suppression</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                      Êtes-vous sûr de vouloir supprimer ce commentaire ? Cette action est irréversible.
+                                    </div>
+                                    <div class="modal-footer border-0">
+                                      <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Annuler</button>
+                                      <a href="#" class="btn btn-danger rounded-pill">Supprimer</a>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                        <div class="comment-content mb-2">
+                          <p class="mb-2">{{ comment.comment }}</p>
+                        </div>
+                        <div class="comment-actions d-flex align-items-center">
+                          <button class="btn btn-sm btn-link text-muted p-0 me-3 reaction-btn">
+                            <i class="far fa-thumbs-up me-1"></i>
+                            <span class="reaction-count">12</span>
+                          </button>
+                          <button class="btn btn-sm btn-link text-muted p-0 me-3 reply-toggle" data-comment-id="{{ comment.id }}">
+                            <i class="far fa-reply me-1"></i>
+                            <span>Répondre</span>
+                          </button>
+                        </div>
+                        
+                        <!-- Formulaire de réponse caché -->
+                        <div class="reply-form mt-3 d-none" id="replyForm{{ comment.id }}">
+                          <div class="d-flex">
+                            <div class="avatar me-2">
+                              <div class="avatar-circle bg-primary text-white" style="width: 30px; height: 30px; font-size: 12px;">
+                                {{ request.user.username|first|upper }}
+                              </div>
+                            </div>
+                            <div class="flex-grow-1">
+                              <div class="input-group">
+                                <input type="text" class="form-control rounded-start" placeholder="Écrire une réponse...">
+                                <button class="btn btn-primary" type="button">
+                                  <i class="fas fa-paper-plane"></i>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Badge indiquant le commentaire de l'auteur du forum si applicable -->
+                {% if comment.user_comment == forum.initiateur %}
+                  <div class="author-badge position-absolute top-0 start-0 bg-primary text-white px-2 py-1 rounded-pill fs-xs transform-up-left">
+                    <i class="fas fa-user-pen me-1"></i> Auteur
+                  </div>
+                {% endif %}
+              </div>
+            {% empty %}
+              <!-- État vide -->
+              <div class="empty-state text-center py-5">
+                <div class="empty-state-icon mb-4">
+                  <i class="far fa-comments fa-4x text-muted"></i>
+                </div>
+                <h5 class="fw-bold">Aucun commentaire pour le moment</h5>
+                <p class="text-muted mb-4">Soyez le premier à donner votre avis sur cette discussion!</p>
+                <a href="#comment-form" class="btn btn-primary rounded-pill px-4">
+                  <i class="fas fa-comment me-2"></i>
+                  Ajouter un commentaire
+                </a>
+              </div>
+            {% endfor %}
+          </div>
+          
+          <!-- Pagination -->
+          {% if page_obj.paginator.num_pages > 1 %}
+            <nav class="mt-4" aria-label="Navigation des commentaires">
+              <ul class="pagination justify-content-center flex-wrap">
+                {% if page_obj.has_previous %}
+                  <li class="page-item">
+                    <a class="page-link rounded-start-pill" href="?page=1">
+                      <i class="fas fa-angle-double-left"></i>
+                    </a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                      <i class="fas fa-angle-left"></i>
+                    </a>
+                  </li>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                  {% if page_obj.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                  {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                  {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                      <i class="fas fa-angle-right"></i>
+                    </a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link rounded-end-pill" href="?page={{ page_obj.paginator.num_pages }}">
+                      <i class="fas fa-angle-double-right"></i>
+                    </a>
+                  </li>
+                {% endif %}
+              </ul>
+            </nav>
+          {% endif %}
+        </div>
+        
+        <!-- Formulaire de commentaire -->
+        <div class="card border-0 rounded-4 shadow-sm" id="comment-form">
+          <div class="card-body p-4">
+            <h5 class="card-title fw-bold mb-4">
+              <i class="fas fa-pen-to-square text-primary me-2"></i>
+              Ajouter un commentaire
+            </h5>
+            <form method="post" class="comment-form needs-validation" novalidate>
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="{{ form.comment.id_for_label }}" class="form-label visually-hidden">Votre commentaire</label>
+                {{ form.comment.errors }}
+                <div class="input-group">
+                  {{ form.comment }}
+                </div>
+                <div class="form-text">Partagez votre avis de manière constructive et respectueuse.</div>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mt-4">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="notifyCheck">
+                  <label class="form-check-label" for="notifyCheck">
+                    M'alerter des réponses
+                  </label>
+                </div>
+                <button type="submit" class="btn btn-primary rounded-pill px-4 d-flex align-items-center">
+                  <i class="fas fa-paper-plane me-2"></i>
+                  Publier mon commentaire
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    
-    <h4 class="text-bold">Réactions</h4>
-    {% for comment in page_obj %}
-
-    <div class="alert alert-info" role="alert">
-        <ul>
-           
-            <li>{{ comment.user_comment.username }} à écris {{ comment.comment }} - le {{ comment.created }} 
-                &nbsp; 
-                {% if comment.user_comment == request.user %}
-                <a href="{% url 'edit_comment' comment.id %}">
-                    <i class="fa fa-pencil text-warning"></i>
-                </a> 
-                {% endif %}
-            </li>
-        </ul>
-    </div>
-    {% endfor %}
-
-        <div class="pagination">
-            <span class="step-links">
-                {% if page_obj.has_previous %}
-                    <a href="?page=1">&laquo; debut</a>
-                    <a href="?page={{ page_obj.previous_page_number }}">précédent</a>
-                {% endif %}
-        
-                <span class="current">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                </span>
-        
-                {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}">suivant</a>
-                    <a href="?page={{ page_obj.paginator.num_pages }}">fin &raquo;</a>
-                {% endif %}
-            </span>
+      
+      <!-- Colonne latérale -->
+      <div class="col-lg-4 mt-4 mt-lg-0">
+        <!-- Widget d'information -->
+        <div class="card border-0 rounded-4 shadow-sm mb-4">
+          <div class="card-body p-4">
+            <h5 class="fw-bold mb-3">À propos de ce forum</h5>
+            <div class="about-stats mb-3">
+              <div class="d-flex justify-content-between py-2 border-bottom">
+                <span class="text-muted">Créé par</span>
+                <span class="fw-medium">{{ forum.initiateur.first_name }} {{ forum.initiateur.last_name }}</span>
+              </div>
+              <div class="d-flex justify-content-between py-2 border-bottom">
+                <span class="text-muted">Date de création</span>
+                <span class="fw-medium">{{ forum.created|date:"d M Y" }}</span>
+              </div>
+              <div class="d-flex justify-content-between py-2 border-bottom">
+                <span class="text-muted">Commentaires</span>
+                <span class="fw-medium">{{ page_obj.paginator.count }}</span>
+              </div>
+              <div class="d-flex justify-content-between py-2">
+                <span class="text-muted">Dernière activité</span>
+                <span class="fw-medium">{{ forum.created|timesince }}</span>
+              </div>
+            </div>
+          </div>
         </div>
-   
+        
+        <!-- Widget discussions similaires -->
+        
+        
+        <!-- Widget règles -->
+        <div class="card border-0 rounded-4 shadow-sm">
+          <div class="card-header bg-primary text-white py-3 rounded-top-4 border-0">
+            <h5 class="fw-bold mb-0">
+              <i class="fas fa-circle-info me-2"></i>
+              Règles
+            </h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item border-0 d-flex ps-0">
+                <span class="text-primary me-3"><i class="fas fa-check-circle"></i></span>
+                <span>Restez respectueux envers les autres membres</span>
+              </li>
+              <li class="list-group-item border-0 d-flex ps-0">
+                <span class="text-primary me-3"><i class="fas fa-check-circle"></i></span>
+                <span>Évitez le contenu hors-sujet ou publicitaire</span>
+              </li>
+              <li class="list-group-item border-0 d-flex ps-0">
+                <span class="text-primary me-3"><i class="fas fa-check-circle"></i></span>
+                <span>Pas de propos injurieux ou discriminatoires</span>
+              </li>
+              <li class="list-group-item border-0 d-flex ps-0">
+                <span class="text-primary me-3"><i class="fas fa-check-circle"></i></span>
+                <span>Signalez tout contenu inapproprié</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Styles spécifiques -->
+<style>
+  /* Gradient de fond en tête */
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, var(--bs-primary) 0%, #4a8bfc 100%);
+  }
+  
+  /* Style des avatars */
+  .avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  
+  /* Style des cards */
+  .hover-shadow {
+    transition: all 0.3s ease;
+  }
+  
+  .hover-shadow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  /* Style du formulaire */
+  .comment-form textarea, .comment-form input {
+    padding: 0.8rem 1.2rem;
+    border-radius: 1rem;
+  }
+  
+  .comment-form textarea:focus, .comment-form input:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+  }
+  
+  /* Style des badges */
+  .author-badge {
+    font-size: 0.7rem;
+    transform: translate(-30%, -50%);
+  }
+  
+  .transform-up-left {
+    transform: translate(-30%, -50%);
+  }
+  
+  /* Style des commentaires */
+  .comment-card {
+    transition: all 0.3s ease;
+  }
+  
+  .forum-image-container {
+    max-height: 400px;
+    overflow: hidden;
+  }
+  
+  .forum-image-container img {
+    width: 100%;
+    object-fit: cover;
+  }
+  
+  /* Animation des boutons */
+  .reaction-btn, .reply-toggle, .report-btn {
+    transition: all 0.2s ease;
+  }
+  
+  .reaction-btn:hover, .reply-toggle:hover, .report-btn:hover {
+    color: var(--bs-primary) !important;
+  }
+  
+  /* Taille de texte */
+  .fs-xs {
+    font-size: 0.75rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .avatar-circle {
+      width: 35px;
+      height: 35px;
+      font-size: 14px;
+    }
     
+    .comment-actions {
+      flex-wrap: wrap;
+    }
+  }
+</style>
 
-    <form method="post" class="row g-3 mb-3">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button class="btn btn-primary" style="background-color:#0080ff"; type="submit">Je commente</button>
-    </form>
-</div>
+<!-- Scripts spécifiques -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Style des champs du formulaire Django
+    const commentTextarea = document.getElementById('{{ form.comment.id_for_label }}');
+    if (commentTextarea) {
+      commentTextarea.classList.add('form-control');
+      commentTextarea.setAttribute('rows', '4');
+      commentTextarea.setAttribute('placeholder', 'Partagez votre avis ou posez une question...');
+    }
+    
+    // Gestion du toggle des réponses
+    const replyToggles = document.querySelectorAll('.reply-toggle');
+    replyToggles.forEach(toggle => {
+      toggle.addEventListener('click', function() {
+        const commentId = this.getAttribute('data-comment-id');
+        const replyForm = document.getElementById('replyForm' + commentId);
+        
+        // Si le formulaire est déjà visible, le cacher
+        if (!replyForm.classList.contains('d-none')) {
+          replyForm.classList.add('d-none');
+          return;
+        }
+        
+        // Cacher tous les autres formulaires de réponse
+        document.querySelectorAll('.reply-form').forEach(form => {
+          form.classList.add('d-none');
+        });
+        
+        // Afficher ce formulaire de réponse
+        replyForm.classList.remove('d-none');
+        replyForm.querySelector('input').focus();
+      });
+    });
+    
+    // Animation du bouton de signet
+    const bookmarkBtn = document.getElementById('bookmark-btn');
+    const bookmarkIcon = document.getElementById('bookmark-icon');
+    
+    if (bookmarkBtn && bookmarkIcon) {
+      bookmarkBtn.addEventListener('click', function() {
+        if (bookmarkIcon.classList.contains('far')) {
+          bookmarkIcon.classList.remove('far');
+          bookmarkIcon.classList.add('fas');
+          bookmarkIcon.closest('button').classList.remove('btn-outline-primary');
+          bookmarkIcon.closest('button').classList.add('btn-primary');
+        } else {
+          bookmarkIcon.classList.remove('fas');
+          bookmarkIcon.classList.add('far');
+          bookmarkIcon.closest('button').classList.remove('btn-primary');
+          bookmarkIcon.closest('button').classList.add('btn-outline-primary');
+        }
+      });
+    }
+    
+    // Animation des boutons "J'aime"
+    const reactionBtns = document.querySelectorAll('.reaction-btn');
+    reactionBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const icon = this.querySelector('i');
+        const count = this.querySelector('.reaction-count');
+        
+        if (icon.classList.contains('far')) {
+          icon.classList.remove('far');
+          icon.classList.add('fas');
+          icon.classList.add('text-primary');
+          count.textContent = parseInt(count.textContent) + 1;
+        } else {
+          icon.classList.remove('fas');
+          icon.classList.remove('text-primary');
+          icon.classList.add('far');
+          count.textContent = parseInt(count.textContent) - 1;
+        }
+      });
+    });
+  });
+</script>
 
+<!-- FontAwesome pour les icônes -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Animate.css pour les animations -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
+<!-- SweetAlert messages -->
 {% for message in messages %}
-        {% comment %} <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> {% endcomment %}
-        <script src="{% static 'js/sweetalert.min.js' %}"></script>
-        {% if message.tags == 'error' %}
-        <script>
-            var m = "{{ message }}";
-            swal("Réfusé!", m, "error");
-        </script>
-        {% elif message.tags == 'success' %}
-        <script>
-            var m = "{{ message }}";
-            swal("Bienvenue!", m, "success");
-        </script>
-        {% elif message.tags == 'info' %}
-        <script>
-            var m = "{{ message }}";
-            swal("Félicition!", m, "info");
-        </script>
-        {% endif %}
+<script src="{% static 'js/sweetalert.min.js' %}"></script>
+{% if message.tags == 'error' %}
+<script>swal("Réfusé!", "{{ message }}", "error");</script>
+{% elif message.tags == 'success' %}
+<script>swal("Bienvenue!", "{{ message }}", "success");</script>
+{% elif message.tags == 'info' %}
+<script>swal("Félicitation!", "{{ message }}", "info");</script>
+{% endif %}
+{% endfor %}
 
-    {% endfor%}
 {% endblock main %}

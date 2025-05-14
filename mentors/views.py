@@ -1,4 +1,4 @@
-from django.http import HttpResponseBadRequest, HttpResponseRedirect
+from django.http import HttpResponseBadRequest, HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
@@ -26,6 +26,14 @@ from django.urls import reverse_lazy
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
 
+from django.views.generic import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
+import xlwt
+from .models import Even_Souscription, Evenement
+import datetime
+
+
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def home(request):
@@ -36,7 +44,7 @@ def home(request):
     partenariats = Partenaire.objects.all().order_by('-created')
     debut = Presentation.objects.all().first()
     slides = Slideimage.objects.all()
-    thirty_days_ago = datetime.now() - timedelta(days=30)
+    thirty_days_ago = datetime.datetime.now() - timedelta(days=30)
     ressources = Ressources.objects.filter(created__gte=thirty_days_ago)
     #Récupérer les événements dont la date est postérieure à aujourd'hui
     activites = Activite.objects.all().order_by('-id')
@@ -360,38 +368,11 @@ def editprofile(request, id):
 @login_required
 def get_all_ressource(request):
     # Récupérer le profil de l'utilisateur connecté
-    #user_profile = Profiles.objects.get(user=request.user)
+    # user_profile = Profiles.objects.get(user=request.user)
     
-    # Vérifier s'il a un mentor
-    """ if user_profile.mentor:
-        # Filtrer les ressources pour n'afficher que celles du mentor de l'utilisateur connecté
-        ressources = Ressources.objects.filter(owner=user_profile.mentor.user)
-    else:
-        # Si l'utilisateur n'a pas de mentor, afficher toutes les ressources
-        ressources = Ressources.objects.filter(owner=request.user) """
     ressources = Ressources.objects.all()
     context = {"ressources": ressources}
     return render(request, 'mentors/get_all_ressource.html', context)
-
-
-
-@login_required
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-def get_all_even(request):
-    # Récupérer le profil de l'utilisateur connecté
-    """  user_profile = Profiles.objects.get(user=request.user)
-    
-    # Vérifier s'il a un mentor
-    if user_profile.mentor:
-        # Filtrer les evenements pour n'afficher que celles du mentor de l'utilisateur connecté
-        evenements = Evenement.objects.filter(initiateur=user_profile.mentor.user)
-    else:
-        # Si l'utilisateur n'a pas de mentor, afficher toutes les evenements
-        evenements = Evenement.objects.filter(initiateur=request.user) """
-    evenements = Evenement.objects.all()
-    context = {"evenements": evenements}
-    return render(request, 'mentors/get_all_even.html', context)
-
 
 
 
@@ -422,26 +403,10 @@ def add_even(request):
             even = form.save(commit=False)
             even.initiateur = request.user
             even.save()
-
-            # Envoyer un email à tous les utilisateurs
-            subject = 'Nouveau Événement Ajouté'
-            message = f'Un nouveau événement "{even.libelle}" a été ajouté par {even.initiateur.first_name} " " {even.initiateur.last_name}'
-            from_email = settings.DEFAULT_FROM_EMAIL
-            recipient_list = NewletterEmail.objects.values_list('useremail', flat=True)
-
-            try:
-                send_mail(subject, message, from_email, recipient_list)
-                messages.success(request, "Nouveau Événement Ajouté et emails envoyés")
-            except BadHeaderError:
-                messages.error(request, "Erreur lors de l'envoi de l'email")
-                return redirect('get_all_even')
-
-            return redirect('get_all_even')
+            return redirect('agir')
     else:
         form = EvenementForm()
     return render(request, 'mentors/add_even.html', {'form': form})
-
-
 
 
 
@@ -514,16 +479,12 @@ def edit_comment(request, id):
 def get_all_forum(request):
     # Récupérer le profil de l'utilisateur connecté
     # user_profile = Profiles.objects.get(user=request.user)
-    
-    """ # Vérifier s'il a un mentor
-    if user_profile.mentor:
-        # Filtrer les forums pour n'afficher que celles du mentor de l'utilisateur connecté
-        forums = Forum.objects.filter(initiateur=user_profile.mentor.user)
-    else:
-        # Si l'utilisateur n'a pas de mentor, afficher toutes les forums
-        forums = Forum.objects.filter(initiateur=request.user) """
-    forums = Forum.objects.all()
-    context = {"forums": forums}
+    forums = Forum.objects.all().order_by('-id')
+    context = {"forums": forums,
+               "forum_nbrs":forums.count(),
+               "comments":ForumComment.objects.all().count(),
+               "recents":Forum.recents,
+               }
     return render(request, 'mentors/get_all_forum.html', context)
 
 
@@ -1189,4 +1150,202 @@ def factory_activite(activites):
 
 #@login_required
 def agir(request):
-    return render(request, 'mentors/agir.html')
+    evenements = Evenement.objects.all()
+    return render(request, 'mentors/agir.html', {"evenements":evenements})
+
+
+
+
+
+def evensouscription(request, id):
+    id = get_object_or_404(Evenement, id=id)
+    if request.method == 'POST':
+        civilite = request.POST.get('civilite')
+        nom = request.POST.get('nom')
+        prenom = request.POST.get('prenom')
+        email = request.POST.get('email')
+        tel = request.POST.get('tel')
+        addresse = request.POST.get('addresse')
+        ville = request.POST.get('ville')
+        pays = request.POST.get('pays')
+
+        # Champs optionnels
+        societe = request.POST.get('societe', '')
+        fonction_poste = request.POST.get('fonction_poste', '')
+        email_pro = request.POST.get('email_pro', '')
+
+        # Enregistrement en base de données
+        ev = Even_Souscription.objects.create(
+            civilite=civilite,
+            nom=nom,
+            prenom=prenom,
+            email=email,
+            tel=tel,
+            addresse=addresse,
+            ville=ville,
+            pays=pays,
+            societe=societe,
+            fonction_poste=fonction_poste,
+            email_pro=email_pro,
+            event=id
+        )
+        
+        message = f"""
+        Nouvelle inscription à l'événement  de oser:
+
+        📌 Événement : {ev.event.libelle if id else 'Non précisé'}
+        📅 Date : {ev.event.date_even if id else 'Non précisée'}
+        🔗 Lien : {ev.event.lien if id else 'Aucun lien'}
+        🔗 Description : {ev.event.description if id else 'Aucune description'}
+
+        🧍 Vos Informations :
+        - Civilité : {ev.civilite}
+        - Nom : {ev.nom}
+        - Prénom : {ev.prenom}
+        - Email perso : {ev.email}
+        - Email pro : {ev.email_pro}
+        - Téléphone : {ev.tel}
+        - Adresse : {ev.addresse}
+        - Ville : {ev.ville}
+        - Pays : {ev.pays}
+        - Société : {ev.societe}
+        - Poste : {ev.fonction_poste}
+        """
+
+        # Envoi de l'email
+        send_mail(
+            subject='Nouvelle inscription à un événement oser',
+            message=message,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[ev.email],
+            fail_silently=False,
+        )
+        messages.success(request, 'Inscription effectué')
+        return redirect(reverse('succes'))
+    return render(request, 'mentors/evensouscription.html', {"id":id})
+
+
+def succes(request):
+    return render(request, 'mentors/succes.html')
+
+
+
+
+
+
+class InscriptionsListView(LoginRequiredMixin, ListView):
+    model = Even_Souscription
+    template_name = 'mentors/dashboard/inscription.html'
+    context_object_name = 'inscriptions'
+    paginate_by = 20
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        
+        # Filtrage par événement si spécifié dans l'URL
+        event_id = self.request.GET.get('event')
+        if event_id:
+            queryset = queryset.filter(event__id=event_id)
+        
+        # Recherche textuelle si spécifiée
+        search_query = self.request.GET.get('q')
+        if search_query:
+            queryset = queryset.filter(
+                Q(nom__icontains=search_query) | 
+                Q(prenom__icontains=search_query) |
+                Q(email__icontains=search_query) |
+                Q(societe__icontains=search_query) |
+                Q(ville__icontains=search_query)
+            )
+        
+        # Tri des résultats
+        sort_by = self.request.GET.get('sort', '-created')
+        queryset = queryset.order_by(sort_by)
+        
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Ajout de la liste des événements pour le filtre
+        context['evenements'] = Evenement.objects.all()
+        # Conservation des paramètres de filtrage pour la pagination
+        context['current_event'] = self.request.GET.get('event', '')
+        context['search_query'] = self.request.GET.get('q', '')
+        context['sort_by'] = self.request.GET.get('sort', '-created')
+        return context
+
+def export_inscriptions_excel(request):
+    """Vue pour exporter les inscriptions en fichier Excel"""
+    
+    # Récupérer les mêmes filtres que dans la vue liste
+    event_id = request.GET.get('event')
+    search_query = request.GET.get('q')
+    sort_by = request.GET.get('sort', '-created')
+    
+    # Initialiser la requête
+    queryset = Even_Souscription.objects.all()
+    
+    # Appliquer les filtres
+    if event_id:
+        queryset = queryset.filter(event__id=event_id)
+    
+    if search_query:
+        queryset = queryset.filter(
+            Q(nom__icontains=search_query) | 
+            Q(prenom__icontains=search_query) |
+            Q(email__icontains=search_query) |
+            Q(societe__icontains=search_query) |
+            Q(ville__icontains=search_query)
+        )
+    
+    # Appliquer le tri
+    queryset = queryset.order_by(sort_by)
+    
+    # Créer le workbook Excel et ajouter une feuille
+    workbook = xlwt.Workbook(encoding='utf-8')
+    worksheet = workbook.add_sheet('Inscriptions')
+    
+    # Définir les styles
+    header_style = xlwt.easyxf('font: bold on; align: wrap on, vert centre, horiz center; pattern: pattern solid, fore_color gray25')
+    date_style = xlwt.easyxf(num_format_str='DD/MM/YYYY')
+    
+    # Écrire les en-têtes
+    headers = [
+        'Civilité', 'Nom', 'Prénom', 'Email', 'Téléphone', 'Adresse', 'Ville', 'Pays', 
+        'Société', 'Fonction/Poste', 'Email professionnel', 'Événement', 'Date d\'inscription'
+    ]
+    
+    for col_num, header in enumerate(headers):
+        worksheet.write(0, col_num, header, header_style)
+        worksheet.col(col_num).width = 256 * 20  # Largeur de colonne de 20 caractères
+    
+    # Écrire les données
+    for row_num, inscription in enumerate(queryset, 1):
+        worksheet.write(row_num, 0, inscription.civilite or '')
+        worksheet.write(row_num, 1, inscription.nom or '')
+        worksheet.write(row_num, 2, inscription.prenom or '')
+        worksheet.write(row_num, 3, inscription.email or '')
+        worksheet.write(row_num, 4, inscription.tel or '')
+        worksheet.write(row_num, 5, inscription.addresse or '')
+        worksheet.write(row_num, 6, inscription.ville or '')
+        worksheet.write(row_num, 7, inscription.pays or '')
+        worksheet.write(row_num, 8, inscription.societe or '')
+        worksheet.write(row_num, 9, inscription.fonction_poste or '')
+        worksheet.write(row_num, 10, inscription.email_pro or '')
+        worksheet.write(row_num, 11, inscription.event.libelle if inscription.event else '')
+        
+        if inscription.created:
+            worksheet.write(row_num, 12, inscription.created, date_style)
+        else:
+            worksheet.write(row_num, 12, '')
+    
+    # Préparer la réponse HTTP avec le fichier Excel
+    response = HttpResponse(content_type='application/ms-excel')
+    
+    # Générer le nom du fichier avec la date
+    today = datetime.datetime.now().strftime('%Y-%m-%d')
+    filename = f'inscriptions_{today}.xls'
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    
+    # Sauvegarder le workbook dans la réponse
+    workbook.save(response)
+    return response

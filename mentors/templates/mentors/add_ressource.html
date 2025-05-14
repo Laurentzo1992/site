@@ -1,32 +1,514 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block main %}
-<div class="container">
+<!-- Style personnalisé pour le formulaire -->
+<style>
+  :root {
+    --primary-color: #0080ff;
+    --secondary-color: #0080ff;
+    --accent-color: #f72585;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --success-color: #4cc9f0;
+    --warning-color: #f8961e;
+    --danger-color: #f94144;
+    --border-radius: 12px;
+    --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  }
+  
+  .form-section {
+    background-color: #f9f9fb;
+    min-height: 100vh;
+    padding: 3rem 0;
+  }
+  
+  .form-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+  
+  .form-title {
+    font-weight: 700;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+  }
+  
+  .form-subtitle {
+    color: #6c757d;
+    font-weight: 400;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .form-container {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .form-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  }
+  
+  .form-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  
+  .form-control {
+    border-radius: var(--border-radius);
+    border: 1px solid #e9ecef;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+    background-color: #f8f9fa;
+  }
+  
+  .form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+    background-color: white;
+  }
+  
+  textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+  }
+  
+  .form-text {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-top: 0.3rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group:last-child {
+    margin-bottom: 0;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+  }
+  
+  .btn {
+    border-radius: var(--border-radius);
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 14px rgba(67, 97, 238, 0.2);
+  }
+  
+  .btn-outline {
+    background-color: transparent;
+    border: 1px solid #e9ecef;
+    color: #6c757d;
+  }
+  
+  .btn-outline:hover {
+    background-color: #f8f9fa;
+    color: var(--dark-color);
+  }
+  
+  .form-icon {
+    margin-right: 0.5rem;
+  }
+  
+  .form-error {
+    color: var(--danger-color);
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+    display: block;
+  }
+  
+  .upload-container {
+    position: relative;
+    border: 2px dashed #e9ecef;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin-bottom: 1rem;
+  }
+  
+  .upload-container:hover {
+    border-color: var(--primary-color);
+    background-color: rgba(67, 97, 238, 0.03);
+  }
+  
+  .upload-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+  }
+  
+  .upload-text {
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+  }
+  
+  .upload-subtext {
+    font-size: 0.9rem;
+    color: #6c757d;
+  }
+  
+  .upload-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .file-preview {
+    display: none;
+    text-align: left;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+  }
+  
+  .file-preview.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .file-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .file-icon {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    color: var(--primary-color);
+  }
+  
+  .file-details {
+    flex: 1;
+  }
+  
+  .file-name {
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+    color: var(--dark-color);
+  }
+  
+  .file-size {
+    font-size: 0.85rem;
+    color: #6c757d;
+  }
+  
+  .file-remove {
+    color: var(--danger-color);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+  }
+  
+  .file-remove:hover {
+    transform: scale(1.2);
+  }
+  
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    color: #6c757d;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    margin-bottom: 1.5rem;
+  }
+  
+  .back-link:hover {
+    color: var(--primary-color);
+  }
+  
+  .back-icon {
+    margin-right: 0.5rem;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .form-container {
+    animation: fadeIn 0.5s ease;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .form-container {
+      padding: 1.5rem;
+    }
+    
+    .form-actions {
+      flex-direction: column;
+    }
+    
+    .btn {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    
+    .form-actions .btn:last-child {
+      margin-bottom: 0;
+    }
+  }
+</style>
+
+<div class="form-section">
+  <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="id_titre" class="form-label">Titre</label>
-                    {{ form.titre.errors }}
-                    {{ form.titre }}
-                </div>
-                <div class="mb-3">
-                    <label for="id_description" class="form-label">Description</label>
-                    {{ form.description.errors }}
-                    {{ form.description }}
-                </div>
-                <div class="mb-3">
-                    <label for="id_ressource" class="form-label">Ressource</label>
-                    {{ form.ressource.errors }}
-                    {{ form.ressource }}
-                </div>
-                <div class="mb-3">
-                    <button class="btn btn-info" type="submit">Ajouter</button>
-                </div>
-            </form>
+      <div class="col-md-8">
+        <!-- En-tête du formulaire -->
+        <div class="form-header">
+          <p class="form-subtitle">Partagez vos ressources avec la communauté en remplissant ce formulaire</p>
         </div>
+        
+        <!-- Formulaire d'ajout -->
+        <div class="form-container">
+          <form method="post" enctype="multipart/form-data" id="document-form">
+            {% csrf_token %}
+            
+            <!-- Champ du titre -->
+            <div class="form-group">
+              <label for="id_titre" class="form-label">Titre du document</label>
+              {{ form.titre.errors }}
+              {{ form.titre }}
+              <small class="form-text">Choisissez un titre descriptif et concis</small>
+            </div>
+            
+            <!-- Champ de description -->
+            <div class="form-group">
+              <label for="id_description" class="form-label">Description</label>
+              {{ form.description.errors }}
+              {{ form.description }}
+              <small class="form-text">Décrivez brièvement le contenu du document</small>
+            </div>
+            
+            <!-- Zone de dépôt de fichier -->
+            <div class="form-group">
+              <label class="form-label">Fichier</label>
+              <div class="upload-container" id="upload-zone">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <h4 class="upload-text">Glissez votre fichier ici</h4>
+                <p class="upload-subtext">ou cliquez pour sélectionner un fichier</p>
+                {{ form.ressource.errors }}
+                {{ form.ressource }}
+                <small class="form-text">Format acceptés : PDF, Word, Excel, PowerPoint, images, vidéos</small>
+              </div>
+              
+              <!-- Prévisualisation du fichier -->
+              <div class="file-preview" id="file-preview">
+                <div class="file-info">
+                  <i class="fas fa-file file-icon" id="preview-icon"></i>
+                  <div class="file-details">
+                    <div class="file-name" id="file-name">document.pdf</div>
+                    <div class="file-size" id="file-size">0 KB</div>
+                  </div>
+                  <i class="fas fa-times file-remove" id="remove-file"></i>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Boutons d'action -->
+            <div class="form-actions">
+              <a href="{% url 'get_all_ressource' %}" class="btn btn-outline">
+                <i class="fas fa-times form-icon"></i>Annuler
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-cloud-upload-alt form-icon"></i>Ajouter le document
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
+<!-- Script pour la gestion du formulaire -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Éléments du formulaire
+  const form = document.getElementById('document-form');
+  const uploadZone = document.getElementById('upload-zone');
+  const fileInput = document.querySelector('input[type="file"]');
+  const filePreview = document.getElementById('file-preview');
+  const fileName = document.getElementById('file-name');
+  const fileSize = document.getElementById('file-size');
+  const fileIcon = document.getElementById('preview-icon');
+  const removeFile = document.getElementById('remove-file');
+  
+  // Appliquer les classes aux éléments du formulaire
+  const titleInput = document.getElementById('id_titre');
+  const descriptionInput = document.getElementById('id_description');
+  
+  if (titleInput) {
+    titleInput.classList.add('form-control');
+    titleInput.setAttribute('placeholder', 'Titre du document');
+  }
+  
+  if (descriptionInput) {
+    descriptionInput.classList.add('form-control');
+    descriptionInput.setAttribute('placeholder', 'Description détaillée du document');
+  }
+  
+  if (fileInput) {
+    fileInput.classList.add('upload-input');
+  }
+  
+  // Fonction pour formater la taille du fichier
+  function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+  
+  // Fonction pour déterminer l'icône en fonction du type de fichier
+  function getFileIcon(fileName) {
+    const extension = fileName.split('.').pop().toLowerCase();
+    
+    if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(extension)) {
+      return 'fas fa-file-image';
+    } else if (['pdf'].includes(extension)) {
+      return 'fas fa-file-pdf';
+    } else if (['doc', 'docx'].includes(extension)) {
+      return 'fas fa-file-word';
+    } else if (['xls', 'xlsx', 'csv'].includes(extension)) {
+      return 'fas fa-file-excel';
+    } else if (['ppt', 'pptx'].includes(extension)) {
+      return 'fas fa-file-powerpoint';
+    } else if (['mp4', 'webm', 'mov', 'avi'].includes(extension)) {
+      return 'fas fa-file-video';
+    } else if (['mp3', 'wav', 'ogg'].includes(extension)) {
+      return 'fas fa-file-audio';
+    } else if (['zip', 'rar', '7z', 'tar', 'gz'].includes(extension)) {
+      return 'fas fa-file-archive';
+    } else {
+      return 'fas fa-file';
+    }
+  }
+  
+  // Lorsqu'un fichier est sélectionné
+  if (fileInput) {
+    fileInput.addEventListener('change', function(e) {
+      if (this.files && this.files[0]) {
+        const file = this.files[0];
+        
+        // Mettre à jour la prévisualisation
+        fileName.textContent = file.name;
+        fileSize.textContent = formatFileSize(file.size);
+        fileIcon.className = getFileIcon(file.name);
+        
+        // Afficher la prévisualisation
+        filePreview.classList.add('active');
+        uploadZone.style.borderColor = 'var(--primary-color)';
+      }
+    });
+  }
+  
+  // Supprimer le fichier
+  if (removeFile) {
+    removeFile.addEventListener('click', function() {
+      if (fileInput) {
+        fileInput.value = '';
+        filePreview.classList.remove('active');
+        uploadZone.style.borderColor = '#e9ecef';
+      }
+    });
+  }
+  
+  // Glisser-déposer
+  if (uploadZone) {
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      uploadZone.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    ['dragenter', 'dragover'].forEach(eventName => {
+      uploadZone.addEventListener(eventName, highlight, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+      uploadZone.addEventListener(eventName, unhighlight, false);
+    });
+    
+    function highlight() {
+      uploadZone.style.borderColor = 'var(--primary-color)';
+      uploadZone.style.backgroundColor = 'rgba(67, 97, 238, 0.05)';
+    }
+    
+    function unhighlight() {
+      uploadZone.style.borderColor = '#e9ecef';
+      uploadZone.style.backgroundColor = 'transparent';
+    }
+    
+    uploadZone.addEventListener('drop', handleDrop, false);
+    
+    function handleDrop(e) {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      
+      if (fileInput && files.length > 0) {
+        fileInput.files = files;
+        
+        // Déclencher l'événement change
+        const event = new Event('change');
+        fileInput.dispatchEvent(event);
+      }
+    }
+  }
+});
+</script>
 {% endblock main %}

@@ -1,64 +1,571 @@
 {% extends "base.html" %}
 {% load static %}
-
-
 {% block main %}
+<!-- Style personnalisé -->
+<style>
+  :root {
+    --primary-color: #0080ff;
+    --secondary-color: #0080ff;
+    --accent-color: #f72585;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --success-color: #4cc9f0;
+    --warning-color: #f8961e;
+    --danger-color: #f94144;
+    --border-radius: 12px;
+    --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  }
+  
+  .documents-section {
+    background-color: #f9f9fb;
+    min-height: 100vh;
+    padding: 2rem 0;
+  }
+  
+  .header-container {
+    padding: 2rem 0;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: var(--box-shadow);
+  }
+  
+  .page-title {
+    font-weight: 700;
+    font-size: 2.2rem;
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+  
+  .page-subtitle {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 400;
+    font-size: 1.1rem;
+  }
+  
+  .btn-add {
+    background-color: white;
+    color: var(--primary-color);
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 0.8rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  .btn-add:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    background-color: #f8f9fa;
+  }
+  
+  .btn-add i {
+    margin-right: 0.5rem;
+  }
+  
+  .search-container {
+    position: relative;
+    margin-bottom: 2rem;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    padding-left: 3rem;
+    border-radius: var(--border-radius);
+    border: 1px solid #e9ecef;
+    background-color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+  }
+  
+  .search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 10px rgba(67, 97, 238, 0.15);
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #adb5bd;
+  }
+  
+  .document-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+    border: none;
+    height: 100%;
+  }
+  
+  .document-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow);
+  }
+  
+  .card-header {
+    padding: 1.25rem;
+    border-bottom: 1px solid #f1f1f1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+  }
+  
+  .card-title {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--dark-color);
+  }
+  
+  .card-badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    background-color: var(--success-color);
+    color: white;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+  }
+  
+  .card-text {
+    color: #6c757d;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  
+  .media-container {
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 180px;
+    position: relative;
+  }
+  
+  .media-container video,
+  .media-container img {
+    width: 100%;
+    object-fit: cover;
+    max-height: 200px;
+  }
+  
+  .file-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+  
+  .icon-pdf {
+    color: #e53935;
+  }
+  
+  .icon-doc {
+    color: #2196f3;
+  }
+  
+  .icon-xls {
+    color: #4caf50;
+  }
+  
+  .icon-ppt {
+    color: #ff9800;
+  }
+  
+  .icon-zip {
+    color: #9c27b0;
+  }
+  
+  .icon-other {
+    color: #607d8b;
+  }
+  
+  .card-footer {
+    padding: 1rem 1.5rem;
+    background-color: #f9f9fb;
+    border-top: 1px solid #f1f1f1;
+  }
+  
+  .document-metadata {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #6c757d;
+  }
+  
+  .document-metadata i {
+    font-size: 0.9rem;
+    margin-right: 0.4rem;
+  }
+  
+  .btn-download {
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    border: none;
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-download:hover {
+    background-color: var(--secondary-color);
+    color: white;
+    transform: translateY(-2px);
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+  }
+  
+  .empty-icon {
+    font-size: 5rem;
+    color: #dee2e6;
+    margin-bottom: 1.5rem;
+  }
+  
+  .empty-text {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 0.5rem;
+  }
+  
+  .empty-subtext {
+    color: #6c757d;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+  }
+  
+  .btn-empty-action {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-empty-action:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-3px);
+  }
+  
+  .pagination {
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  
+  .page-link {
+    border: none;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    color: var(--dark-color);
+    margin: 0 0.2rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+  
+  .page-link:hover {
+    background-color: #e9ecef;
+    color: var(--primary-color);
+  }
+  
+  .page-item.active .page-link {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .page-item.disabled .page-link {
+    color: #dee2e6;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .document-card {
+    animation: fadeIn 0.5s ease forwards;
+  }
+  
+  .document-card:nth-child(2) { animation-delay: 0.1s; }
+  .document-card:nth-child(3) { animation-delay: 0.2s; }
+  .document-card:nth-child(4) { animation-delay: 0.3s; }
+  .document-card:nth-child(5) { animation-delay: 0.4s; }
+  .document-card:nth-child(6) { animation-delay: 0.5s; }
+  
+  /* Media queries pour la responsivité */
+  @media (max-width: 992px) {
+    .header-container {
+      text-align: center;
+    }
+    
+    .header-actions {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: center;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .page-title {
+      font-size: 1.8rem;
+    }
+    
+    .document-card {
+      margin-bottom: 1rem;
+    }
+  }
+</style>
 
-<section class="section section-lg bg-default text-center">
+<!-- Section principale -->
+<div class="documents-section">
+  <!-- En-tête avec gradient et bouton d'ajout -->
+  <div class="header-container">
     <div class="container">
-        <div class="row justify-content-center">
-            {% for ressource in ressources %}
-            <div class="col-sm-10 col-md-4 col-lg-4 mb-2">
-                <!-- Post Light-->
-                {% if ressource.get_mime_type %}
-                    {% if 'video' in ressource.get_mime_type %}
-                        <video controls style="width: 100%;">
-                            <source src="{{ ressource.ressource.url }}" type="{{ ressource.get_mime_type }}">
-                            Your browser does not support the video tag.
-                        </video>
-                        <time class="post-light-time">{{ ressource.created|date:"D d M Y" }}</time>
-                        <h4 class="post-light-title"> {{ ressource.titre }} <div class="badge">Nouveau</div></h4>
-                    {% else %}
-                        <a class="post-light context-dark" href="{{ressource.ressource.url}}" style="background-image: url(media/images/background.jpeg);">
-                            <div class="post-light-inner">
-                                <div class="post-light-main">
-                                    <time class="post-light-time">{{ ressource.created|date:"D d M Y" }}</time>
-                                    <h6 class="post-light-title"> {{ ressource.titre }} </h6>
-                                    <h6 class="post-light-title"> {{ ressource.description }} </h6>
-                                </div>
-                            </div>
-                        </a>
-                    {% endif %}
-                {% endif %}
-            </div>
-            {% if forloop.counter|divisibleby:4 and not forloop.last %}
-        </div><div class="row justify-content-center">
-            {% endif %}
-            {% endfor %}
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <h1 class="page-title">Bibliothèque de documents</h1>
+          <p class="page-subtitle">Accédez et partagez vos ressources en un clic</p>
         </div>
+        <div class="col-lg-4 text-lg-end header-actions">
+          <a href="{% url 'add_ressource' %}" class="btn btn-add">
+            <i class="fas fa-plus-circle"></i>Ajouter un document
+          </a>
+        </div>
+      </div>
     </div>
-</section>
+  </div>
 
+  <div class="container">
+    <!-- Barre de recherche -->
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="search-container">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" class="search-input" placeholder="Rechercher un document..." id="search-documents">
+        </div>
+      </div>
+    </div>
 
+    <!-- Affichage des documents -->
+    <div class="row" id="documents-container">
+      {% if ressources %}
+        {% for ressource in ressources %}
+        <div class="col-md-6 col-lg-4 document-item">
+          <div class="document-card">
+            <div class="card-header">
+              <h3 class="card-title">{{ ressource.titre }}</h3>
+              {% if ressource.created|date:"Y-m-d" > now|date:"Y-m-d"|timesince:"-7 days" %}
+              <span class="card-badge">Nouveau</span>
+              {% endif %}
+            </div>
+            
+            <div class="card-body">
+              {% if ressource.get_mime_type %}
+                {% if 'video' in ressource.get_mime_type %}
+                  <div class="media-container">
+                    <video controls>
+                      <source src="{{ ressource.ressource.url }}" type="{{ ressource.get_mime_type }}">
+                      Votre navigateur ne supporte pas la lecture de vidéos.
+                    </video>
+                  </div>
+                {% elif 'image' in ressource.get_mime_type %}
+                  <div class="media-container">
+                    <img src="{{ ressource.ressource.url }}" alt="{{ ressource.titre }}">
+                  </div>
+                {% elif 'pdf' in ressource.get_mime_type %}
+                  <div class="media-container">
+                    <i class="fas fa-file-pdf file-icon icon-pdf"></i>
+                  </div>
+                {% elif 'word' in ressource.get_mime_type or 'doc' in ressource.get_mime_type %}
+                  <div class="media-container">
+                    <i class="fas fa-file-word file-icon icon-doc"></i>
+                  </div>
+                {% elif 'sheet' in ressource.get_mime_type or 'xls' in ressource.get_mime_type %}
+                  <div class="media-container">
+                    <i class="fas fa-file-excel file-icon icon-xls"></i>
+                  </div>
+                {% elif 'presentation' in ressource.get_mime_type or 'ppt' in ressource.get_mime_type %}
+                  <div class="media-container">
+                    <i class="fas fa-file-powerpoint file-icon icon-ppt"></i>
+                  </div>
+                {% elif 'zip' in ressource.get_mime_type or 'rar' in ressource.get_mime_type %}
+                  <div class="media-container">
+                    <i class="fas fa-file-archive file-icon icon-zip"></i>
+                  </div>
+                {% else %}
+                  <div class="media-container">
+                    <i class="fas fa-file-alt file-icon icon-other"></i>
+                  </div>
+                {% endif %}
+              {% endif %}
+              
+              <p class="card-text">{{ ressource.description|truncatechars:120 }}</p>
+            </div>
+            
+            <div class="card-footer d-flex justify-content-between align-items-center">
+              <div class="document-metadata">
+                <i class="far fa-calendar-alt"></i>
+                <span>{{ ressource.created|date:"d F Y" }}</span>
+              </div>
+              <a href="{{ ressource.ressource.url }}" class="btn btn-download" target="_blank">
+                <i class="fas fa-download me-1"></i>Lire
+              </a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12">
+          <div class="empty-state">
+            <i class="fas fa-folder-open empty-icon"></i>
+            <h3 class="empty-text">Aucun document disponible</h3>
+            <p class="empty-subtext">Commencez par ajouter votre premier document</p>
+            <a href="{% url 'add_ressource' %}" class="btn btn-empty-action">
+              <i class="fas fa-plus-circle me-2"></i>Ajouter un document
+            </a>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if ressources.has_other_pages %}
+    <div class="row">
+      <div class="col-12">
+        <nav aria-label="Navigation des pages">
+          <ul class="pagination">
+            {% if ressources.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ ressources.previous_page_number }}">
+                <i class="fas fa-chevron-left"></i>
+              </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+              <span class="page-link">
+                <i class="fas fa-chevron-left"></i>
+              </span>
+            </li>
+            {% endif %}
+            
+            {% for i in ressources.paginator.page_range %}
+              {% if ressources.number == i %}
+              <li class="page-item active">
+                <span class="page-link">{{ i }}</span>
+              </li>
+              {% else %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+              </li>
+              {% endif %}
+            {% endfor %}
+            
+            {% if ressources.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ ressources.next_page_number }}">
+                <i class="fas fa-chevron-right"></i>
+              </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+              <span class="page-link">
+                <i class="fas fa-chevron-right"></i>
+              </span>
+            </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Scripts pour les notifications -->
 {% for message in messages %}
 <script src="{% static 'js/sweetalert.min.js' %}"></script>
 {% if message.tags == 'error' %}
 <script>
-    var m = "{{ message }}";
-    swal("Réfusé!", m, "error");
+  swal({
+    title: "Refusé!",
+    text: "{{ message }}",
+    icon: "error",
+    button: "Fermer",
+  });
 </script>
 {% elif message.tags == 'success' %}
 <script>
-    var m = "{{ message }}";
-    swal("Bienvenue!", m, "success");
+  swal({
+    title: "Succès!",
+    text: "{{ message }}",
+    icon: "success",
+    button: "Continuer",
+  });
 </script>
 {% elif message.tags == 'warning' %}
 <script>
-    var m = "{{ message }}";
-    swal("A bientôt!", m, "warning");
+  swal({
+    title: "Attention!",
+    text: "{{ message }}",
+    icon: "warning",
+    button: "Compris",
+  });
 </script>
 {% endif %}
+{% endfor %}
 
-{% endfor%}
-
+<!-- Script pour la recherche en temps réel -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('search-documents');
+  
+  if (searchInput) {
+    searchInput.addEventListener('keyup', function() {
+      const filter = this.value.toLowerCase();
+      const cards = document.querySelectorAll('.document-item');
+      
+      cards.forEach(function(card) {
+        const title = card.querySelector('.card-title').textContent.toLowerCase();
+        const description = card.querySelector('.card-text').textContent.toLowerCase();
+        
+        if (title.includes(filter) || description.includes(filter)) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  }
+  
+  // Animation lors du chargement de la page
+  const documentCards = document.querySelectorAll('.document-card');
+  documentCards.forEach((card, index) => {
+    card.style.animationDelay = `${index * 0.1}s`;
+  });
+});
+</script>
 {% endblock main %}

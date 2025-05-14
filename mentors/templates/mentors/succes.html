@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription Réussie</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f7f9fc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .success-container {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .btn-mess{
+                margin-top: 25px;
+            }
+            
+        .success-circle {
+            width: 120px;
+            height: 120px;
+            background-color: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 6px 30px rgba(76, 175, 80, 0.25);
+            transform: scale(0);
+            animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .checkmark {
+            stroke-dasharray: 180;
+            stroke-dashoffset: 180;
+            transform: translateY(3px);
+            animation: draw 0.8s ease-in-out forwards 0.5s;
+        }
+
+        .circular-progress {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            width: 130px;
+            height: 130px;
+            opacity: 0;
+            animation: fadeIn 0.3s forwards 0.2s;
+        }
+
+        .circular-progress circle {
+            fill: none;
+            stroke-width: 5;
+            stroke-linecap: round;
+            stroke: #4CAF50;
+            stroke-dasharray: 410;
+            stroke-dashoffset: 410;
+            transform: rotate(-90deg);
+            transform-origin: center;
+            animation: circleProgress 1s ease-out forwards 0.2s;
+        }
+
+        /* Message de confirmation */
+        .success-message {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.6s ease forwards 1s;
+        }
+
+        .success-message h2 {
+            color: #4CAF50;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .success-message p {
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+
+        /* Bouton de retour */
+        .return-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.6s ease forwards 1.2s;
+        }
+
+        .return-button:hover {
+            background-color: #3b9e3f;
+            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.3);
+            transform: translateY(-2px);
+        }
+
+        @keyframes scaleIn {
+            0% {
+                transform: scale(0);
+            }
+            70% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes draw {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes circleProgress {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Pour l'effet de rayonnement */
+        .success-container::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: transparent;
+            border: 2px solid rgba(76, 175, 80, 0.2);
+            opacity: 0;
+            animation: ripple 1.5s ease-out infinite 1s;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Animation de particules pour effet de confettis */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        @media (max-width: 480px) {
+            .success-circle {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .circular-progress {
+                width: 110px;
+                height: 110px;
+                top: -5px;
+                left: -5px;
+            }
+            
+            .success-container::after {
+                width: 110px;
+                height: 110px;
+            }
+
+            .success-message h2 {
+                font-size: 24px;
+            }
+
+            .btn-mess{
+                margin-top: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <svg class="circular-progress" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" />
+        </svg>
+        <div class="success-circle">
+            <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path class="checkmark" d="M20 6L9 17l-5-5" />
+            </svg>
+        </div>
+        <div class="particles" id="particles"></div>
+    </div>
+
+    <!-- Message de confirmation d'inscription -->
+    <div class="success-message">
+        <h2>Inscription effectuée !</h2>
+    </div>
+    <div class="success-message btn-mess">
+        <a href="/" class="return-button">Retour au site</a>
+    </div>
+
+      
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Création de particules pour l'effet de confettis
+            const particlesContainer = document.getElementById('particles');
+            const colors = ['#4CAF50', '#8BC34A', '#CDDC39', '#FFC107', '#FFEB3B'];
+            
+            function createParticles(count) {
+                for (let i = 0; i < count; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    
+                    // Position aléatoire autour du cercle
+                    const angle = Math.random() * Math.PI * 2;
+                    const radius = 60 + Math.random() * 20;
+                    const x = Math.cos(angle) * radius;
+                    const y = Math.sin(angle) * radius;
+                    
+                    // Style de la particule
+                    particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    particle.style.left = `calc(50% + ${x}px)`;
+                    particle.style.top = `calc(50% + ${y}px)`;
+                    
+                    // Animation personnalisée
+                    const scale = 0.5 + Math.random() * 1;
+                    const duration = 0.6 + Math.random() * 1;
+                    const delay = 0.5 + Math.random() * 0.5;
+                    
+                    particle.style.transform = `scale(${scale})`;
+                    particle.style.animation = `
+                        fadeIn 0.3s forwards ${delay}s,
+                        moveOut ${duration}s ease-out ${delay}s forwards
+                    `;
+                    
+                    particlesContainer.appendChild(particle);
+                }
+            }
+            
+            // Définition de l'animation pour les particules
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes fadeIn {
+                    to { opacity: 1; }
+                }
+                
+                @keyframes moveOut {
+                    0% {
+                        transform: translate(0, 0) scale(1);
+                    }
+                    100% {
+                        transform: translate(
+                            ${(Math.random() * 2 - 1) * 80}px, 
+                            ${(Math.random() * 2 - 1) * 80}px
+                        ) scale(0);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Créer les particules après un court délai
+            setTimeout(() => {
+                createParticles(20);
+            }, 800);
+            
+            // Recréer régulièrement des particules pour un effet continu
+            setInterval(() => {
+                // Supprimer les anciennes particules
+                while (particlesContainer.firstChild) {
+                    particlesContainer.removeChild(particlesContainer.firstChild);
+                }
+                createParticles(10);
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

@@ -1,31 +1,339 @@
 {% extends "base.html" %}
-
 {% block main %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="id_titre" class="form-label">Titre</label>
-                    {{ form.titre.errors }}
-                    {{ form.titre }}
-                </div>
-                <div class="mb-3">
-                    <label for="id_description" class="form-label">Description</label>
-                    {{ form.description.errors }}
-                    {{ form.description }}
-                </div>
-                <div class="mb-3">
-                    <label for="id_fichier" class="form-label">Fichier</label>
-                    {{ form.fichier.errors }}
-                    {{ form.fichier }}
-                </div>
-                <div class="mb-3">
-                    <button class="btn btn-info" type="submit">Ajouter</button>
-                </div>
-            </form>
+
+<!-- En-tête du formulaire -->
+<section class="py-4 bg-gradient-primary">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 text-center text-md-start">
+                <p class="text-white-50 mb-0">Partagez vos idées avec la communauté</p>
+            </div>
         </div>
     </div>
-</div>
+</section>
+
+<!-- Section du formulaire -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 rounded-4 shadow-sm">
+                    <div class="card-body p-4 p-md-5">
+                        <!-- Progress bar -->
+                        <div class="progress mb-4 rounded-pill" style="height: 8px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 0%;" 
+                                 aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="form-progress"></div>
+                        </div>
+                        
+                        <!-- Formulaire -->
+                        <form method="post" enctype="multipart/form-data" id="forum-form" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Titre -->
+                            <div class="mb-4">
+                                <label for="id_titre" class="form-label fw-medium">Titre de la discussion <span class="text-danger">*</span></label>
+                                {{ form.titre.errors }}
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0">
+                                        <i class="fas fa-heading text-primary"></i>
+                                    </span>
+                                    {{ form.titre }}
+                                </div>
+                                <div class="form-text">Choisissez un titre clair et concis (5-100 caractères)</div>
+                            </div>
+                            
+                            <!-- Description -->
+                            <div class="mb-4">
+                                <label for="id_description" class="form-label fw-medium">Description <span class="text-danger">*</span></label>
+                                {{ form.description.errors }}
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0">
+                                        <i class="fas fa-align-left text-primary"></i>
+                                    </span>
+                                    {{ form.description }}
+                                </div>
+                                <div class="form-text">Décrivez votre sujet en détail pour attirer plus de participants</div>
+                            </div>
+                            
+                            <!-- Fichier -->
+                            <div class="mb-4">
+                                <label for="id_fichier" class="form-label fw-medium">Image de couverture</label>
+                                {{ form.fichier.errors }}
+                                <div class="file-upload-wrapper">
+                                    <div class="file-upload-message text-center p-4 border border-dashed rounded-3 bg-light mb-2">
+                                        <i class="fas fa-cloud-upload-alt text-primary fs-2 mb-2"></i>
+                                        <p class="mb-0 fw-medium">Glissez-déposez une image ici ou</p>
+                                        <p class="mb-0 text-muted small">JPG, PNG ou GIF (Max. 5MB)</p>
+                                        <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="file-browser">
+                                            Parcourir
+                                        </button>
+                                    </div>
+                                    <div class="d-none" id="file-preview-container">
+                                        <div class="d-flex align-items-center justify-content-between p-2 border rounded-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="file-preview-image me-2">
+                                                    <img src="" alt="Aperçu" id="file-preview-img" class="img-fluid rounded" style="max-height: 40px;">
+                                                </div>
+                                                <div class="file-info">
+                                                    <p class="mb-0 fw-medium" id="file-name"></p>
+                                                    <p class="mb-0 text-muted small" id="file-size"></p>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-link text-danger" id="file-remove">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    {{ form.fichier }}
+                                </div>
+                            </div>
+                            
+                            <!-- Actions -->
+                            <div class="d-flex justify-content-between align-items-center mt-4 pt-2">
+                                <a href="{% url 'get_all_forum' %}" class="btn btn-outline-secondary rounded-pill px-4">
+                                    <i class="fas fa-arrow-left me-2"></i>Annuler
+                                </a>
+                                <button class="btn btn-primary rounded-pill px-4 d-flex align-items-center" type="submit" id="submit-btn">
+                                    <span>Publier la discussion</span>
+                                    <i class="fas fa-paper-plane ms-2"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Conseils -->
+            <div class="col-lg-4 mt-4 mt-lg-0">
+                <div class="card border-0 rounded-4 shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white py-3 rounded-top-4">
+                        <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Conseils</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item border-0 d-flex ps-0">
+                                <span class="text-primary me-3"><i class="fas fa-check-circle"></i></span>
+                                <span>Soyez précis dans votre titre</span>
+                            </li>
+                            <li class="list-group-item border-0 d-flex ps-0">
+                                <span class="text-primary me-3"><i class="fas fa-check-circle"></i></span>
+                                <span>Donnez suffisamment de détails</span>
+                            </li>
+                            <li class="list-group-item border-0 d-flex ps-0">
+                                <span class="text-primary me-3"><i class="fas fa-check-circle"></i></span>
+                                <span>Utilisez une image pertinente</span>
+                            </li>
+                            <li class="list-group-item border-0 d-flex ps-0">
+                                <span class="text-primary me-3"><i class="fas fa-check-circle"></i></span>
+                                <span>Restez courtois et respectueux</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Styles spécifiques -->
+<style>
+    /* Gradient de fond en tête */
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, var(--bs-primary) 0%, #4a8bfc 100%);
+    }
+    
+    /* Style pour le formulaire */
+    #forum-form .form-control {
+        padding: 0.7rem 1rem;
+        border-left: 0;
+    }
+    
+    #forum-form .form-control:focus {
+        box-shadow: none;
+        border-color: #ced4da;
+    }
+    
+    #forum-form .input-group-text {
+        border-right: 0;
+    }
+    
+    #forum-form .input-group:focus-within .input-group-text {
+        border-color: #86b7fe;
+    }
+    
+    /* Style pour l'upload de fichiers */
+    .file-upload-wrapper {
+        position: relative;
+    }
+    
+    .file-upload-wrapper input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 5;
+    }
+    
+    .file-upload-message {
+        transition: all 0.3s ease;
+    }
+    
+    .file-upload-message:hover {
+        background-color: #f8f9fa !important;
+    }
+    
+    /* Animation du bouton de soumission */
+    #submit-btn {
+        transition: all 0.3s ease;
+    }
+    
+    #submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Styles pour l'aperçu du fichier */
+    #file-preview-container {
+        transition: all 0.3s ease;
+    }
+    
+    /* Réglages responsives */
+    @media (max-width: 768px) {
+        #forum-form .form-control {
+            padding: 0.6rem 0.8rem;
+        }
+    }
+</style>
+
+<!-- Scripts spécifiques -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Variables
+        const form = document.getElementById('forum-form');
+        const fileInput = document.querySelector('input[type="file"]');
+        const fileBrowser = document.getElementById('file-browser');
+        const filePreviewContainer = document.getElementById('file-preview-container');
+        const filePreviewImg = document.getElementById('file-preview-img');
+        const fileName = document.getElementById('file-name');
+        const fileSize = document.getElementById('file-size');
+        const fileRemove = document.getElementById('file-remove');
+        const progressBar = document.getElementById('form-progress');
+        const titreInput = document.getElementById('id_titre');
+        const descriptionInput = document.getElementById('id_description');
+        
+        // Mise en forme des champs Django
+        if (titreInput) {
+            titreInput.classList.add('form-control');
+            titreInput.setAttribute('placeholder', 'Entrez le titre de votre discussion');
+        }
+        
+        if (descriptionInput) {
+            descriptionInput.classList.add('form-control');
+            descriptionInput.setAttribute('placeholder', 'Décrivez votre sujet en détail...');
+            descriptionInput.setAttribute('rows', '5');
+        }
+        
+        if (fileInput) {
+            fileInput.classList.add('d-none');
+        }
+        
+        // Gérer le bouton de parcourir
+        if (fileBrowser) {
+            fileBrowser.addEventListener('click', function() {
+                fileInput.click();
+            });
+        }
+        
+        // Aperçu du fichier
+        if (fileInput) {
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const file = this.files[0];
+                    
+                    // Vérifier que c'est une image
+                    if (!file.type.match('image.*')) {
+                        alert('Veuillez sélectionner une image.');
+                        return;
+                    }
+                    
+                    // Vérifier la taille (5MB max)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('La taille de l\'image ne doit pas dépasser 5MB.');
+                        return;
+                    }
+                    
+                    // Afficher l'aperçu
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        filePreviewImg.src = e.target.result;
+                        fileName.textContent = file.name;
+                        
+                        // Formater la taille du fichier
+                        const sizeInKB = Math.round(file.size / 1024);
+                        fileSize.textContent = sizeInKB < 1024 ? 
+                            sizeInKB + ' KB' : 
+                            (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+                        
+                        filePreviewContainer.classList.remove('d-none');
+                        document.querySelector('.file-upload-message').classList.add('d-none');
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        
+        // Supprimer le fichier
+        if (fileRemove) {
+            fileRemove.addEventListener('click', function() {
+                fileInput.value = '';
+                filePreviewContainer.classList.add('d-none');
+                document.querySelector('.file-upload-message').classList.remove('d-none');
+            });
+        }
+        
+        // Mise à jour de la barre de progression
+        function updateProgress() {
+            let progress = 0;
+            
+            if (titreInput && titreInput.value.trim() !== '') {
+                progress += 50;
+            }
+            
+            if (descriptionInput && descriptionInput.value.trim() !== '') {
+                progress += 50;
+            }
+            
+            progressBar.style.width = progress + '%';
+            progressBar.setAttribute('aria-valuenow', progress);
+        }
+        
+        // Écouter les changements dans les champs
+        if (titreInput) {
+            titreInput.addEventListener('input', updateProgress);
+        }
+        
+        if (descriptionInput) {
+            descriptionInput.addEventListener('input', updateProgress);
+        }
+        
+        // Validation du formulaire
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            });
+        }
+    });
+</script>
+
+<!-- FontAwesome pour les icônes -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 {% endblock main %}

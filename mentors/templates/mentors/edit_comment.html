@@ -1,43 +1,294 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block extra_css %}
+<style>
+  :root {
+    --primary-color: #6366f1;
+    --primary-hover: #4f46e5;
+    --secondary-color: #f59e0b;
+    --dark-color: #1f2937;
+    --light-color: #f3f4f6;
+    --success-color: #10b981;
+    --error-color: #ef4444;
+    --info-color: #3b82f6;
+  }
+
+  .forum-section {
+    padding: 2rem 0;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    min-height: 100vh;
+  }
+
+  .forum-card {
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 1rem;
+    border: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    background-color: white;
+  }
+
+  .forum-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .forum-header {
+    position: relative;
+    padding: 2.5rem 1.5rem;
+    background: linear-gradient(45deg, var(--primary-color), var(--primary-hover));
+    color: white;
+    border-radius: 1rem 1rem 0 0;
+  }
+
+  .forum-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+    opacity: 0.5;
+    z-index: 0;
+  }
+
+  .forum-header h1, .forum-header p {
+    position: relative;
+    z-index: 1;
+  }
+
+  .forum-header h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .forum-header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+  }
+
+  .forum-content {
+    padding: 2rem;
+  }
+
+  .form-control {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+  }
+
+  .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+  }
+
+  .btn-custom {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+  }
+
+  .btn-custom::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+  }
+
+  .btn-custom:hover::before {
+    left: 100%;
+  }
+
+  .btn-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px rgba(245, 158, 11, 0.3);
+    background: #e89306;
+  }
+
+  .btn-icon {
+    margin-right: 0.5rem;
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease forwards;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .forum-header {
+      padding: 1.5rem 1rem;
+    }
+    
+    .forum-header h1 {
+      font-size: 1.75rem;
+    }
+    
+    .forum-content {
+      padding: 1.5rem;
+    }
+  }
+</style>
+{% endblock %}
 
 {% block main %}
-<div class="container-fluid text-center">
-    <div class="card">
-        <div class="card-body">
+<div class="forum-section">
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-md-10">
+        <!-- En-tête du forum avec animation -->
+        <div class="forum-card animate-fade-in mb-4" style="animation-delay: 0.1s;">
+          <div class="forum-header text-center">
             <h1>{{forum.titre}}</h1>
             <p>{{forum.titre}}</p>
+          </div>
+        </div>
+
+        <!-- Formulaire stylisé avec animation -->
+        <div class="forum-card animate-fade-in" style="animation-delay: 0.3s;">
+          <div class="forum-content">
+            <h4 class="mb-4 text-dark d-flex align-items-center">
+              <i class="fas fa-edit me-2"></i>
+              <span>Modifier votre commentaire</span>
+            </h4>
+            
+            <form method="post" class="comment-form">
+              {% csrf_token %}
+              
+              {% for field in form %}
+              <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label fw-bold mb-2">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <div class="form-text text-muted">{{ field.help_text }}</div>
+                {% endif %}
+                {% if field.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in field.errors %}
+                  {{ error }}
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+              {% endfor %}
+              
+              <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn-custom">
+                  <i class="fas fa-check-circle btn-icon"></i>
+                  Je modifie mon commentaire
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-
-    <form method="post" class="row g-3 mb-3">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button class="bg-warning" type="submit">Je modifie Mon commentaire</button>
-    </form>
+    </div>
+  </div>
 </div>
 
+<!-- Script pour améliorer l'expérience utilisateur -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Amélioration des champs de formulaire
+  const formFields = document.querySelectorAll('.form-control, select, textarea');
+  
+  formFields.forEach(field => {
+    // Ajout des classes pour le style
+    field.classList.add('form-control');
+    
+    // Animation de focus
+    field.addEventListener('focus', function() {
+      this.parentElement.classList.add('is-focused');
+    });
+    
+    field.addEventListener('blur', function() {
+      this.parentElement.classList.remove('is-focused');
+    });
+  });
 
+  // Animation du bouton
+  const submitBtn = document.querySelector('.btn-custom');
+  if (submitBtn) {
+    submitBtn.addEventListener('mouseenter', function() {
+      this.classList.add('pulse');
+    });
+    
+    submitBtn.addEventListener('mouseleave', function() {
+      this.classList.remove('pulse');
+    });
+  }
+});
+</script>
+
+<!-- Gestion des messages d'alerte avec sweetalert -->
 {% for message in messages %}
-        {% comment %} <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> {% endcomment %}
-        <script src="{% static 'js/sweetalert.min.js' %}"></script>
-        {% if message.tags == 'error' %}
-        <script>
-            var m = "{{ message }}";
-            swal("Réfusé!", m, "error");
-        </script>
-        {% elif message.tags == 'success' %}
-        <script>
-            var m = "{{ message }}";
-            swal("Bienvenue!", m, "success");
-        </script>
-        {% elif message.tags == 'info' %}
-        <script>
-            var m = "{{ message }}";
-            swal("Félicition!", m, "info");
-        </script>
-        {% endif %}
-
-    {% endfor%}
+<script src="{% static 'js/sweetalert.min.js' %}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      var m = "{{ message }}";
+      {% if message.tags == 'error' %}
+        swal({
+          title: "Refusé!",
+          text: m,
+          icon: "error",
+          buttons: {
+            confirm: {
+              text: "D'accord",
+              className: "btn btn-danger"
+            }
+          }
+        });
+      {% elif message.tags == 'success' %}
+        swal({
+          title: "Bienvenue!",
+          text: m,
+          icon: "success",
+          buttons: {
+            confirm: {
+              text: "Super!",
+              className: "btn btn-success"
+            }
+          }
+        });
+      {% elif message.tags == 'info' %}
+        swal({
+          title: "Félicitations!",
+          text: m,
+          icon: "info",
+          buttons: {
+            confirm: {
+              text: "Merci",
+              className: "btn btn-info"
+            }
+          }
+        });
+      {% endif %}
+    }, 300);
+  });
+</script>
+{% endfor %}
 {% endblock main %}

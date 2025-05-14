@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block title %}
     <title>Tableau de Bord Mentora</title>
+    {% endblock %}
     <style>
         :root {
             --primary: #4361ee;
@@ -560,6 +562,11 @@
                 <li class="nav-item">
                     <a href="{% url 'mails_personnalisee' %}" class="nav-link">
                         <i class="fas fa-comments"></i> Mails Personnalisés
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'inscriptions_list' %}" class="nav-link">
+                        <i class="fas fa-book"></i> Participant
                     </a>
                 </li>
             </ul>

@@ -1,62 +1,287 @@
 {% extends "base.html" %}
 {% load static %}
-
-
 {% block main %}
 
-<section class="section section-lg bg-default text-center">
-    <div class="container">
-        <div class="row justify-content-center">
-            {% for data in forums %}
-            <div class="col-sm-10 col-md-4 col-lg-4 mb-2">
-                <!-- Post Light-->
-                <div class="card text-center">
-                    <div class="card-header">
-                      <h4 class="card-title">{{data.titre}}</h4>
-                      {% if data.fichier %}
-                      <img src="{{data.fichier.url}}" class="thumbnail">
-                      {% else %}
-                      <img src="{% static 'media/images/1.pnp' %}" class="thumbnail">
-                      {% endif %}
-                     
-                    </div>
-                    <div class="card-body">
-                      <p class="card-text">{{data.description}}</p>
-                    </div>
-                    <div class="card-footer text-muted">
-                        Publié le : {{data.created|date:"D d M Y"}} par {{data.initiateur.last_name}} {{data.initiateur.first_name}} &nbsp; <a href="{% url 'add_comment' data.id %}" class="btn btn-primary" style="background-color:#0080ff;">Mon avis</a>
-                    </div>
-                  </div>     
-                
-            </div>
-            {% if forloop.counter|divisibleby:4 and not forloop.last %}
-        </div><div class="row justify-content-center">
-            {% endif %}
-            {% endfor %}
+<!-- Styles spécifiques -->
+<style>
+  /* Gradient de fond en tête */
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, var(--bs-primary) 0%, #4a8bfc 100%);
+  }
+  
+  /* Animations des cartes */
+  .transition-hover {
+    transition: all 0.3s ease;
+  }
+  
+  .forum-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  /* Style des avatars */
+  .avatar-container img {
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style des badges */
+  .card-badge {
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  
+  /* Style des boutons filtres */
+  .filter-pills .btn {
+    transition: all 0.2s;
+  }
+  
+  .filter-pills .btn.active {
+    background-color: var(--bs-primary);
+    color: white;
+  }
+  
+  /* Style des cartes */
+  .forum-card {
+    overflow: hidden;
+  }
+  
+  .card-img-container {
+    overflow: hidden;
+    max-height: 180px;
+  }
+  
+  .card-img-container img {
+    transition: transform 0.5s ease;
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+  
+  .forum-card:hover .card-img-container img {
+    transform: scale(1.05);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .stats-container {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .stat-item {
+      border: none !important;
+      padding: 0.5rem 0 !important;
+    }
+    
+    .card-img-container {
+      max-height: 150px;
+    }
+    
+    .card-img-container img {
+      height: 150px;
+    }
+  }
+</style>
+
+<!-- Section Header avec recherche et filtres -->
+<section class="forum-header py-4 bg-gradient-primary">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6 mb-3 mb-md-0">
+        <p class="text-white-50 mb-0">Partagez vos idées et découvrez les discussions récentes</p>
+      </div>
+      <div class="col-md-6">
+        <div class="search-container bg-white p-2 rounded-pill shadow-sm">
+          <form class="d-flex">
+            <input id="searchInput" class="form-control border-0 me-2" type="search" placeholder="Rechercher un sujet..." aria-label="Search">
+          </form>
         </div>
+      </div>
     </div>
+  </div>
+</section>
+
+<!-- Section Forums -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <!-- Statistiques rapides -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="stats-container d-flex flex-wrap justify-content-around p-3 bg-white rounded-4 shadow-sm">
+          <div class="stat-item text-center px-3">
+            <h3 class="fw-bold text-primary mb-0">{{ forum_nbrs }}</h3>
+            <p class="text-muted mb-0">Forums</p>
+          </div>
+          <div class="stat-item text-center px-3 border-start border-end">
+            <h3 class="fw-bold text-primary mb-0">{{ comments }}</h3>
+            <p class="text-muted mb-0">Commentaires</p>
+          </div>
+          <div class="stat-item text-center px-3">
+            <h3 class="fw-bold text-primary mb-0">{{ recents }}</h3>
+            <p class="text-muted mb-0">Nouveaux depuis hier </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Bouton Créer Discussion -->
+    <div class="row mb-4">
+      <div class="col-12 text-end">
+        <a href="{% url 'add_forum' %}" class="btn btn-primary rounded-pill shadow-sm">
+          <i class="fas fa-plus-circle me-2"></i>Créer une discussion
+        </a>
+      </div>
+    </div>
+    
+   
+    <!-- Cartes de forums -->
+    <div class="row g-4">
+      {% for data in forums %}
+      <div class="col-sm-12 col-md-6 col-lg-4">
+        <div class="card h-100 forum-card border-0 rounded-4 shadow-sm transition-hover searchable">
+          <div class="card-img-container position-relative">
+            {% if data.fichier %}
+              <img src="{{ data.fichier.url }}" class="card-img-top img-fluid rounded-top-4" alt="Image forum">
+            {% else %}
+              <img src="{% static 'media/images/1.png' %}" class="card-img-top img-fluid rounded-top-4" alt="Image par défaut">
+            {% endif %}
+            <div class="card-badge position-absolute top-0 end-0 m-3 bg-primary text-white px-2 py-1 rounded-pill">
+              <i class="fas fa-comments me-1"></i> 
+            </div>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title fw-bold">{{ data.titre }}</h5>
+            <p class="card-text text-muted">{{ data.description|truncatewords:25 }}</p>
+            
+            <div class="d-flex align-items-center mt-3">
+              <div class="avatar-container me-2">
+                <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxEPEg0QEA8QEhIQDg0QDxAQEA8QEg0NFREWFhYRFxMYHSggGBooGxMTITEhJSkrLi4uFx8zODMsNygtLjcBCgoKDQ0NEA8PDysZFRkrKys3LSstLSs3NzctLSstLSsrLTcrKysrKystLSsrKysrKy0rKystKysrKysrKysrK//AABEIAOEA4QMBIgACEQEDEQH/xAAaAAEAAwEBAQAAAAAAAAAAAAAAAgQFAwEH/8QAMRABAQABAQUFBwQDAQEAAAAAAAECAwQRMUFRBRIhcYEiYZGhscHRMkLw8VJyguEU/8QAFgEBAQEAAAAAAAAAAAAAAAAAAAEC/8QAFhEBAQEAAAAAAAAAAAAAAAAAAAER/9oADAMBAAIRAxEAPwD7iAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPMru8ap623csZ638AuW7uLhntmE57/JnampcuNtQE1ey7Q6Y/GoXb8uk+aoKmrf/wB+XTH5p49odcfhVEDWphtuF6zzjvjlL4yy+TESwzs8ZbPJF1tCho7deGU9Z+F3DOWb5d8FSAAAAAAAAAAAAAAAAc9bWmE330nOmvqzCb76TrWVq6lyu+/17hLUtfXufHhynKOQKgAAAAAAAA6aWrcbvl/FcwGts+0TOdLzjsxcMrLLPCxqbNrzOe+cYiyuwAoAAAAAAAAAA8yu7fbyeqXaGrwxnnfLlAVdo1u/d/LlOkcgVkAAB32XQ7990437A56encuE3/ZZx2DLnZPmvYYSTdJuiSLjPy2C8sp674r6ujljxnrybDzKb/ChjEFna9m7vjOF+VVlQAAT0tS42Wf3OiADa085lJZzSZ3Z+ruvdvC8PNoo0AAAAAAAAAA8t3eLH1c+9betaO3Z7sL7/BliUAVAABsbPp93GT4+bK0p7WP+2P1bKLAAUABHPGWWXnGNljutnS2Ntk7ZPby859IJXEBUAAey7vHo2NLPvSXrGM0ezs9+NnS/K/yixbARQAAAAAAAFHtLL9E86orfaV9rH/X7qis0AAAB7Lu3Xo2sct8lnOb2Iv7Br/sv/P4CLoCNAADG1s+9lletvwX9t1+7O7ON+UZolAFQAAW+zsvas64/dUWNhvtz1+gNQBGgAAAAAAAGd2j+qf6/eqi92lP0Xzn0UVZoAAAAAC5obbZ4ZePvnFax2nC/unr4MqJzRy/xy+FDWnltGE/dPTxVtbbuWM9b+FW6OX+OXwqFm7iGlu/xrwAAAAAFjYf14+v0V1rs6e1b0xv1gRpAI0AAAAAAAArbfhvx8rL/AD4sxt5Y75ZecsY2eO62XldwlRAVAFvZdk73tZcOU6/+A46Ohlnwnh1vBd0tixnHxvwnwWZN3hHqLiOOMnCSeU3JAKPLjLxm/wA3oCtq7HjeHhfdw+Clr7Nlh751n88GsCYwxe2rY/3Y+uP4UVQAAaHZuPhlet3fD+1Br6On3ccZ0nz5oR0AGgAAAAAAABQ7Q0uGU5+F8+VX0c8ZlLLwoMUT1tO42y+nvnV5hjvsk53crLvsez9677wnzvRpo6eExkk5JI0AAAAAAAAKG3bPu9qf9T7r7yzf4XmDEHTX0+7lZ8PJHDG2yTjVZWNh0t+W/lj9eTSc9HTmEknr766I1AAAAAAAAAAAAHHadCZz3zhVbYdGzLK2fp8PWr4AAAAAAAAAAAACl2jp7+7Zx3938OuybP3Jvv6r8p0WAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH//2Q==" class="rounded-circle" width="40" alt="Avatar">
+              </div>
+              <div>
+                <p class="mb-0 fw-medium">{{ data.initiateur.last_name }} {{ data.initiateur.first_name }}</p>
+                <small class="text-muted">{{ data.created|date:"d M Y" }}</small>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center">
+            <a href="{% url 'add_comment' data.id %}" class="btn btn-primary rounded-pill px-3 shadow-sm">
+              <i class="far fa-comment-dots me-1"></i> Donnez un avis
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    
+    <!-- Si aucun forum -->
+    {% if not forums %}
+    <div class="row">
+      <div class="col-12">
+        <div class="empty-state text-center py-5">
+          <img src="{% static 'media/images/empty-state.svg' %}" alt="Aucun forum" class="img-fluid mb-3" style="max-width: 200px;">
+          <h3 class="fw-bold text-muted">Aucun forum pour le moment</h3>
+          <p class="text-muted">Soyez le premier à créer une discussion!</p>
+          <a href="#" class="btn btn-primary rounded-pill mt-2">
+            <i class="fas fa-plus-circle me-2"></i>Créer une discussion
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    
+    <!-- Pagination -->
+    {% comment %} <div class="row mt-5">
+      <div class="col-12">
+        <nav aria-label="Forum navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                <a class="page-link rounded-start-pill" href="#" tabindex="-1" aria-disabled="true">Précédent</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                <a class="page-link rounded-end-pill" href="#">Suivant</a>
+                </li>
+            </ul>
+        </nav>
+      </div>
+    </div> {% endcomment %}
+
+  </div>
 </section>
 
 
 
+<!-- Scripts spécifiques -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Animation lors du scroll pour faire apparaître les cartes
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1
+    });
+    
+    document.querySelectorAll('.forum-card').forEach(card => {
+      observer.observe(card);
+    });
+    
+    // Gestion des filtres
+    document.querySelectorAll('.filter-pills .btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-pills .btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        // Ici on ajouterait la logique de filtrage réelle avec AJAX
+      });
+    });
+  });
+</script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('searchInput');
+    const cards = document.querySelectorAll('.searchable');
+
+    searchInput.addEventListener('keyup', function () {
+      const query = this.value.toLowerCase();
+      cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        card.style.display = text.includes(query) ? 'block' : 'none';
+      });
+    });
+  });
+</script>
+
+
+<!-- Messages de notification -->
 {% for message in messages %}
 <script src="{% static 'js/sweetalert.min.js' %}"></script>
 {% if message.tags == 'error' %}
 <script>
-    var m = "{{ message }}";
-    swal("Réfusé!", m, "error");
+  swal("Réfusé!", "{{ message }}", "error");
 </script>
 {% elif message.tags == 'success' %}
 <script>
-    var m = "{{ message }}";
-    swal("Bienvenue!", m, "success");
+  swal("Bienvenue!", "{{ message }}", "success");
 </script>
 {% elif message.tags == 'warning' %}
 <script>
-    var m = "{{ message }}";
-    swal("A bientôt!", m, "warning");
+  swal("A bientôt!", "{{ message }}", "warning");
 </script>
 {% endif %}
+{% endfor %}
 
-{% endfor%}
+<!-- FontAwesome pour les icônes -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- Animate.css pour les animations -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
 {% endblock main %}

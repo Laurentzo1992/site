@@ -1,0 +1,377 @@
+{% extends 'mentors/dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Gestion des Inscriptions{% endblock %}
+{% block 'content' %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dataTables.bootstrap5.min.css' %}">
+<style>
+    .filter-section {
+        background-color: #f8f9fa;
+        border-radius: 0.25rem;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    
+    .card {
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        margin-bottom: 1.5rem;
+    }
+    
+    .card-header {
+        background-color: #f1f5fa;
+        border-bottom: 1px solid #e3e6f0;
+        font-weight: 700;
+    }
+    
+    .btn-export {
+        background-color: #f1f5fa;
+        border-color: #f1f5fa;
+    }
+    
+    .btn-export:hover {
+        background-color: #f1f5fa;
+        border-color: #f1f5fa;
+    }
+    
+    .table-responsive {
+        border-radius: 0.25rem;
+        overflow: hidden;
+    }
+    
+    .pagination {
+        margin-bottom: 0;
+    }
+    
+    .page-item.active .page-link {
+        background-color: #4e73df;
+        border-color: #4e73df;
+    }
+    
+    .page-link {
+        color: #4e73df;
+    }
+    
+    .page-link:hover {
+        color: #224abe;
+    }
+    
+    .sortable {
+        cursor: pointer;
+    }
+    
+    .sortable:hover {
+        background-color: #f2f2f2;
+    }
+    
+    .sort-icon {
+        display: inline-block;
+        margin-left: 5px;
+    }
+    
+    .info-count {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+    
+    /* Améliorations pour la responsivité */
+    @media (max-width: 767.98px) {
+        .d-flex.responsive-flex {
+            flex-direction: column;
+        }
+        
+        .responsive-flex .input-group {
+            margin-bottom: 1rem;
+        }
+        
+        /* Ajustements pour les tableaux sur mobile */
+        #inscriptionsTable {
+            display: block;
+            width: 100%;
+        }
+        
+        #inscriptionsTable thead {
+            display: none;
+        }
+        
+        #inscriptionsTable tbody,
+        #inscriptionsTable tr {
+            display: block;
+            width: 100%;
+        }
+        
+        #inscriptionsTable tr {
+            margin-bottom: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+            background-color: #fff;
+        }
+        
+        #inscriptionsTable td {
+            display: block;
+            text-align: right;
+            position: relative;
+            padding-left: 50%;
+            border-top: none;
+            border-bottom: 1px solid #f2f2f2;
+        }
+        
+        #inscriptionsTable td:last-child {
+            border-bottom: none;
+        }
+        
+        #inscriptionsTable td:before {
+            content: attr(data-label);
+            position: absolute;
+            left: 0.75rem;
+            top: 0.75rem;
+            width: 45%;
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        .pagination .page-item:not(.active):not(:first-child):not(:last-child):not(:nth-child(2)):not(:nth-last-child(2)) {
+            display: none;
+        }
+    }
+    
+    @media (max-width: 575.98px) {
+        .d-sm-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+        
+        .d-sm-flex .btn-export {
+            margin-top: 1rem;
+            display: block !important;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock extra_css %}
+
+
+<div class="container-fluid py-4">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Gestion des Inscriptions</h1>
+        <a href="{% url 'export_inscriptions_excel' %}?event={{ current_event }}&q={{ search_query }}&sort={{ sort_by }}" 
+           class="d-none d-sm-inline-block btn btn-sm btn-export shadow-sm">
+            <i class="fas fa-download fa-sm text-white-50 mr-1"></i> Exporter en Excel
+        </a>
+    </div>
+
+    <!-- Filtres -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card filter-section">
+                <div class="card-body">
+                    <form method="get" action="{% url 'inscriptions_list' %}" id="filter-form">
+                        <div class="d-flex responsive-flex">
+                            <div class="input-group mr-sm-2 flex-grow-1">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Rechercher..." name="q" value="{{ search_query }}" id="search-input">
+                            </div>
+                            
+                            <div class="input-group mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="eventSelect">Événement</label>
+                                </div>
+                                <select class="custom-select" id="eventSelect" name="event">
+                                    <option value="">Tous les événements</option>
+                                    {% for evenement in evenements %}
+                                        <option value="{{ evenement.id }}" {% if current_event == evenement.id|stringformat:"s" %}selected{% endif %}>
+                                            {{ evenement.libelle }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <input type="hidden" name="sort" value="{{ sort_by }}" id="sort-input">
+                            
+                            <button type="submit" class="btn btn-primary">Filtrer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau des inscriptions -->
+    <div class="card">
+        <div class="card-header py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Liste des inscriptions</h6>
+                <span class="info-count">{{ paginator.count }} inscription(s) trouvée(s)</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered" id="inscriptionsTable" cellspacing="0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th class="sortable" data-sort="nom">Nom <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="prenom">Prénom <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="email">Email <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="tel">Téléphone <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="societe">Société <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="fonction_poste">Fonction <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="ville">Ville <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="pays">Pays <span class="sort-icon"></span></th>
+                            <th class="sortable" data-sort="created">Date d'inscription <span class="sort-icon"></span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for inscription in inscriptions %}
+                        <tr>
+                            <td data-label="Nom">{{ inscription.nom|default:"-" }}</td>
+                            <td data-label="Prénom">{{ inscription.prenom|default:"-" }}</td>
+                            <td data-label="Email">{{ inscription.email|default:"-" }}</td>
+                            <td data-label="Téléphone">{{ inscription.tel|default:"-" }}</td>
+                            <td data-label="Société">{{ inscription.societe|default:"-" }}</td>
+                            <td data-label="Fonction">{{ inscription.fonction_poste|default:"-" }}</td>
+                            <td data-label="Ville">{{ inscription.ville|default:"-" }}</td>
+                            <td data-label="Pays">{{ inscription.pays|default:"-" }}</td>
+                            <td data-label="Date d'inscription">{{ inscription.created|date:"d/m/Y"|default:"-" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" class="text-center">Aucune inscription trouvée</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            {% if is_paginated %}
+            <div class="d-flex justify-content-center mt-4">
+                <nav aria-label="Navigation des pages">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1&event={{ current_event }}&q={{ search_query }}&sort={{ sort_by }}" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}&event={{ current_event }}&q={{ search_query }}&sort={{ sort_by }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">&laquo;&laquo;</span>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link">&laquo;</span>
+                        </li>
+                        {% endif %}
+                        
+                        {% for i in page_obj.paginator.page_range %}
+                            {% if page_obj.number == i %}
+                                <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                            {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ i }}&event={{ current_event }}&q={{ search_query }}&sort={{ sort_by }}">{{ i }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}&event={{ current_event }}&q={{ search_query }}&sort={{ sort_by }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&event={{ current_event }}&q={{ search_query }}&sort={{ sort_by }}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">&raquo;</span>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link">&raquo;&raquo;</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+{% block extra_js %}
+<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'js/dataTables.bootstrap5.min.js' %}"></script>
+<script>
+    $(document).ready(function() {
+        // Gérer le tri des colonnes
+        $('.sortable').on('click', function() {
+            let field = $(this).data('sort');
+            let currentSort = $('#sort-input').val();
+            let newSort;
+            
+            // Si le champ actuel est déjà trié, inverser l'ordre
+            if (currentSort === field) {
+                newSort = '-' + field;
+            } else if (currentSort === '-' + field) {
+                newSort = field;
+            } else {
+                newSort = field;
+            }
+            
+            $('#sort-input').val(newSort);
+            $('#filter-form').submit();
+        });
+        
+        // Afficher les icônes de tri actuelles
+        let currentSort = $('#sort-input').val();
+        if (currentSort) {
+            let field = currentSort.replace('-', '');
+            let sortIcon = $('.sortable[data-sort="' + field + '"] .sort-icon');
+            
+            if (currentSort.startsWith('-')) {
+                sortIcon.html('<i class="fas fa-sort-down"></i>');
+            } else {
+                sortIcon.html('<i class="fas fa-sort-up"></i>');
+            }
+        }
+        
+        // Mise à jour automatique après changement de l'événement
+        $('#eventSelect').change(function() {
+            $('#filter-form').submit();
+        });
+        
+        // Fonctions pour améliorer la responsivité
+        function adjustTableForScreenSize() {
+            if (window.innerWidth < 768) {
+                $('#inscriptionsTable').addClass('table-sm');
+                // On n'utilise pas DataTables sur mobile pour permettre notre affichage personnalisé
+            } else {
+                // Si on veut réactiver DataTables sur écran large
+                // initDataTable();
+            }
+        }
+        
+        // Initialiser les ajustements de taille
+        adjustTableForScreenSize();
+        
+        // Réajuster lors du redimensionnement de la fenêtre
+        $(window).resize(function() {
+            adjustTableForScreenSize();
+        });
+    });
+</script>
+{% endblock extra_js %}
+
+{% endblock 'content' %}

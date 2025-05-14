@@ -1,0 +1,561 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>inscription</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .form-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .form-header h1 {
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .form-header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .form-body {
+            padding: 30px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section h2 {
+            margin-bottom: 25px;
+            color: var(--secondary-color);
+            font-size: 22px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+            display: inline-block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+
+        .form-column {
+            flex: 1;
+            padding: 0 10px;
+            min-width: 250px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .required::after {
+            content: "*";
+            color: var(--accent-color);
+            margin-left: 4px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: var(--font-main);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .checkbox-group {
+            margin-top: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            margin-top: 4px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .error-text {
+            color: var(--accent-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        input.error {
+            border-color: var(--accent-color);
+        }
+
+        .success-message {
+            display: none;
+            background-color: var(--success-color);
+            color: white;
+            padding: 20px;
+            border-radius: 4px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .notice {
+            font-size: 14px;
+            color: #777;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .avatar-upload {
+            position: relative;
+            max-width: 160px;
+            margin: 0 auto 20px;
+        }
+
+        .avatar-preview {
+            width: 160px;
+            height: 160px;
+            position: relative;
+            border-radius: 50%;
+            border: 6px solid #f8f8f8;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .avatar-preview > div {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-image: url('/api/placeholder/160/160');
+        }
+
+        .avatar-upload .avatar-edit {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+        }
+
+        .avatar-upload .avatar-edit input {
+            display: none;
+        }
+
+        .avatar-upload .avatar-edit label {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .avatar-upload .avatar-edit label:hover {
+            background: var(--secondary-color);
+        }
+
+        .optional-section {
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .optional-section h3 {
+            color: var(--dark-color);
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .optional-toggle {
+            margin-bottom: 20px;
+        }
+
+        .optional-content {
+            display: none;
+        }
+
+        .optional-content.active {
+            display: block;
+        }
+
+        .form-footer {
+            padding: 15px 30px;
+            background-color: #f8f8f8;
+            border-top: 1px solid #eee;
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+        }
+
+        @media (max-width: 768px) {
+            .form-column {
+                flex: 100%;
+                margin-bottom: 15px;
+            }
+            
+            .container {
+                margin: 0 10px;
+            }
+            
+            .avatar-upload {
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-header">
+            <p>Complétez vos informations ci-dessous pour vous inscrire à l'événement</p>
+        </div>
+        
+        <div class="form-body">
+            <div class="success-message" id="success-message">
+                <h3>Données enregistrées avec succès!</h3>
+                <p>Vos informations personnelles ont été enregistrées. Vous recevrez une confirmation par email.</p>
+            </div>
+            
+            <form id="personal-info-form" method="post">
+                {% csrf_token %}
+                <div class="form-section">
+                    <h2>Détails personnels</h2>
+                    <div class="form-row">
+                        <div class="form-column">
+                            <div class="form-group">
+                                <label for="civilite">Civilité</label>
+                                <select id="civilite" name="civilite">
+                                    <option value="" selected disabled>Sélectionnez</option>
+                                    <option value="M.">M.</option>
+                                    <option value="Mme">Mme</option>
+                                    <option value="Mlle">Mlle</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-column">
+                            <div class="form-group">
+                                <label for="nom" class="required">Nom</label>
+                                <input type="text" id="nom" name="nom" required>
+                                <div class="error-text" id="error-nom">Veuillez entrer votre nom</div>
+                            </div>
+                        </div>
+                        <div class="form-column">
+                            <div class="form-group">
+                                <label for="prenom" class="required">Prénom</label>
+                                <input type="text" id="prenom" name="prenom" required>
+                                <div class="error-text" id="error-prenom">Veuillez entrer votre prénom</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-column">
+                            <div class="form-group">
+                                <label for="email" class="required">Email</label>
+                                <input type="email" id="email" name="email" required>
+                                <div class="error-text" id="error-email">Veuillez entrer une adresse email valide</div>
+                            </div>
+                        </div>
+                        <div class="form-column">
+                            <div class="form-group">
+                                <label for="telephone" class="required">Téléphone</label>
+                                <input type="tel" id="telephone" name="tel" required>
+                                <div class="error-text" id="error-telephone">Veuillez entrer un numéro de téléphone valide</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2>Adresse</h2>
+                    <div class="form-group">
+                        <label for="complement">Adresse</label>
+                        <input type="text" id="complement" name="addresse">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-column">
+                            <div class="form-group">
+                                <label for="ville" class="required">Ville</label>
+                                <input type="text" id="ville" name="ville" required>
+                                <div class="error-text" id="error-ville">Veuillez entrer votre ville</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="pays" class="required">Pays</label>
+                        <select id="pays" name="pays" required>
+                            <option value="" selected disabled>Sélectionnez un pays</option>
+                            <option value="BF">Burkina Faso</option>
+                            <option value="CI">Cote d'Ivoire</option>
+                            <option value="Ghanna">Ghanna</option>
+                            <option value="FR">France</option>
+                            <option value="BE">Belgique</option>
+                            <option value="CH">Suisse</option>
+                            <option value="CA">Canada</option>
+                            <option value="LU">Luxembourg</option>
+                            <option value="OTHER">Autre</option>
+                        </select>
+                        <div class="error-text" id="error-pays">Veuillez sélectionner votre pays</div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="optional-toggle">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="add-professional" name="add-professional">
+                            <label for="add-professional">Ajouter des informations professionnelles</label>
+                        </div>
+                    </div>
+                    
+                    <div class="optional-content" id="professional-section">
+                        <div class="optional-section">
+                            <h3>Informations professionnelles</h3>
+                            
+                            <div class="form-group">
+                                <label for="societe">Société/Organisation</label>
+                                <input type="text" id="societe" name="societe">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="fonction">Fonction/Poste</label>
+                                <input type="text" id="fonction" name="fonction_poste">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email_pro">Email professionnel</label>
+                                <input type="email" id="email_pro" name="email_pro">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2>Consentements</h2>
+                    
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="rgpd" name="rgpd" required>
+                                <label for="rgpd" class="required">J'accepte que mes données personnelles soient traitées conformément à la politique de confidentialité</label>
+                                <div class="error-text" id="error-rgpd">Vous devez accepter la politique de confidentialité</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn" id="btn-submit">Enregistrer mes informations</button>
+            </form>
+            
+            <div class="notice">
+                <p>* Champs obligatoires</p>
+            </div>
+        </div>
+        
+        <div class="form-footer">
+            <p>Vos données personnelles sont protégées conformément au RGPD.</p>
+        </div>
+    </div>
+
+
+    {% for message in messages %}
+      <script src="{% static 'js/sweetalert.min.js' %}"></script>
+      {% if message.tags == 'error' %}
+      <script>
+          var m = "{{ message }}";
+          swal("Réfusé!", m, "error");
+      </script>
+      {% elif message.tags == 'success' %}
+      <script>
+          var m = "{{ message }}";
+          swal("Bienvenue!", m, "success");
+      </script>
+      {% elif message.tags == 'warning' %}
+      <script>
+          var m = "{{ message }}";
+          swal("A bientôt!", m, "warning");
+      </script>
+      {% endif %}
+
+      {% endfor%}
+
+      
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Éléments DOM
+            const form = document.getElementById('personal-info-form');
+            const addProfessional = document.getElementById('add-professional');
+            const professionalSection = document.getElementById('professional-section');
+           
+            // Afficher/masquer la section professionnelle
+            addProfessional.addEventListener('change', function() {
+                if (this.checked) {
+                    professionalSection.classList.add('active');
+                } else {
+                    professionalSection.classList.remove('active');
+                }
+            });
+            
+           
+            // Validation des champs
+            function validateField(fieldId) {
+                const field = document.getElementById(fieldId);
+                const errorText = document.getElementById('error-' + fieldId);
+                
+                if (!field.value.trim()) {
+                    field.classList.add('error');
+                    errorText.style.display = 'block';
+                    return false;
+                } else {
+                    field.classList.remove('error');
+                    errorText.style.display = 'none';
+                    return true;
+                }
+            }
+            
+            // Validation spécifique pour l'email
+            function validateEmail() {
+                const email = document.getElementById('email');
+                const errorText = document.getElementById('error-email');
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                
+                if (!email.value.trim() || !emailRegex.test(email.value)) {
+                    email.classList.add('error');
+                    errorText.style.display = 'block';
+                    return false;
+                } else {
+                    email.classList.remove('error');
+                    errorText.style.display = 'none';
+                    return true;
+                }
+            }
+            
+            // Validation du formulaire
+            function validateForm() {
+                const nomValid = validateField('nom');
+                const prenomValid = validateField('prenom');
+                const emailValid = validateEmail();
+                const telephoneValid = validateField('tel');
+                const adresseValid = validateField('addresse');
+                const villeValid = validateField('ville');
+                const paysValid = validateField('pays');
+                const rgpdValid = document.getElementById('rgpd').checked;
+                
+                if (!rgpdValid) {
+                    document.getElementById('error-rgpd').style.display = 'block';
+                } else {
+                    document.getElementById('error-rgpd').style.display = 'none';
+                }
+                
+                return nomValid && prenomValid && emailValid && telephoneValid && 
+                       adresseValid && codePostalValid && villeValid && paysValid && rgpdValid;
+            }
+            
+            // Validation en temps réel
+            document.querySelectorAll('input[required], select[required]').forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.id === 'email') {
+                        validateEmail();
+                    } else if (this.id !== 'rgpd') {
+                        validateField(this.id);
+                    }
+                });
+            });
+            
+            // Validation de la case à cocher RGPD
+            document.getElementById('rgpd').addEventListener('change', function() {
+                if (this.checked) {
+                    document.getElementById('error-rgpd').style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -3,7 +3,7 @@ from  . import views
 from mentors.views import *
 from mentors.views import ResetPasswordView
 from django.contrib.auth import views as auth_views
-
+from .views import InscriptionsListView, export_inscriptions_excel
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -29,7 +29,6 @@ urlpatterns = [
     path('projet/', views.projet, name='projet'),
     path('Mentors/', views.Mentors, name='Mentors'),
     path('orientation/', views.tableau_orientations, name='orientation'),
-    path('get_all_even/', views.get_all_even, name='get_all_even'),
     path('get_all_ressource/', views.get_all_ressource, name='get_all_ressource'),
     path('add_even/', views.add_even, name='add_even'),
     path('add_ressource/', views.add_ressource, name='add_ressource'),
@@ -61,6 +60,11 @@ urlpatterns = [
     path('valid_mentore_activite/<id>', views.valid_mentore_activite, name='valid_mentore_activite'),
     
     path('agir_avec_nous/', views.agir, name='agir'),
+    path('succes/', views.succes, name='succes'),
+    path('evensouscription/<int:id>/', views.evensouscription, name='evensouscription'),
+    
+    path('inscriptions/', InscriptionsListView.as_view(), name='inscriptions_list'),
+    path('inscriptions/export/', export_inscriptions_excel, name='export_inscriptions_excel'),
     
 ]
 
