@@ -96,9 +96,9 @@ DATABASES = {
      'default': {
          'ENGINE': 'django.db.backends.postgresql',
          'NAME': 'eclair_bd',
-         'USER': 'ubuntu',
-         'PASSWORD': 'pago@2023',
-         'HOST': '178.32.42.24',
+         'USER': 'maarch',
+         'PASSWORD': 'maarch',
+         'HOST': '188.165.58.60',
          'PORT': '5432',
      }
  }
