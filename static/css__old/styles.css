@@ -1,0 +1,68 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.form-container {
+    width: 300px;
+    padding: 20px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.question {
+    display: none;
+    animation: slideIn 0.5s forwards;
+}
+
+.question:first-child {
+    display: block;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+}
+
+
+ body {
+            background-image: url('https://media.istockphoto.com/id/1368011030/fr/vectoriel/main-avec-stylo-une-personne-%C3%A9crit-sur-papier-enregistrer-%C3%A9crire-une-lettre-signer-un.jpg?s=612x612&w=0&k=20&c=GSoEOKm6e2v8U6I1WGdiWFBSJBwPME3Nqnj7PzIjKT0=');
+            background-size: cover;
+            background-position: center;
+            height: 100vh; /* Pour occuper toute la hauteur de la fenêtre */
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8); /* Ajoute une couleur de fond semi-transparente pour améliorer la lisibilité du contenu */
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+
+        .question {
+            margin-bottom: 20px;
+        }

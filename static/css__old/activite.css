@@ -1,0 +1,40 @@
+
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+
+        .container222 {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+        .activite {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+        .activite img {
+            max-width: 100%;
+            height: auto;
+        }
+        .activite h2 {
+            margin-top: 0;
+        }
+        .activite p {
+            margin: 10px 0;
+        }
+
