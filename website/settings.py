@@ -98,7 +98,7 @@ DATABASES = {
          'NAME': 'eclair_bd',
          'USER': 'maarch',
          'PASSWORD': 'maarch',
-         'HOST': '188.165.58.60',
+         'HOST': 'localhost',
          'PORT': '5432',
      }
  }
