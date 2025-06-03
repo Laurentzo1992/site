@@ -8,10 +8,10 @@ services:
       - "8000"
     environment:
       DJANGO_SETTINGS_MODULE: website.settings
-      DATABASE_NAME: mentors_db
-      DATABASE_USER: mentors_user
-      DATABASE_PASSWORD: your_secure_password
-      DATABASE_HOST: 188.8.9.23
+      DATABASE_NAME: eclair_bd
+      DATABASE_USER: maarch
+      DATABASE_PASSWORD: maarch
+      DATABASE_HOST: localhost
       DATABASE_PORT: 5432
     volumes:
       - .:/var/www/site
