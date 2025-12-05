@@ -17,7 +17,7 @@ from django.contrib.sessions.models import Session
 from django.utils import timezone
 from django.core.mail import send_mail, BadHeaderError
 from django.core.exceptions import ValidationError
-
+from django.http import JsonResponse
 from django.db.models import Count
 from django.utils.translation import gettext as _
 from django.utils.html import format_html
@@ -667,6 +667,35 @@ def storie(request):
     stories = Storie.objects.all()
     context = {"stories":stories}
     return render(request, 'mentors/storie.html', context)
+
+
+
+def osermag(request):
+    return render(request, 'mentors/osermag.html')
+
+
+
+
+def api_magazines(request):
+    magazines = Osermag.objects.all().order_by('-created')
+
+    data = [
+        {
+            "id": m.id,
+            "numero": m.numero or "",
+            "subtitle": m.subtitle or "",
+            "description": m.description or "",
+            "fichier": m.fichier.url if m.fichier else "",
+            "is_vedette": m.isvedette,
+            "created": m.created.strftime("%Y-%m-%d") if m.created else "",
+        }
+        for m in magazines
+    ]
+
+    return JsonResponse(data, safe=False)
+
+
+
 
 
 

@@ -572,7 +572,18 @@ class Storie(models.Model):
         if self.photo:
             self.resize_image()
             
-            
+class Osermag(models.Model):
+    numero = models.CharField(max_length=200, verbose_name="Numero", blank=True, null=True)
+    subtitle = models.CharField(max_length=200, verbose_name="subtitle", blank=True, null=True)
+    description = models.TextField(verbose_name="Description", blank=True, null=True)
+    fichier = models.FileField(upload_to='mag/', verbose_name="mag", blank=True, null=True)
+    isvedette = models.BooleanField(verbose_name="est une vedette")
+    created = models.DateField(auto_now_add=True, blank=True, null=True)
+    modified = models.DateField(auto_now=True, blank=True, null=True)
+
+
+    def __str__(self):
+        return self.numero       
             
 class Evenement(models.Model):
     libelle = models.CharField(max_length=100, blank=True, null=True, verbose_name="Libelle")

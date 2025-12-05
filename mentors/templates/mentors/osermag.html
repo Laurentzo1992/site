@@ -1,0 +1,997 @@
+{% extends "base.html" %}
+
+{% block main %}
+ 
+ <style>
+
+/* ============================================
+   VARIABLES ET RESET
+============================================ */
+
+:root {
+    --primary-blue: #0066CC;
+    --accent-yellow: #FFD700;
+    --dark-text: #1a1a1a;
+    --light-gray: #f5f5f5;
+    --border-gray: #e0e0e0;
+    --white: #ffffff;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: var(--dark-text);
+    background-color: var(--white);
+    line-height: 1.6;
+}
+
+/* ============================================
+   CONTAINER ET LAYOUT
+   ============================================ */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+
+.hero {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, #0052a3 100%);
+    color: var(--white);
+    padding: 4rem 1rem;
+    position: relative;
+    overflow: hidden;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 400px;
+    height: 400px;
+    background-color: rgba(255, 215, 0, 0.1);
+    border-radius: 50%;
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    bottom: -50px;
+    left: -50px;
+    width: 300px;
+    height: 300px;
+    background-color: rgba(255, 215, 0, 0.05);
+    border-radius: 50%;
+}
+
+.hero-content {
+    max-width: 600px;
+    position: relative;
+    z-index: 2;
+}
+
+.hero h2 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.hero p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+    line-height: 1.6;
+}
+
+.hero-decoration {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.05));
+    border-radius: 50%;
+    z-index: 1;
+}
+
+/* ============================================
+   SEARCH SECTION
+   ============================================ */
+
+
+/* ============================================
+   MAGAZINES SECTION
+   ============================================ */
+
+.magazines-section {
+    padding: 4rem 1rem;
+}
+
+.magazines-section h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+    color: #666;
+    margin-bottom: 3rem;
+    max-width: 600px;
+}
+
+/* Featured Magazine */
+.featured-magazine {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    background-color: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 3rem;
+    align-items: center;
+}
+
+.featured-image {
+    height: 100%;
+    min-height: 400px;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--primary-blue), #0052a3);
+}
+
+.featured-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.featured-magazine:hover .featured-image img {
+    transform: scale(1.05);
+}
+
+.featured-content {
+    padding: 2rem;
+}
+
+.featured-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--light-gray);
+    color: var(--primary-blue);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.badge-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent-yellow);
+    border-radius: 50%;
+}
+
+.featured-content h3 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--dark-text);
+}
+
+.featured-subtitle {
+    color: var(--primary-blue);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.featured-description {
+    color: #666;
+    margin-bottom: 2rem;
+    line-height: 1.8;
+}
+
+/* Magazines Grid */
+.magazines-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.magazine-card {
+    background-color: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.magazine-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+}
+
+.magazine-card-image {
+    height: 200px;
+    background: linear-gradient(135deg, var(--primary-blue), #0052a3);
+    overflow: hidden;
+    position: relative;
+}
+
+.magazine-card-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.3), transparent);
+}
+
+.magazine-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.magazine-card:hover .magazine-card-image img {
+    transform: scale(1.1);
+}
+
+.magazine-card-content {
+    padding: 1.5rem;
+}
+
+.magazine-card-content h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--dark-text);
+    transition: color 0.3s ease;
+}
+
+.magazine-card:hover .magazine-card-content h3 {
+    color: var(--primary-blue);
+}
+
+.magazine-card-subtitle {
+    color: var(--primary-blue);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+}
+
+.magazine-card-description {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* No Results */
+.no-results {
+    text-align: center;
+    padding: 2rem;
+    color: #999;
+    font-size: 1.1rem;
+}
+
+/* ============================================
+   ABOUT SECTION
+   ============================================ */
+
+.about-section {
+    background-color: var(--light-gray);
+    padding: 4rem 1rem;
+    border-top: 1px solid var(--border-gray);
+}
+
+.about-section h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.about-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.about-content p {
+    margin-bottom: 1.5rem;
+    color: #555;
+    line-height: 1.8;
+    font-size: 1rem;
+}
+
+/* ============================================
+   CONTACT SECTION
+   ============================================ */
+
+
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+
+.btn-primary {
+    background-color: var(--primary-blue);
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    background-color: #0052a3;
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--primary-blue);
+    border: 2px solid var(--primary-blue);
+}
+
+.btn-outline:hover {
+    background-color: var(--primary-blue);
+    color: var(--white);
+}
+
+.btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+
+.footer {
+    background-color: var(--dark-text);
+    color: var(--white);
+    padding: 3rem 1rem 1rem;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.footer-column h4 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.footer-column ul {
+    list-style: none;
+}
+
+.footer-column li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-column a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.footer-column a:hover {
+    color: var(--white);
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+    .nav-desktop {
+        display: none;
+    }
+
+    .menu-toggle {
+        display: flex;
+    }
+
+    .hero h2 {
+        font-size: 2rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .featured-magazine {
+        grid-template-columns: 1fr;
+    }
+
+    .featured-image {
+        min-height: 250px;
+    }
+
+    .featured-content {
+        padding: 1.5rem;
+    }
+
+    .featured-content h3 {
+        font-size: 1.5rem;
+    }
+
+    .magazines-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .magazines-section h2 {
+        font-size: 2rem;
+    }
+
+    .about-section h2,
+    .contact-section h2 {
+        font-size: 2rem;
+    }
+
+    .contact-buttons {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 0.75rem;
+    }
+
+    .logo-text h1 {
+        display: none;
+    }
+
+    .logo-text p {
+        display: none;
+    }
+
+    .hero {
+        padding: 2rem 1rem;
+        min-height: 300px;
+    }
+
+    .hero h2 {
+        font-size: 1.5rem;
+    }
+
+    .hero p {
+        font-size: 0.95rem;
+    }
+
+    .featured-content {
+        padding: 1rem;
+    }
+
+    .featured-content h3 {
+        font-size: 1.2rem;
+    }
+
+    .magazines-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .magazines-section,
+    .about-section,
+    .contact-section {
+        padding: 2rem 1rem;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.magazine-card {
+    animation: slideIn 0.5s ease forwards;
+}
+
+.magazine-card:nth-child(1) { animation-delay: 0.1s; }
+.magazine-card:nth-child(2) { animation-delay: 0.2s; }
+.magazine-card:nth-child(3) { animation-delay: 0.3s; }
+.magazine-card:nth-child(4) { animation-delay: 0.4s; }
+
+ </style>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Magazine OSER</h2>
+            <p>Découvrez les histoires inspirantes de mentorat, les conseils d'experts et les actualités de la plateforme ECLAIR.</p>
+            <button class="btn btn-primary" id="scrollBtn">
+                Parcourir les numéros
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </div>
+        <div class="hero-decoration"></div>
+    </section>
+
+   
+    <!-- Magazines Section -->
+    <section id="magazines" class="magazines-section">
+        <div class="container">
+            <h2>Nos Numéros</h2>
+            <p class="section-subtitle">Accédez à tous nos numéros et téléchargez les PDF pour une lecture hors ligne.</p>
+
+            <!-- Featured Magazine -->
+            <div class="featured-magazine" id="featuredMagazine">
+                
+            </div>
+
+            <!-- Magazines Grid -->
+            <div class="magazines-grid" id="magazinesGrid">
+                <!-- Les magazines seront insérés ici par JavaScript -->
+            </div>
+
+            <!-- No Results -->
+            <div class="no-results" id="noResults" style="display: none;">
+                <p>Aucun magazine trouvé</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <h2>À propos de ce Magazine</h2>
+            <div class="about-content">
+                <p>
+                    Le Magazine OSER est une publication dédiée à la promotion du mentorat éducatif et professionnel. À travers ses pages, nous partageons les histoires inspirantes de nos mentors et de leurs protégés.
+                </p>
+                <p>
+                    Chaque numéro propose des conseils pratiques, des interviews exclusives et des actualités de la plateforme ECLAIR, conçue pour connecter les jeunes talents avec des professionnels expérimentés.
+                </p>
+                <p>
+                    Nos magazines sont disponibles en format PDF pour une lecture facile et une conservation durable. Téléchargez vos numéros préférés et partagez-les avec votre réseau.
+                </p>
+            </div>
+        </div>
+    </section>
+
+  
+
+    <script>
+	
+		const menuToggle = document.getElementById('menuToggle');
+		const navMobile = document.getElementById('navMobile');
+		const searchInput = document.getElementById('searchInput');
+		const magazinesGrid = document.getElementById('magazinesGrid');
+		const noResults = document.getElementById('noResults');
+		const scrollBtn = document.getElementById('scrollBtn');
+		const featuredMagazine = document.getElementById('featuredMagazine');
+
+		// ============================================
+		// MENU MOBILE
+		// ============================================
+
+		menuToggle.addEventListener('click', () => {
+			menuToggle.classList.toggle('active');
+			navMobile.classList.toggle('active');
+		});
+
+		// Fermer le menu mobile au clic sur un lien
+		document.querySelectorAll('.nav-mobile .nav-link').forEach(link => {
+			link.addEventListener('click', () => {
+				menuToggle.classList.remove('active');
+				navMobile.classList.remove('active');
+			});
+		});
+
+		// ============================================
+		// SCROLL VERS MAGAZINES
+		// ============================================
+
+		scrollBtn.addEventListener('click', () => {
+			document.getElementById('magazines').scrollIntoView({ behavior: 'smooth' });
+		});
+
+		// ============================================
+		// RENDU DES MAGAZINES
+		// ============================================
+
+		function renderMagazines(filter = '') {
+			const filtered = magazines.filter(mag =>
+				mag.title.toLowerCase().includes(filter.toLowerCase()) ||
+				mag.subtitle.toLowerCase().includes(filter.toLowerCase())
+			);
+
+			// Filtrer les magazines non vedettes
+			const nonFeatured = filtered.filter(mag => !mag.featured);
+
+			// Afficher/masquer le message "aucun résultat"
+			if (nonFeatured.length === 0) {
+				magazinesGrid.innerHTML = '';
+				noResults.style.display = filtered.length === 0 ? 'block' : 'none';
+				return;
+			}
+
+			noResults.style.display = 'none';
+
+			// Rendre les cartes de magazines
+			magazinesGrid.innerHTML = nonFeatured.map(magazine => `
+				<div class="magazine-card">
+					<div class="magazine-card-image">
+						<img src="${magazine.image}" alt="${magazine.title}">
+					</div>
+					<div class="magazine-card-content">
+						<h3>${magazine.title}</h3>
+						<p class="magazine-card-subtitle">${magazine.subtitle}</p>
+						<p class="magazine-card-description">${magazine.description}</p>
+						<button class="btn btn-primary" data-magazine="${magazine.title}">
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+								<polyline points="7 10 12 15 17 10"></polyline>
+								<line x1="12" y1="15" x2="12" y2="3"></line>
+							</svg>
+							Télécharger
+						</button>
+					</div>
+				</div>
+			`).join('');
+
+			// Ajouter les event listeners aux boutons de téléchargement
+			attachDownloadListeners();
+		}
+
+		// ============================================
+		// RECHERCHE
+		// ============================================
+
+		searchInput.addEventListener('input', (e) => {
+			renderMagazines(e.target.value);
+		});
+
+		// ============================================
+		// TÉLÉCHARGEMENT PDF
+		// ============================================
+
+		function downloadPDF(magazineTitle) {
+			// Créer un canvas pour générer une image
+			const canvas = document.createElement('canvas');
+			canvas.width = 800;
+			canvas.height = 600;
+			const ctx = canvas.getContext('2d');
+
+			if (!ctx) return;
+
+			// Fond bleu
+			ctx.fillStyle = '#0066CC';
+			ctx.fillRect(0, 0, 800, 600);
+
+			// Texte blanc - titre
+			ctx.fillStyle = '#FFFFFF';
+			ctx.font = 'bold 48px Arial';
+			ctx.textAlign = 'center';
+			ctx.fillText(magazineTitle, 400, 150);
+
+			// Accent jaune
+			ctx.fillStyle = '#FFD700';
+			ctx.fillRect(200, 250, 400, 4);
+
+			// Texte descriptif
+			ctx.fillStyle = '#FFFFFF';
+			ctx.font = '24px Arial';
+			ctx.fillText('Magazine OSER', 400, 350);
+			ctx.font = '16px Arial';
+			ctx.fillText('Édition spéciale', 400, 400);
+			ctx.fillText('Téléchargé depuis la plateforme ECLAIR', 400, 500);
+
+			// Convertir en blob et télécharger
+			canvas.toBlob((blob) => {
+				if (blob) {
+					const url = URL.createObjectURL(blob);
+					const link = document.createElement('a');
+					link.href = url;
+					link.download = `${magazineTitle.replace(/\s+/g, '_')}.png`;
+					document.body.appendChild(link);
+					link.click();
+					document.body.removeChild(link);
+					URL.revokeObjectURL(url);
+
+					// Afficher une notification
+					showNotification(`${magazineTitle} téléchargé avec succès!`);
+				}
+			});
+		}
+
+		// ============================================
+		// NOTIFICATIONS
+		// ============================================
+
+		function showNotification(message) {
+			// Créer l'élément de notification
+			const notification = document.createElement('div');
+			notification.style.cssText = `
+				position: fixed;
+				bottom: 20px;
+				right: 20px;
+				background-color: #0066CC;
+				color: white;
+				padding: 1rem 1.5rem;
+				border-radius: 8px;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+				z-index: 1000;
+				animation: slideInUp 0.3s ease;
+				font-weight: 500;
+			`;
+			notification.textContent = message;
+			document.body.appendChild(notification);
+
+			// Ajouter l'animation
+			const style = document.createElement('style');
+			style.textContent = `
+				@keyframes slideInUp {
+					from {
+						opacity: 0;
+						transform: translateY(20px);
+					}
+					to {
+						opacity: 1;
+						transform: translateY(0);
+					}
+				}
+			`;
+			document.head.appendChild(style);
+
+			// Supprimer la notification après 3 secondes
+			setTimeout(() => {
+				notification.style.animation = 'slideInUp 0.3s ease reverse';
+				setTimeout(() => {
+					document.body.removeChild(notification);
+				}, 300);
+			}, 3000);
+		}
+
+		// ============================================
+		// ATTACHER LES EVENT LISTENERS AUX BOUTONS
+		// ============================================
+
+		function attachDownloadListeners() {
+			document.querySelectorAll('[data-magazine]').forEach(btn => {
+				btn.addEventListener('click', (e) => {
+					const magazineTitle = e.currentTarget.getAttribute('data-magazine');
+					downloadPDF(magazineTitle);
+				});
+			});
+		}
+
+		// ============================================
+		// INITIALISATION
+		// ============================================
+
+		document.addEventListener('DOMContentLoaded', () => {
+			// Rendre les magazines
+			renderMagazines();
+
+			// Attacher les event listeners au bouton vedette
+			const featuredBtn = featuredMagazine.querySelector('[data-magazine]');
+			if (featuredBtn) {
+				featuredBtn.addEventListener('click', (e) => {
+					const magazineTitle = e.currentTarget.getAttribute('data-magazine');
+					downloadPDF(magazineTitle);
+				});
+			}
+
+			// Ajouter une animation au scroll
+			const observerOptions = {
+				threshold: 0.1,
+				rootMargin: '0px 0px -100px 0px'
+			};
+
+			const observer = new IntersectionObserver((entries) => {
+				entries.forEach(entry => {
+					if (entry.isIntersecting) {
+						entry.target.style.opacity = '1';
+						entry.target.style.transform = 'translateY(0)';
+						observer.unobserve(entry.target);
+					}
+				});
+			}, observerOptions);
+
+			document.querySelectorAll('.magazine-card').forEach(card => {
+				card.style.opacity = '0';
+				card.style.transform = 'translateY(20px)';
+				card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+				observer.observe(card);
+			});
+		});
+
+		// ============================================
+		// SCROLL HEADER EFFECT
+		// ============================================
+
+		window.addEventListener('scroll', () => {
+			const header = document.querySelector('.header');
+			if (window.scrollY > 10) {
+				header.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+			} else {
+				header.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+			}
+		});
+
+    </script>
+
+
+    <script>
+// Scroll vers la section magazines
+document.getElementById("scrollBtn").addEventListener("click", () => {
+    document.getElementById("magazines").scrollIntoView({ behavior: "smooth" });
+});
+
+// Charger les magazines via API AJAX
+async function loadMagazines() {
+    const grid = document.getElementById("magazinesGrid");
+    const noResults = document.getElementById("noResults");
+
+    try {
+        const response = await fetch("/api/api_magazines/"); 
+        const data = await response.json();
+
+        // Vider la grille avant affichage
+        grid.innerHTML = "";
+
+        if (data.length === 0) {
+            noResults.style.display = "block";
+            return;
+        }
+
+        noResults.style.display = "none";
+
+        data.forEach((mag, index) => {
+            const card = document.createElement("div");
+            card.classList.add("magazine-card");
+
+            card.innerHTML = `
+                <div class="magazine-card-image">
+                    <img src="https://jeretiens.net/wp-content/uploads/2015/12/une_pile_de_magazines.jpg" alt="${mag.numero}">
+                </div>
+                <div class="magazine-card-content">
+                    <h3>N° ${mag.numero}</h3>
+                    <p class="magazine-card-subtitle">${mag.subtitle}</p>
+                    <p class="magazine-card-description">${mag.description}</p>
+                    <a href="${mag.pdf_url}" class="btn btn-primary" download>
+                        Télécharger le PDF
+                    </a>
+                </div>
+            `;
+
+            // délai d’animation
+            card.style.animationDelay = `${(index + 1) * 0.1}s`;
+
+            grid.appendChild(card);
+        });
+
+    } catch (error) {
+        console.error("Erreur AJAX :", error);
+        noResults.style.display = "block";
+        noResults.innerHTML = "<p>Impossible de charger les magazines.</p>";
+    }
+}
+
+// Charger au chargement de la page
+window.addEventListener("DOMContentLoaded", loadMagazines);
+</script>
+
+
+<script>
+fetch("/api/api_magazines/")
+    .then(response => response.json())
+    .then(data => {
+        // Trouver le magazine vedette
+        const vedette = data.find(m => m.is_vedette === true);
+
+        // Les autres magazines
+        const autres = data.filter(m => m.is_vedette !== true);
+
+        // Injecter le magazine vedette
+        if (vedette) {
+            document.getElementById("featuredMagazine").innerHTML = `
+                <div class="featured-image">
+                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop" alt="Magazine vedette">
+                </div>
+
+                <div class="featured-content">
+                    <div class="featured-badge">
+                        <span class="badge-dot"></span> Édition Vedette
+                    </div>
+
+                    <h3>Magazine N°${vedette.numero}</h3>
+                    <p class="featured-subtitle">${vedette.subtitle}</p>
+                    <p class="featured-description">${vedette.description}</p>
+
+                    <a href="${vedette.fichier}" class="btn btn-primary" download>
+                        Télécharger le PDF
+                    </a>
+                </div>
+            `;
+        }
+
+        // Injecter les autres magazines
+        let grid = "";
+        autres.forEach(m => {
+            grid += `
+                <div class="magazine-card">
+                    <div class="magazine-card-image">
+                        <img src="${m.fichier}" alt="Magazine ${m.numero}">
+                    </div>
+
+                    <div class="magazine-card-content">
+                        <h3>Magazine N°${m.numero}</h3>
+                        <p class="magazine-card-subtitle">${m.subtitle}</p>
+                        <p class="magazine-card-description">${m.description}</p>
+
+                        <a href="${m.fichier}" class="btn btn-primary" download>
+                            Télécharger
+                        </a>
+                    </div>
+                </div>
+            `;
+        });
+
+        document.getElementById("magazinesGrid").innerHTML = grid;
+    });
+</script>
+{% endblock main %}

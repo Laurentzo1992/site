@@ -29,6 +29,7 @@ admin.site.register(Niveau_formation)
 admin.site.register(Slideimage)
 admin.site.register(Profiles)
 admin.site.register(Mentorat)
+admin.site.register(Osermag)
 
 
 
