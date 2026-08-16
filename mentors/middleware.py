@@ -1,11 +1,12 @@
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.deprecation import MiddlewareMixin
+from mentors.models import Profiles
 
 class ProfileCompletionMiddleware(MiddlewareMixin):
     def process_request(self, request):
         if request.user.is_authenticated and not request.user.is_superuser:
-            user_profile = request.user.profiles
+            user_profile, _ = Profiles.objects.get_or_create(user=request.user)
             required_fields = [
                 'telephone', 'niveau', 'commune'
             ]

@@ -1,7 +1,8 @@
 from django.http import HttpResponseBadRequest, HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.password_validation import validate_password
 from  django.views.decorators.cache import cache_control 
 from  django.contrib import messages
 from django.shortcuts import render, redirect
@@ -27,11 +28,22 @@ from django.contrib.auth.views import PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
 
 from django.views.generic import ListView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 import xlwt
 from .models import Even_Souscription, Evenement
 import datetime
+
+# Réservé aux actions d'administration (tableau de bord, validation des mentorats, exports).
+admin_required = user_passes_test(lambda u: u.is_authenticated and u.is_superuser)
+
+
+def _user_is_party_to_mentorat(user, mentorat):
+    if mentorat is None:
+        return False
+    profile = getattr(user, 'profiles', None)
+    return profile is not None and profile.id in (mentorat.mentor_id, mentorat.demandeur_id)
 
 
 
@@ -58,6 +70,7 @@ def home(request):
     return render(request, 'mentors/home.html', context)
 
 
+@admin_required
 def boad(request):
     users = User.objects.all().count()
     demandes = Adession.objects.all()
@@ -145,6 +158,12 @@ def createuser(request):
             elif User.objects.filter(email=email).exists():
                 messages.error(request, 'Cet email est déjà utilisé.')
             else:
+                try:
+                    validate_password(password)
+                except ValidationError as validation_errors:
+                    for error in validation_errors.messages:
+                        messages.error(request, error)
+                    return redirect('login')
                 user = User.objects.create_user(username=username, email=email, password=password, first_name=first_name, last_name=last_name)
                 # Connexion automatique de l'utilisateur
                 login(request, user)
@@ -430,6 +449,8 @@ def add_forum(request):
 
 
 
+@login_required
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def add_comment(request, id):
     forum = Forum.objects.get(id=id)
     comments = ForumComment.objects.filter(forum=forum).order_by('-created')
@@ -744,8 +765,8 @@ def adesion(request):
 
 @login_required
 def complete_profile(request):
-    
-    user_act = request.user.profiles
+
+    user_act, _ = Profiles.objects.get_or_create(user=request.user)
 
     if request.method == "POST":
         user_act.telephone = request.POST.get('telephone') if request.POST.get('telephone') else None
@@ -902,7 +923,7 @@ def demande_ment(request):
 
 
 
-@login_required
+@admin_required
 def valider_mentorat(request, mentorat_id):
     mentorat = get_object_or_404(Mentorat, id=mentorat_id)
     if request.method == 'POST':
@@ -1027,7 +1048,7 @@ def valider_mentorat(request, mentorat_id):
 
 
 
-@login_required
+@admin_required
 def fermer_mentorat(request, mentorat_id):
     mentorat = get_object_or_404(Mentorat, id=mentorat_id)
     
@@ -1100,6 +1121,8 @@ def add_activite(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def edit_activite(request, id):
     activite = get_object_or_404(ActiviteMentorat, id=id)
+    if not (request.user.is_superuser or _user_is_party_to_mentorat(request.user, activite.mentorat)):
+        raise PermissionDenied
     if request.method == "POST":
         form = ActiviteMentoratForm(request.POST, request.FILES, instance=activite)
         if form.is_valid():
@@ -1120,6 +1143,8 @@ def edit_activite(request, id):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def delete_activite(request, id):
     activite = get_object_or_404(ActiviteMentorat, id=id)
+    if not (request.user.is_superuser or _user_is_party_to_mentorat(request.user, activite.mentorat)):
+        raise PermissionDenied
     activite.delete()
     messages.success(request, 'Activité supprimée avec succès')
     return redirect('mentore_activites')
@@ -1130,6 +1155,9 @@ def delete_activite(request, id):
 @login_required
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def annule_mentore_activite(request, id):
+    activite = get_object_or_404(ActiviteMentorat, id=id)
+    if not (request.user.is_superuser or _user_is_party_to_mentorat(request.user, activite.mentorat)):
+        raise PermissionDenied
     ActiviteMentorat.objects.filter(id=id).update(etat='en_instance')
     messages.success(request, 'Activité annulée avec succès')
     return redirect('mentore_activites')
@@ -1140,6 +1168,9 @@ def annule_mentore_activite(request, id):
 @login_required
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def valid_mentore_activite(request, id):
+    activite = get_object_or_404(ActiviteMentorat, id=id)
+    if not (request.user.is_superuser or _user_is_party_to_mentorat(request.user, activite.mentorat)):
+        raise PermissionDenied
     ActiviteMentorat.objects.filter(id=id).update(etat='en_cours')
     messages.success(request, 'Activité valide avec succès')
     return redirect('mentore_activites')
@@ -1150,6 +1181,9 @@ def valid_mentore_activite(request, id):
 @login_required
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def clos_mentore_activite(request, id):
+    activite = get_object_or_404(ActiviteMentorat, id=id)
+    if not (request.user.is_superuser or _user_is_party_to_mentorat(request.user, activite.mentorat)):
+        raise PermissionDenied
     ActiviteMentorat.objects.filter(id=id).update(etat='cloture')
     messages.success(request, 'Activité clos avec succès')
     return redirect('mentore_activites')
@@ -1262,11 +1296,15 @@ def succes(request):
 
 
 
-class InscriptionsListView(LoginRequiredMixin, ListView):
+class InscriptionsListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Even_Souscription
     template_name = 'mentors/dashboard/inscription.html'
     context_object_name = 'inscriptions'
     paginate_by = 20
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
     def get_queryset(self):
         queryset = super().get_queryset()
         
@@ -1302,6 +1340,7 @@ class InscriptionsListView(LoginRequiredMixin, ListView):
         context['sort_by'] = self.request.GET.get('sort', '-created')
         return context
 
+@admin_required
 def export_inscriptions_excel(request):
     """Vue pour exporter les inscriptions en fichier Excel"""
     

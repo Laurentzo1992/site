@@ -11,6 +11,12 @@ from django.conf import settings
 from tinymce.models import HTMLField
 from tinymce import models as tinymce_models
 from datetime import timedelta, date
+from .validators import (
+    validate_image_extension,
+    validate_image_size,
+    validate_document_extension,
+    validate_document_size,
+)
 
 class Regions(models.Model):
     numero = models.CharField(max_length=1000, blank=True, null=True, verbose_name="Numero d'ordre")
@@ -80,7 +86,10 @@ class Etablissement(models.Model):
 class Ressources(models.Model):
     titre = models.CharField(max_length=50, null=True, blank=True, verbose_name="Titre")
     description = models.TextField(blank=True, null=True, verbose_name="Description")
-    ressource = models.FileField(upload_to='Fichiers/', null=True, blank=True)
+    ressource = models.FileField(
+        upload_to='Fichiers/', null=True, blank=True,
+        validators=[validate_document_extension, validate_document_size],
+    )
     owner = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
     modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
@@ -100,7 +109,10 @@ class Ressources(models.Model):
 class Forum(models.Model):
     titre = models.CharField(max_length=50, null=True, blank=True, verbose_name="Titre")
     description = models.TextField(blank=True, null=True, verbose_name="Description")
-    fichier = models.FileField(upload_to='forum_img/', null=True, blank=True, verbose_name="Image illustrative")
+    fichier = models.FileField(
+        upload_to='forum_img/', null=True, blank=True, verbose_name="Image illustrative",
+        validators=[validate_image_extension, validate_image_size],
+    )
     initiateur = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
     modified = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
@@ -312,7 +324,10 @@ class Profiles(models.Model):
     confirm_experience_mentor = models.CharField(max_length=200, blank=True, null=True)
     confirm_formation_mentore = models.CharField(max_length=200, blank=True, null=True)
     type_mentorat = models.ForeignKey(Typementorat, blank=True, null=True, on_delete=models.CASCADE)
-    photo = models.FileField(upload_to='profile/', null=True, blank=True)
+    photo = models.FileField(
+        upload_to='profile/', null=True, blank=True,
+        validators=[validate_image_extension, validate_image_size],
+    )
     ojectif_academique = models.ForeignKey(Objectif_Accademique, blank=True, null=True, on_delete=models.CASCADE)
     cannaux = models.ForeignKey(Cannaux_Communication, blank=True, null=True, on_delete=models.CASCADE, verbose_name='Quel canal de communication préférez vous pour echanger avec le mentor')
     frequesce = models.ForeignKey(Frequence_Echange, blank=True, null=True, on_delete=models.CASCADE, verbose_name='A quelle fréquence vous vous echangez avec le mentor?')
@@ -589,7 +604,10 @@ class Evenement(models.Model):
     libelle = models.CharField(max_length=100, blank=True, null=True, verbose_name="Libelle")
     description = models.TextField(blank=True, null=True,  verbose_name="Description")
     lien = models.CharField(max_length=1000, blank=True, null=True,  verbose_name="Lien de l'évènement")
-    image = models.FileField(upload_to='images/', null=True, blank=True,  verbose_name="Image illustrative")
+    image = models.FileField(
+        upload_to='images/', null=True, blank=True, verbose_name="Image illustrative",
+        validators=[validate_image_extension, validate_image_size],
+    )
     date_even = models.DateField(blank=True, null=True,  verbose_name="Date de l'évènement")
     initiateur = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     created = models.DateField(blank=True, null=True, auto_created=True, auto_now_add=True)
@@ -743,7 +761,10 @@ class ActiviteMentorat(models.Model):
     titre = models.CharField(max_length=150)
     description = models.TextField()
     mentorat = models.ForeignKey(Mentorat, on_delete=models.CASCADE, blank=True, null=True)
-    image = models.FileField(upload_to='images_activites/', null=True, blank=True, verbose_name="Fichier joint")
+    image = models.FileField(
+        upload_to='images_activites/', null=True, blank=True, verbose_name="Fichier joint",
+        validators=[validate_document_extension, validate_document_size],
+    )
     debut = models.DateField(auto_now=False, auto_now_add=False)
     fin = models.DateField(auto_now=False, auto_now_add=False)
     etat = models.CharField(max_length=32, choices=ETAT, blank=True, null=True, default='en_instance')
