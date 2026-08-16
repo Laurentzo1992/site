@@ -1,36 +1,22 @@
 FROM python:3.11-slim
 
-# Installer Apache2 et mod-wsgi
-RUN apt-get update && apt-get install -y \
-    apache2 \
-    libapache2-mod-wsgi-py3 \
-    libpq-dev \
-    gcc \
-    && apt-get clean
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
-# Installer les dépendances Python
-COPY requirements.txt /tmp/
-RUN pip3 install --upgrade pip && pip3 install -r /tmp/requirements.txt
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
 
-# Créer dossier application
-RUN mkdir -p /var/www/site
 WORKDIR /var/www/site
 
-# Copier le code
+COPY requirements.txt /tmp/
+RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir -r /tmp/requirements.txt
+
 COPY . /var/www/site
 
-# Collecter les fichiers statiques
-RUN python3 manage.py collectstatic --noinput
+RUN chmod +x /var/www/site/entrypoint.sh
 
-# Copier config Apache
-COPY apache/django.conf /etc/apache2/sites-available/000-default.conf
+EXPOSE 8000
 
-# Donner les bons droits
-RUN chown -R www-data:www-data /var/www/site
-
-# Activer WSGI
-RUN a2enmod wsgi
-
-EXPOSE 80
-
-CMD ["apache2ctl", "-D", "FOREGROUND"]
+ENTRYPOINT ["/var/www/site/entrypoint.sh"]
+CMD ["gunicorn", "website.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]

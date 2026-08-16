@@ -13,18 +13,26 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-=5=l(*q*m0p&trqrs&4gj48hyo=f1^#wfcv1ofc6$+z%0mdwx('
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-=5=l(*q*m0p&trqrs&4gj48hyo=f1^#wfcv1ofc6$+z%0mdwx(',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-#DEBUG = False
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
-DEBUG = True
+CSRF_TRUSTED_ORIGINS = [
+    origin for origin in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if origin
+]
 
-ALLOWED_HOSTS = ['*']
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-ADMIN_ENABLED = True
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+
+ADMIN_ENABLED = os.environ.get('ADMIN_ENABLED', 'True') == 'True'
 # Application definition
 
 INSTALLED_APPS = [
@@ -88,24 +96,14 @@ WSGI_APPLICATION = 'website.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_DB', 'oser_bf'),
+        'USER': os.environ.get('POSTGRES_USER', 'maarch'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'maarch'),
+        'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
+        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
     }
 }
-
-"""
-DATABASES = {
-     'default': {
-         'ENGINE': 'django.db.backends.postgresql',
-         'NAME': 'eclair_bd',
-         'USER': 'maarch',
-         'PASSWORD': 'maarch',
-         'HOST': 'localhost',
-         'PORT': '5432',
-     }
- }
-
-"""
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -152,10 +150,7 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 
-# MEDIA_ROOT = os.path.join(BASE_DIR, "website/static/media")
-
-#production
-MEDIA_ROOT = os.path.join(BASE_DIR, "static/media")
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Default primary key field type
@@ -171,12 +166,12 @@ LOGIN_REDIRECT_URL = 'home'
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'ssl0.ovh.net'
-EMAIL_PORT = 587
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'ssl0.ovh.net')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'infos@oser-bf.org'
-EMAIL_HOST_PASSWORD = 'oser-bf2024'
-DEFAULT_FROM_EMAIL = 'infos@oser-bf.org'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'infos@oser-bf.org')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'infos@oser-bf.org')
 
 
 
@@ -195,8 +190,8 @@ CELERY_BEAT_SCHEDULE = {
 }
 
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
