@@ -1,6 +1,16 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block extra_head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" integrity="sha256-Uv9BNBucvCPipKQ2NS9wYpJmi8DTOEfTA/nH2aoJALw=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
+{% endblock extra_head %}
+
+{% block charter_modals %}
+{% include "mentors/chart_mentor.html" %}
+{% include "mentors/chart_mentore.html" %}
+{% endblock charter_modals %}
+
       <!-- Page Header-->
       {% block main %}
       {% block Carousel %}

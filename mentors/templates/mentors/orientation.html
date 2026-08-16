@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css" />
+{% endblock extra_head %}
+
 {% block main %}
 <div class="container">
     <h4 class="text-center mb-3">Tableau des orientations</h4>
@@ -38,6 +42,7 @@
 {% endblock main %}
 
 {% block jsscript %}
+<script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
 <script>
     $(document).ready(function() {
         $('#example').DataTable(

@@ -5,12 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% block title %}
-    <title>Tableau de Bord Mentora</title>
+    <title>Tableau de Bord OSER</title>
     {% endblock %}
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Work+Sans:300,400,500,700%7CZilla+Slab:300,400,500,700,700i%7CGloria+Hallelujah">
     <style>
         :root {
-            --primary: #4361ee;
-            --secondary: #3f37c9;
+            --primary: #0080ff;
+            --secondary: #0066cc;
             --success: #4cc9f0;
             --info: #4895ef;
             --warning: #f72585;
@@ -24,7 +25,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Work Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
@@ -89,12 +90,12 @@
 
         .nav-link.active {
             color: var(--primary);
-            background-color: rgba(67, 97, 238, 0.05);
+            background-color: rgba(0, 128, 255, 0.05);
             border-left: 4px solid var(--primary);
         }
 
         .nav-link:hover {
-            background-color: rgba(67, 97, 238, 0.05);
+            background-color: rgba(0, 128, 255, 0.05);
         }
 
         .nav-link i {
@@ -549,7 +550,7 @@
                     <b class="logo-icon p-l-10">
                         <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
                         <!-- Dark Logo icon -->
-                        <img src="{% static 'media/images/logo-default-245x50.png' %}" alt="homepage" class="light-logo" />
+                        <img src="{% static 'media/images/logo-default-245x50.png' %}" alt="OSER" class="light-logo" />
                     </b>
                 </a>
             </div>
