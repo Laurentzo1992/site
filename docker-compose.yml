@@ -70,38 +70,24 @@ services:
     image: nginx:latest
     container_name: nginx_proxy
     restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
+    expose:
+      - "80"
     depends_on:
       - django
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - static_volume:/var/www/site/static
       - media_volume:/var/www/site/media
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
+    networks:
+      - default
+      - kbbot_backend
 
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - static_volume:/var/www/site/static
-    entrypoint: "/bin/sh -c"
-    command: >
-      "certbot certonly --webroot
-      --webroot-path=/var/www/site/static
-      --email infos@oser-bf.org
-      --agree-tos
-      --no-eff-email
-      -d oser-bf.org"
+networks:
+  default: {}
+  kbbot_backend:
+    external: true
 
 volumes:
   pgdata:
   static_volume:
   media_volume:
-  certbot-etc:
-  certbot-var:

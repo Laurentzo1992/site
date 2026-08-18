@@ -4,7 +4,6 @@
 {% block title %}Gestion des Inscriptions{% endblock %}
 {% block 'content' %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/dataTables.bootstrap5.min.css' %}">
 <style>
     .filter-section {
         background-color: #f8f9fa;
@@ -311,8 +310,6 @@
 
 
 {% block extra_js %}
-<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'js/dataTables.bootstrap5.min.js' %}"></script>
 <script>
     $(document).ready(function() {
         // Gérer le tri des colonnes
